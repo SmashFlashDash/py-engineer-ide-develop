@@ -1,0 +1,51 @@
+version: '3.8'
+name: IvkServices
+
+services:
+  db:
+    container_name: postgres_db
+    image: postgres:9.6
+    restart: "no"
+    #command: postgres -c config_file=/etc/postgresql.conf
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./initSQL/restore.sh:/docker-entrypoint-initdb.d/restore.sh
+      - ./initSQL/shit-noMAC.sql:/initDump/shit-noMAC.sql
+      - ./dbdata:/var/lib/postgresql/data
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '0.25'
+    #       memory: 500M
+    #     reservations:
+    #       cpus: '0.1'
+    #       memory: 150M
+                         
+  pgadmin:
+    container_name: pgadmin4
+    image: dpage/pgadmin4
+    restart: "no"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "5050:80"
+    volumes:
+      #- pgadmin-data:/var/lib/pgadmin
+       - ./initPgAdm/servers.json:/pgadmin4/servers.json
+       - ./initPgAdm/pgpass:/pgadmin4/pgpass
+    links:
+      - "db:postgres_db"
+
+  redis:
+    container_name: redis
+    image: redis
+    restart: "no"
+    ports:
+      - "6379:6379"
+

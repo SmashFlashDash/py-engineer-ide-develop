@@ -1,0 +1,7 @@
+pyqt5
+qscintilla
+psycopg2
+psutil
+cryptography
+pysnmp
+redispy

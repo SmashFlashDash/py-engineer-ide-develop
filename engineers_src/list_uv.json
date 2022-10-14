@@ -1,0 +1,5917 @@
+{
+  "SOTC": {
+    "1": {
+      "description": "тестовые данные"
+    },
+    "2": {
+      "description": "тестовые данные"
+    },
+    "3": {
+      "description": "тестовые данные"
+    },
+    "4": {
+      "description": "тестовые данные"
+    },
+    "5": {
+      "description": "тестовые данные"
+    },
+    "6": {
+      "description": "тестовые данные"
+    },
+    "7": {
+      "description": "тестовые данные"
+    },
+    "8": {
+      "description": "тестовые данные"
+    },
+    "9": {
+      "description": "тестовые данные"
+    },
+    "10": {
+      "description": "тестовые данные"
+    },
+    "11": {
+      "description": "тестовые данные"
+    },
+    "12": {
+      "description": "тестовые данные"
+    },
+    "13": {
+      "description": "тестовые данные"
+    },
+    "14": {
+      "description": "тестовые данные"
+    },
+    "15": {
+      "description": "тестовые данные"
+    },
+    "16": {
+      "description": "тестовые данные"
+    },
+    "17": {
+      "description": "тестовые данные"
+    },
+    "18": {
+      "description": "тестовые данные"
+    },
+    "19": {
+      "description": "тестовые данные"
+    },
+    "20": {
+      "description": "тестовые данные"
+    },
+    "21": {
+      "description": "тестовые данные"
+    },
+    "22": {
+      "description": "тестовые данные"
+    },
+    "23": {
+      "description": "тестовые данные"
+    },
+    "24": {
+      "description": "тестовые данные"
+    },
+    "25": {
+      "description": "тестовые данные"
+    },
+    "26": {
+      "description": "тестовые данные"
+    },
+    "27": {
+      "description": "тестовые данные"
+    },
+    "28": {
+      "description": "тестовые данные"
+    },
+    "29": {
+      "description": "тестовые данные"
+    },
+    "30": {
+      "description": "тестовые данные"
+    },
+    "31": {
+      "description": "тестовые данные"
+    },
+    "32": {
+      "description": "тестовые данные"
+    },
+    "33": {
+      "description": "тестовые данные"
+    },
+    "34": {
+      "description": "тестовые данные"
+    },
+    "35": {
+      "description": "тестовые данные"
+    },
+    "36": {
+      "description": "тестовые данные"
+    },
+    "37": {
+      "description": "тестовые данные"
+    },
+    "38": {
+      "description": "тестовые данные"
+    },
+    "39": {
+      "description": "тестовые данные"
+    },
+    "40": {
+      "description": "тестовые данные"
+    },
+    "41": {
+      "description": "тестовые данные"
+    },
+    "42": {
+      "description": "тестовые данные"
+    },
+    "43": {
+      "description": "тестовые данные"
+    },
+    "44": {
+      "description": "тестовые данные"
+    },
+    "45": {
+      "description": "тестовые данные"
+    },
+    "46": {
+      "description": "тестовые данные"
+    },
+    "47": {
+      "description": "тестовые данные"
+    },
+    "48": {
+      "description": "тестовые данные"
+    },
+    "49": {
+      "description": "тестовые данные"
+    },
+    "50": {
+      "description": "тестовые данные"
+    },
+    "51": {
+      "description": "тестовые данные"
+    },
+    "52": {
+      "description": "тестовые данные"
+    },
+    "53": {
+      "description": "тестовые данные"
+    },
+    "54": {
+      "description": "тестовые данные"
+    },
+    "55": {
+      "description": "тестовые данные"
+    },
+    "56": {
+      "description": "тестовые данные"
+    },
+    "57": {
+      "description": "тестовые данные"
+    },
+    "58": {
+      "description": "тестовые данные"
+    },
+    "59": {
+      "description": "тестовые данные"
+    },
+    "60": {
+      "description": "тестовые данные"
+    },
+    "61": {
+      "description": "тестовые данные"
+    },
+    "62": {
+      "description": "тестовые данные"
+    },
+    "63": {
+      "description": "тестовые данные"
+    },
+    "64": {
+      "description": "тестовые данные"
+    },
+    "65": {
+      "description": "тестовые данные"
+    },
+    "66": {
+      "description": "тестовые данные"
+    },
+    "67": {
+      "description": "тестовые данные"
+    },
+    "68": {
+      "description": "тестовые данные"
+    },
+    "69": {
+      "description": "тестовые данные"
+    },
+    "70": {
+      "description": "тестовые данные"
+    },
+    "71": {
+      "description": "тестовые данные"
+    },
+    "72": {
+      "description": "тестовые данные"
+    },
+    "73": {
+      "description": "тестовые данные"
+    },
+    "74": {
+      "description": "тестовые данные"
+    },
+    "75": {
+      "description": "тестовые данные"
+    },
+    "76": {
+      "description": "тестовые данные"
+    },
+    "77": {
+      "description": "тестовые данные"
+    },
+    "78": {
+      "description": "тестовые данные"
+    },
+    "79": {
+      "description": "тестовые данные"
+    },
+    "80": {
+      "description": "тестовые данные"
+    },
+    "81": {
+      "description": "тестовые данные"
+    },
+    "82": {
+      "description": "тестовые данные"
+    },
+    "83": {
+      "description": "тестовые данные"
+    },
+    "84": {
+      "description": "тестовые данные"
+    },
+    "85": {
+      "description": "тестовые данные"
+    },
+    "86": {
+      "description": "тестовые данные"
+    },
+    "87": {
+      "description": "тестовые данные"
+    },
+    "88": {
+      "description": "тестовые данные"
+    },
+    "89": {
+      "description": "тестовые данные"
+    },
+    "90": {
+      "description": "тестовые данные"
+    },
+    "91": {
+      "description": "тестовые данные"
+    },
+    "92": {
+      "description": "тестовые данные"
+    },
+    "93": {
+      "description": "тестовые данные"
+    },
+    "94": {
+      "description": "тестовые данные"
+    },
+    "95": {
+      "description": "тестовые данные"
+    },
+    "96": {
+      "description": "тестовые данные"
+    },
+    "97": {
+      "description": "тестовые данные"
+    },
+    "98": {
+      "description": "тестовые данные"
+    },
+    "99": {
+      "description": "тестовые данные"
+    },
+    "100": {
+      "description": "тестовые данные"
+    },
+    "101": {
+      "description": "тестовые данные"
+    },
+    "102": {
+      "description": "тестовые данные"
+    },
+    "103": {
+      "description": "тестовые данные"
+    },
+    "104": {
+      "description": "тестовые данные"
+    },
+    "105": {
+      "description": "тестовые данные"
+    },
+    "106": {
+      "description": "тестовые данные"
+    },
+    "107": {
+      "description": "тестовые данные"
+    },
+    "108": {
+      "description": "тестовые данные"
+    },
+    "109": {
+      "description": "тестовые данные"
+    },
+    "110": {
+      "description": "тестовые данные"
+    },
+    "111": {
+      "description": "тестовые данные"
+    },
+    "112": {
+      "description": "тестовые данные"
+    },
+    "113": {
+      "description": "тестовые данные"
+    },
+    "114": {
+      "description": "тестовые данные"
+    },
+    "115": {
+      "description": "тестовые данные"
+    },
+    "116": {
+      "description": "тестовые данные"
+    },
+    "117": {
+      "description": "тестовые данные"
+    },
+    "118": {
+      "description": "тестовые данные"
+    },
+    "119": {
+      "description": "тестовые данные"
+    },
+    "120": {
+      "description": "тестовые данные"
+    },
+    "121": {
+      "description": "тестовые данные"
+    },
+    "122": {
+      "description": "тестовые данные"
+    },
+    "123": {
+      "description": "тестовые данные"
+    },
+    "124": {
+      "description": "тестовые данные"
+    },
+    "125": {
+      "description": "тестовые данные"
+    },
+    "126": {
+      "description": "тестовые данные"
+    },
+    "127": {
+      "description": "тестовые данные"
+    },
+    "128": {
+      "description": "тестовые данные"
+    },
+    "129": {
+      "description": "тестовые данные"
+    },
+    "130": {
+      "description": "тестовые данные"
+    },
+    "131": {
+      "description": "тестовые данные"
+    },
+    "132": {
+      "description": "тестовые данные"
+    },
+    "133": {
+      "description": "тестовые данные"
+    },
+    "134": {
+      "description": "тестовые данные"
+    },
+    "135": {
+      "description": "тестовые данные"
+    },
+    "136": {
+      "description": "тестовые данные"
+    },
+    "137": {
+      "description": "тестовые данные"
+    },
+    "138": {
+      "description": "тестовые данные"
+    },
+    "139": {
+      "description": "тестовые данные"
+    },
+    "140": {
+      "description": "тестовые данные"
+    },
+    "141": {
+      "description": "тестовые данные"
+    },
+    "142": {
+      "description": "тестовые данные"
+    },
+    "143": {
+      "description": "тестовые данные"
+    },
+    "144": {
+      "description": "тестовые данные"
+    },
+    "145": {
+      "description": "тестовые данные"
+    },
+    "146": {
+      "description": "тестовые данные"
+    },
+    "147": {
+      "description": "тестовые данные"
+    },
+    "148": {
+      "description": "тестовые данные"
+    },
+    "149": {
+      "description": "тестовые данные"
+    },
+    "150": {
+      "description": "тестовые данные"
+    },
+    "151": {
+      "description": "тестовые данные"
+    },
+    "152": {
+      "description": "тестовые данные"
+    },
+    "153": {
+      "description": "тестовые данные"
+    },
+    "154": {
+      "description": "тестовые данные"
+    },
+    "155": {
+      "description": "тестовые данные"
+    },
+    "156": {
+      "description": "тестовые данные"
+    },
+    "157": {
+      "description": "тестовые данные"
+    },
+    "158": {
+      "description": "тестовые данные"
+    },
+    "159": {
+      "description": "тестовые данные"
+    },
+    "160": {
+      "description": "тестовые данные"
+    },
+    "161": {
+      "description": "тестовые данные"
+    },
+    "162": {
+      "description": "тестовые данные"
+    },
+    "163": {
+      "description": "тестовые данные"
+    },
+    "164": {
+      "description": "тестовые данные"
+    },
+    "165": {
+      "description": "тестовые данные"
+    },
+    "166": {
+      "description": "тестовые данные"
+    },
+    "167": {
+      "description": "тестовые данные"
+    }
+  },
+
+
+  "SCPICMD": {
+    "FKP1": {
+      "description": "тестовые данные",
+      "0x4001": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40C9": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4191": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x43E9": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4003": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40CB": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4193": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x43EB": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4005": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40CD": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4195": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x43ED": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4007": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40CF": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4197": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x43EF": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4009": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40D1": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4199": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x43F1": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x400A": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40D2": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x419A": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x43F2": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x400B": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40D3": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x419B": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x43F3": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x400C": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40D4": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x419C": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x43F4": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x400D": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40D5": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x419D": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x43F5": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x400F": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40D7": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x419F": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x43F7": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4011": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40D9": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x41A1": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x43F9": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4013": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40DB": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x41A3": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x43FB": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4015": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40DD": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x41A5": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x43FD": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4017": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40DF": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x41A7": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x43FF": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4019": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40E1": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x41A9": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4401": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x401B": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40E3": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x41AB": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4403": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x401D": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40E5": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x41AD": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4405": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x401E": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40E6": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x41AE": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4406": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x401F": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40E7": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4407": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4020": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40E8": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4408": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4021": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40E9": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4409": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4022": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40EA": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x440A": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4023": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40EB": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x440B": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4024": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40EC": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x440C": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4025": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40ED": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x440D": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4026": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40EE": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x440E": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4027": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40EF": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x440F": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4028": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40F0": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4410": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4029": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40F1": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4411": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x402A": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40F2": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4412": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x402B": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40F3": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4413": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x402C": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40F4": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4414": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x402D": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40F5": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4415": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x402E": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x40F6": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4416": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x412C": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0x4190": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0x41F4": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x4258": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0x425A": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0x425B": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x42BD": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x42BE": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      }
+    },
+    "FKP2": {
+      "description": "тестовые данные",
+      "0x5001": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x50C9": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x5191": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x53E9": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x5003": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x50CB": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x53EB": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x5004": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x50CC": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x53EC": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x5005": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x50CD": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x53ED": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x5006": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x50CE": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x53EE": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x5007": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x50CF": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x53EF": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x5008": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x50D0": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x53F0": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x5009": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x50D1": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x5199": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x53F1": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x500A": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x50D2": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x519A": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x53F2": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x500B": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x50D3": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x519B": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x53F3": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x500C": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x50D4": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x519C": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x53F4": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x500D": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x50D5": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x519D": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x53F5": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x500E": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x50D6": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x519E": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x53F6": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x500F": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x50D7": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x519F": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x53F7": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x5010": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x50D8": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x51A0": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x53F8": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x5011": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x50D9": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x51A1": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x53F9": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x5013": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x50DB": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x51A3": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x53FB": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x5015": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x50DD": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x51A5": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x53FD": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x5017": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x50DF": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x51A7": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x53FF": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x5019": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x50E1": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x51A9": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x5401": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x501A": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x50E2": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x51AA": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x5402": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x501B": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x50E3": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x51AB": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x5403": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x501C": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x50E4": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x51AC": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x5404": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x501D": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0x512C": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0x512D": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0x5190": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0x51F4": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x5258": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0x5259": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0x525A": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0x525B": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x52BD": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x52BE": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      }
+    },
+    "KSP": {
+      "description": "тестовые данные",
+      "0x3001": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3002": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3003": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3004": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3005": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3006": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3007": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3008": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3009": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3010": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3011": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3012": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3013": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3014": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3015": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3016": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3017": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3018": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3019": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3020": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3021": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3022": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3023": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3024": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3025": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3026": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3027": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3028": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3029": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3030": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3031": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3032": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3033": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3034": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3035": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3036": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3037": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3038": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3039": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x3040": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0x3041": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0x3062": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      }
+    },
+    "KPDU": {
+      "description": "тестовые данные",
+      "0x1001": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1002": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1003": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1004": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1005": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1006": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1007": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1008": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1009": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x100A": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x100B": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x100C": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0x100D": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x100E": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x100F": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1010": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1011": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1012": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1013": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1014": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1015": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1016": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1017": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1018": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0x1019": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x101A": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x101B": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x101C": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x101D": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x101E": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x101F": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1020": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1021": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0x1022": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1023": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1024": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1025": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0x1026": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1027": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1028": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1029": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x102A": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x102B": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0x102C": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x102D": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x102E": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x102F": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1030": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1031": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0x1032": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1033": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1034": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1035": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1036": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1037": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1038": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1039": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x103A": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x103B": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x103C": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x103D": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x103E": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x103F": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1040": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1041": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1042": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1043": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1044": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1045": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1046": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1047": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0x1048": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0x1049": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0x104A": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x104B": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x104C": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x104D": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x104E": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x104F": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1050": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0x1051": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0x1052": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0x1053": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0x1054": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0x105A": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1060": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1062": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1063": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1064": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1065": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1066": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1067": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1068": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1069": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x106A": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x106B": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x106C": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x106D": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x106E": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x106F": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0x1070": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      }
+    },
+    "ASN": {
+      "description": "тестовые данные",
+      "0xB040": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xC040": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xB051": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xC051": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xB052": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xC052": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xB055": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xC055": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xB056": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xC056": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xB058": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xC058": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xB061": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xC061": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xB062": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xC062": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xB063": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xC063": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xB064": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xC064": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xB065": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xC065": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xB066": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xC066": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xB081": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xC081": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xB082": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xC082": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xB083": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xC083": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xB084": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xC084": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xB085": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xC085": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xB0C1": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xC0C1": {
+        "uv_num_device": "",
+        "description": "тестовые данные"
+      },
+      "0xB0C2": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0xC0C2": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": ""
+      },
+      "0xB0C3": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC0C3": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB0C5": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC0C5": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+
+      },
+      "0xB0D1": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": "",
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC0D1": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": "",
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB0D2": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": "",
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC0D2": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": "",
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB0D3": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC0D3": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB0D4": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": "",
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC0D4": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": "",
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB150": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC150": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB161": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC161": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB164": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC164": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB165": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC165": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB167": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC167": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB168": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC168": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB169": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC169": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB16B": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC16B": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB181": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": "",
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC181": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": "",
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB182": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": "",
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC182": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": "",
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB190": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC190": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB191": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC191": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB192": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC192": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB193": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC193": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB194": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC194": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB195": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC195": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB196": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC196": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB197": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC197": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB198": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC198": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB199": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC199": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB19A": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC19A": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB19B": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC19B": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB19C": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC19C": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB19D": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC19D": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB19E": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC19E": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB1A0": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC1A0": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB1A1": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC1A1": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB1A2": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC1A2": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB1A3": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC1A3": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB1B0": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC1B0": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB1C0": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC1C0": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xB1E0": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xC1E0": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      }
+    },
+    "RLCI-V": {
+      "description": "тестовые данные",
+      "0xA000": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xA001": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xA002": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xA003": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xA004": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xA005": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xA006": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xA007": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xA008": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xA009": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xA00A": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xA00B": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xA00C": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xA00D": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xA00E": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xA00F": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xA010": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xA011": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xA012": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xA013": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xA014": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xA015": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xA016": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xA017": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xA018": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xA019": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xA01A": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xA01B": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      }
+    },
+    "BCK": {
+      "description": "тестовые данные",
+      "0xE003": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE004": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": [
+        {"arg": "q",
+        "description": "тестовые данные"},
+        {"arg": "w",
+        "description": "тестовые данные"},
+        {"arg": "e",
+        "description": "тестовые данные"},
+        {"arg": "r",
+        "description": "тестовые данные"},
+        {"arg": "t",
+        "description": "тестовые данные"},
+        {"arg": "y",
+        "description": "тестовые данные"},
+        {"arg": "u",
+        "description": "тестовые данные"},
+        {"arg": "ut",
+        "description": "тестовые данные"},
+        {"arg": "i",
+        "description": "тестовые данные"},
+        {"arg": "o",
+        "description": "тестовые данные"},
+        {"arg": "p",
+        "description": "тестовые данные"},
+        {"arg": "[",
+        "description": "тестовые данные"},
+        {"arg": "]",
+        "description": "тестовые данные"},
+        {"arg": "a",
+        "description": "тестовые данные"},
+        {"arg": "s",
+        "description": "тестовые данные"},
+        {"arg": "d",
+        "description": "тестовые данные"},
+        {"arg": "f",
+        "description": "тестовые данные"},
+        {"arg": "g",
+        "description": "тестовые данные"},
+        {"arg": "h",
+        "description": "тестовые данные"},
+        {"arg": "j",
+        "description": "тестовые данные"},
+        {"arg": "k",
+        "description": "тестовые данные"},
+        {"arg": "l",
+        "description": "тестовые данные"},
+        {"arg": ";",
+        "description": "тестовые данные"},
+        {"arg": "'",
+        "description": "тестовые данные"},
+        {"arg": "\\",
+        "description": "тестовые данные"},
+        {"arg": "z",
+        "description": "тестовые данные"},
+        {"arg": "x",
+        "description": "тестовые данные"},
+        {"arg": "c",
+        "description": "тестовые данные"},
+        {"arg": "v",
+        "description": "тестовые данные"},
+        {"arg": "b",
+        "description": "тестовые данные"},
+        {"arg": "n",
+        "description": "тестовые данные"},
+        {"arg": "m",
+        "description": "тестовые данные"},
+        {"arg": ",",
+        "description": "тестовые данные"},
+        {"arg": ".",
+        "description": "тестовые данные"},
+        {"arg": "/",
+        "description": "тестовые данные"}
+        ],
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE005": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": [
+        {"arg": "q",
+        "description": "тестовые данные"},
+        {"arg": "w",
+        "description": "тестовые данные"},
+        {"arg": "e",
+        "description": "тестовые данные"},
+        {"arg": "r",
+        "description": "тестовые данные"},
+        {"arg": "t",
+        "description": "тестовые данные"},
+        {"arg": "y",
+        "description": "тестовые данные"},
+        {"arg": "u",
+        "description": "тестовые данные"},
+        {"arg": "i",
+        "description": "тестовые данные"},
+        {"arg": "o",
+        "description": "тестовые данные"},
+        {"arg": "p",
+        "description": "тестовые данные"},
+        {"arg": "[",
+        "description": "тестовые данные"},
+        {"arg": "]",
+        "description": "тестовые данные"},
+        {"arg": "a",
+        "description": "тестовые данные"}
+        ],
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE011": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": "",
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE020": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE021": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE022": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE023": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE024": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE025": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE026": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE027": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE028": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE029": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE02A": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE02B": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE02C": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE02D": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE02E": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE02F": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE030": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE031": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE032": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE033": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE042": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE043": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE046": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE047": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE04D": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE04E": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE04F": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE050": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE051": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE05E": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE060": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE061": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE062": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE063": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE064": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE06E": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE070": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE071": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE072": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE073": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE074": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE075": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE076": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE080": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE081": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE082": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE083": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE084": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE085": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE086": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE087": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE088": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE090": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE091": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE092": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE093": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE094": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE0A0": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE0A1": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE0A2": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE0A3": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE0A4": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE0A5": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE0B0": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE0B1": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE0B2": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE0B3": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE0B4": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE0C0": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE0C1": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE0C2": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE101": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE102": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE103": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE104": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE105": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE106": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE107": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE110": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE111": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE112": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE120": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE121": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE122": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE123": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE124": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE125": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE126": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE127": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE128": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE129": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE140": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE141": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE170": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE171": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE172": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE207": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE208": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0xE218": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      }
+    },
+    "KIR": {
+      "description": "тестовые данные",
+      "0x2040": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2080": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x20C0": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2140": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2180": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x21C0": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2200": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2240": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2280": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2281": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2282": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2283": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2284": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2285": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2286": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2287": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2288": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2289": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x228A": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x228B": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x228C": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x228D": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x228E": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x228F": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2290": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2291": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2292": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2293": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x22C0": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x22C1": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x22C2": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x22C3": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x22C4": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x22C5": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x22C6": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x22C7": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x22C8": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x22C9": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x22CA": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x22CB": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x22CC": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x22CD": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x22CE": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x22CF": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x22D0": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x22D1": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x22D2": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x22D3": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2300": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2301": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2302": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2303": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2304": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2305": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2306": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2307": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2308": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2309": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x230A": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x230B": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x230C": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x230D": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x230E": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x230F": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2310": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2311": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2312": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2313": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2340": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2341": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2342": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2343": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2344": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2345": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2346": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2347": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2348": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2349": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x234A": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x234B": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x234C": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x234D": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x234E": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x234F": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2350": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2351": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2352": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2353": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2380": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2381": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2382": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2383": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2384": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2385": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2386": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2387": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2388": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2389": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x238A": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x238B": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x238C": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x238D": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x238E": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x238F": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2390": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2391": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2392": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2393": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2394": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2395": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2396": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2397": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2398": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2399": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x239A": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x239B": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x239C": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x239D": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x239E": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x239F": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23A0": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23A1": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23A2": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23A3": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23A4": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23A5": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23A6": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23A7": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23C0": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23C1": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23C2": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23C3": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23C4": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23C5": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23C6": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23C7": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23C8": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23C9": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23CA": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23CB": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23CC": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23CD": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23CE": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23CF": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23D0": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23D1": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23D2": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23D3": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23D4": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23D5": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23D6": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23D7": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23D8": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23D9": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23DA": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23DB": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23DC": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23DD": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23DE": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23DF": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23E0": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23E1": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23E2": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23E3": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23E4": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23E5": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23E6": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x23E7": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2400": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2401": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2402": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2403": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2404": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2405": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2406": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2407": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2408": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2409": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x240A": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x240B": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x240C": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x240D": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x240E": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x240F": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2410": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2411": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2412": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x2413": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2440": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2441": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2442": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2443": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2444": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2445": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2446": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2447": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2448": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2449": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x244A": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x244B": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x244C": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x244D": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x244E": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x244F": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2450": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2451": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2452": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "args": true,
+        "obts": "OBTS('1970:1:1:0:0:0')"
+      },
+      "0x2453": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2480": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2481": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2482": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2483": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2484": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2485": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2486": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2487": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2488": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2489": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x248A": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x248B": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x248C": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x248D": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x248E": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x248F": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2490": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2491": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2492": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2493": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x24C0": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x24C1": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x24C2": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x24C3": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x24C4": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x24C5": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x24C6": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x24C7": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x24C8": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x24C9": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x24CA": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x24CB": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x24CC": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x24CD": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x24CE": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x24CF": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x24D0": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x24D1": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x24D2": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x24D3": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2500": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2501": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2502": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2503": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2504": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2505": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2506": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2507": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2508": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2509": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x250A": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x250B": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x250C": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x250D": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x250E": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x250F": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2510": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2511": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2512": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2513": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      },
+      "0x2540": {
+        "uv_num_device": "",
+        "description": "тестовые данные",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "args": true
+      }
+    },
+    "KSO": {
+      "description": "тестовые данные",
+      "0x0014": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0015": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0016": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0017": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0018": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0019": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x001A": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x001B": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x001C": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x001D": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x001E": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x001F": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0020": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0021": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0022": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0023": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0024": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0025": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x002A": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x002B": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0032": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0033": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0034": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0035": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0036": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0037": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0038": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0039": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x003A": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x003B": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x003C": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x003D": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x003E": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x003F": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0040": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0041": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0042": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0043": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0044": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0045": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0046": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0047": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x004A": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x004B": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x004C": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x004D": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x004E": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x004F": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0050": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0051": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0052": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0053": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0054": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0055": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0056": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0057": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0058": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0059": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x005A": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x005B": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x005C": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x005D": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x005E": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x005F": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0060": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0061": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0062": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0064": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0065": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0066": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0067": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0068": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0069": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x006A": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x006B": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x006C": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x006D": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0006E": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x006F": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0070": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0071": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0072": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0073": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0074": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0075": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0076": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0077": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0078": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0079": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x007A": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x007B": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x007C": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x007D": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x007E": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x007F": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0080": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0081": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0082": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0083": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0084": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0085": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0086": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0087": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0088": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0089": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x008A": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x008B": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x008C": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x008D": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x008E": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x008F": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0090": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0091": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0092": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0093": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0094": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0095": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0096": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0097": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0098": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0099": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0100": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0101": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0102": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0103": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0104": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0105": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0106": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные"
+      },
+      "0x0107": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0108": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0109": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0110": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0111": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0112": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0113": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      },
+      "0x0114": {
+        "uv_num_device": "",
+        "obts": "OBTS('1970:1:1:0:0:0')",
+        "description": "тестовые данные",
+        "args": true
+      }
+    }
+  }
+}
+

@@ -1,0 +1,3 @@
+[submodule "cpi_framework"]
+	path = cpi_framework
+	url = https://github.com/SmashFlashDash/cpi_frame.git

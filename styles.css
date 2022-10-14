@@ -1,0 +1,79 @@
+QToolTip {
+    font-size:9pt;
+    max-width: 500px;
+     
+}
+
+#consolasBoldFont {
+    font: 10pt "Consolas"; 
+    font-weight: bold;
+}
+
+#consolasFont {
+    font: 10pt "Consolas";
+}
+
+#addTabButton {
+    padding: 0px;
+    margin-right: 3px;
+}
+
+#searchWidget { 
+    border: 1px solid rgb(124, 124, 124); 
+    border-radius: 3px;
+}
+#searchField {
+    font-family: "Consolas";
+    font-size: 10pt;
+    background-color: white; 
+}
+#replaceField { 
+    font-family: "Consolas";
+    font-size: 10pt;
+    background-color: white; 
+}
+#searchFieldOverlay { background-color: white; }
+
+#console {
+    background-color: #32373C; 
+    font: 10pt "Consolas","DejaVu Sans Mono";
+
+}
+
+#pdbConsole {
+    background-color: #32373C; 
+    font: 10pt 'Consolas'; 
+    color: #F8FF9F;
+}
+
+#pdbInput {
+    background-color: #F8FF9F; 
+    font: 14pt "Consolas"; 
+    color: #3C3C3C; 
+    font-weight: bold;
+}
+
+#normalInput {
+    background-color: rgb(181, 255, 245); 
+    font: 14pt "Consolas"; 
+    color: #3C3C3C; 
+    font-weight: bold;
+}
+
+#dragTabFrame { 
+    border: 1px solid rgb(129, 255, 136); 
+    border-radius: 2px;
+    background-color: rgb(255, 255, 255); 
+}
+
+#autoCompeteWidget {
+    font: 10pt "Consolas"; 
+    color: #3C3C3C; 
+    font-weight: bold;
+}
+
+#autoCompeteInfoFrame {
+    background-color: rgb(255, 254, 205);
+    font: 10pt "Consolas","DejaVu Sans Mono";
+    color: #3C3C3C;
+}
