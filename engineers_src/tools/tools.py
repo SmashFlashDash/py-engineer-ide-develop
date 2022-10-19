@@ -29,7 +29,6 @@ from time import sleep
 from datetime import datetime, timedelta
 from enum import Enum
 import re
-# import struct
 import threading
 from PyQt5.QtWidgets import QApplication, QMessageBox, QPushButton, QDialogButtonBox, QSizePolicy, QBoxLayout, QLabel
 from PyQt5.QtGui import QIcon
