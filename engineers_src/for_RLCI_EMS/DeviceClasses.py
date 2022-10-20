@@ -600,10 +600,6 @@ class ASN:
             raise Exception('Неверный параметр')
 
     @staticmethod
-    def __get_syst_num(num):
-        return {1: 11, 2: 12}[num]
-
-    @staticmethod
     @print_start_and_end(string='АСН: ВКЛ %s')
     def on(block_num):
         """Включение АСН и проверка телеметри"""
@@ -617,7 +613,7 @@ class ASN:
             sendFromJson(SCPICMD, 0xE22D, pause=1)  # Выключить приоритет АСН1
             sendFromJson(SCPICMD, 0xE243, pause=1)  # Включить приоритет АСН2
         ASN.cur_block = block_num
-        ASN.cur_syst = ASN.__get_syst_num(block_num)
+        ASN.cur_syst = {1: 11, 2: 12}[block_num]
         yprint("Проверка состояния АСН")
         BCK.clc_BCK()
         sendFromJson(SCPICMD, 0xE0A0, pause=5)   # Запрос ДИ2 ФКП-1 (КПТ)
@@ -737,12 +733,11 @@ class ASN:
     def res_control(block_num):
         """Проверка результатов самоконтроля АСН"""
         ASN.__validate_block_num(block_num)
-        syst_num = ASN.__get_syst_num(block_num)
-        SS = ad_dict_SS(syst_num)
-        DI_2 = ad_dict_DI_2(syst_num)
-        DI_3 = ad_dict_DI_3(syst_num)
-        DI_4 = ad_dict_DI_4(syst_num)
-        DI_10 = ad_dict_DI_10(syst_num)
+        SS = ad_dict_SS(ASN.cur_syst)
+        DI_2 = ad_dict_DI_2(ASN.cur_syst)
+        DI_3 = ad_dict_DI_3(ASN.cur_syst)
+        DI_4 = ad_dict_DI_4(ASN.cur_syst)
+        DI_10 = ad_dict_DI_10(ASN.cur_syst)
         control_result = Ex.get('ТМИ', SS["ResControl"], 'КАЛИБР ТЕКУЩ')
         failure_flag = Ex.get('ТМИ', SS["FailureFlag"], 'КАЛИБР ТЕКУЩ')
         state_ASN = Ex.get('ТМИ', SS["PrgStateSvUS"], 'КАЛИБР ТЕКУЩ')
@@ -809,9 +804,8 @@ class ASN:
     def check_sm_output(block_num):
         """Функция проверки корректной выдачи СМ из АСН"""
         ASN.__validate_block_num(block_num)
-        syst_num = ASN.__get_syst_num(block_num)
-        ASN.__KSVCH_check(syst_num)
-        DI_7 = ad_dict_DI_7(syst_num)
+        ASN.__KSVCH_check(ASN.cur_syst)
+        DI_7 = ad_dict_DI_7(ASN.cur_syst)
         confirm_MV = Ex.get('ТМИ', DI_7["ConfirmMV"], 'КАЛИБР ТЕКУЩ')
         bprint('Подтверждение выдачи импульса МВ: ' + confirm_MV)
         controlGet(confirm_MV, 'импульс МВ выведен',
@@ -960,7 +954,7 @@ class KSO:
             executeTMI(' and '.join(("{05.02.VKSOA}@H>200",     # Напряжение канала коммутатора КСО Коммутатор А Ключевой элемент 1
                                      "{05.02.CKSOA}@H>7",       # Ток коммутатора КСО Коммутатор А Ключевой элемент 2
                                      "{00.01.ARO}@H>1")))       # Счётчик реконфигурации
-            cur = 1
+            KSO.cur = 1
         else:
             rprint("КСО КСО НЕ ЗАМКНУТ")
             inputG()
@@ -984,7 +978,7 @@ class KSO:
             BCK.downBCK()
             executeTMI(' and '.join(("{05.02.VKSOA}@H<10",     # Напряжение канала коммутатора КСО Коммутатор А Ключевой элемент 1
                                      "{05.02.CKSOA}@H<4")))       # Ток коммутатора КСО Коммутатор А Ключевой элемент 2
-            cur = None
+            KSO.cur = None
             sendFromJson(SCPICMD, 0x53ED)  # Остановка БИУС1
             sendFromJson(SCPICMD, 0x53EE)  # Остановка БИУС1
             sendFromJson(SCPICMD, 0x53E9)  # Остановка ММ
@@ -997,9 +991,16 @@ class KSO:
             sendFromJson(SCPICMD, 0x5403)  # Остановка ДМ3
             sendFromJson(SCPICMD, 0x5404)  # Остановка ДМ4
         else:
-            rprint("КСО КСО ЗАМКНУТ")
+            rprint("Ключ КСО ЗАМКНУТ")
             inputG()
 
+    # TODO: првоерка состояния КСО
+    #  обороты ДМ - мб не надо
+    #  ЗД - кватарнионы
+    #  ММ - проверить значения
+    #  ДС - проверить значения - ?
+    #  БИУС - проверить значения
+    #  После того как включился КСО
     @staticmethod
     def foo():
         pass
