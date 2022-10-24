@@ -39,6 +39,10 @@ from engineers_src.for_RLCI_EMS.DeviceClasses import DIstorage, BCK, MB, KIS, RL
 ##################### COMMUTATIONS ############################
 DIstorage.commute('M778B', False)
 MB.cur = 1
+KIS.barl_names['1/2'] = None
+KIS.barl_names['2/2'] = None
+KIS.barl_names['3/4'] = None
+KIS.barl_names['4/4'] = None
 
 
 #####################    TESTS ###############################
