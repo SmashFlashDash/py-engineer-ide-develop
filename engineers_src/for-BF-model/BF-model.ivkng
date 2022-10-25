@@ -19,6 +19,14 @@ from engineers_src.tools.tools import *
 
 import openpyxl
 
+################################## DATA ###############################################
+igbf_bf1 = [1, 2, 3, 4, 5, 6, 7, 8]
+igbf_bf2 = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+igbf_bf3 = [21, 22, 23, 24, 25]
+min_in_circuit = 90                                     # минут на виток
+num_circuits = 1                                        # витокв
+#######################################################################################
+
 
 def read_xlsx():
     sheet = openpyxl.load_workbook("engineers_src/for-BF-model/BF-model.xlsx", data_only=True).active
@@ -29,7 +37,7 @@ def read_xlsx():
             igbf_model_current.append(float(value))
         except (ValueError, TypeError):
             pass
-    # проверяем что кол-во значений кратно 90
+    # проверяем что кол-во значений кратно min_in_circuit
     if len(igbf_model_current) % min_in_circuit != 0:
         raise Exception('ОШИБКА: Список ток ИГБФ, строка 81 в .xlsx, кол-во столбцов не кратно 90')
     # разбить на витки
@@ -145,21 +153,6 @@ def is_unique_elements(array):
 
 
 
-
-
-################################## DATA ###############################################
-igbf_bf1 = [1, 2, 3, 4, 5, 6, 7, 8]
-igbf_bf2 = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
-igbf_bf3 = [21, 22, 23, 24, 25]
-min_in_circuit = 90                                     # минут на виток
-num_circuits = 1                                       # витокв
-#######################################################################################
-
-
-
-
-
-
 ################################## MAIN ###############################################
 is_unique_elements(igbf_bf1 + igbf_bf2 + igbf_bf3)      # проверка что нет одинаковых ИГБФ
 sat_circuits = read_xlsx()                              # читаем 81 строку файла, получаем значения токов
@@ -190,11 +183,11 @@ igbf_config = {                                         # конфиг для м
 }
 # TODO: зачем эта функция
 Ex.send('Ячейка ПИ', ICCELL('ВыходИБГФ', out=[0x00, 0x00, 0x00, 0x00]))     # отключить все игбф
-# отключить все игбф
 igbf_running = list(range(1, 33))                                           # номера запущенных ИГБФ
-igbf_turn_off(igbf_running)
+igbf_turn_off(igbf_running)                                                 # отключить все игбф
 
 # TODO: между витками есть 0
+# TODO: на ИГБФ можо выдать максимум 30А
 # проход по виткам
 inputG('Начать имитацию?')
 print()
