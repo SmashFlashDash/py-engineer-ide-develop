@@ -65,6 +65,8 @@ class BCK:
         sendFromJson(SCPICMD, 0xE060, describe='Ждать 30 сек', pause=30)
 
 
+# TODO: при включении СР если есть заранее определнынй уровень установить эт урвоень в КПА
+#  заменит '1/2' на int номера барлов
 ###################### KIS ##############################
 class KIS:
     # TODO: заменить barl_cur на barl_running
@@ -598,20 +600,26 @@ class ASN:
             raise Exception('Неверный параметр')
 
     @staticmethod
+    def __get_syst_num(num):
+        return {1: 11, 2: 12}[num]
+
+    @staticmethod
     @print_start_and_end(string='АСН: ВКЛ %s')
     def on(block_num):
         """Включение АСН и проверка телеметри"""
         ASN.__validate_block_num(block_num)
         if block_num == 1:
-            sendFromJson(SCPICMD, 0x4005, pause=1)   # Вкл АСН1 через канал 5
-            sendFromJson(SCPICMD, 0xE219, pause=1)   # Вкл обмен АСН1
+            # sendFromJson(SCPICMD, 0x4005, pause=1)   # Вкл АСН1 через канал 5
+            # sendFromJson(SCPICMD, 0xE219, pause=1)   # Вкл обмен АСН1
+            sendFromJson(SCPICMD, 0xE004, AsciiHex('0106010000000000'), pause=1)  # Включить АСН1
         elif block_num == 2:
-            sendFromJson(SCPICMD, 0x4195, pause=1)  # Вкл АСН2 через канал 6
-            sendFromJson(SCPICMD, 0xE230, pause=1)  # Вкл обмен АСН2
+            # sendFromJson(SCPICMD, 0x4195, pause=1)  # Вкл АСН2 через канал 6
+            # sendFromJson(SCPICMD, 0xE230, pause=1)  # Вкл обмен АСН2
+            sendFromJson(SCPICMD, 0xE004, AsciiHex('0109000000000000'), pause=1)  # Включить АСН2
             sendFromJson(SCPICMD, 0xE22D, pause=1)  # Выключить приоритет АСН1
             sendFromJson(SCPICMD, 0xE243, pause=1)  # Включить приоритет АСН2
         ASN.cur_block = block_num
-        ASN.cur_syst = {1: 11, 2: 12}[block_num]
+        ASN.cur_syst = ASN.__get_syst_num(block_num)
         yprint("Проверка состояния АСН")
         BCK.clc_BCK()
         sendFromJson(SCPICMD, 0xE0A0, pause=5)   # Запрос ДИ2 ФКП-1 (КПТ)
@@ -636,11 +644,13 @@ class ASN:
         ASN.__validate_block_num(block_num)
         if block_num == 1:
             print("УВ: Отключить обмены с АСН1")
-            sendFromJson(SCPICMD, 0xE21A, pause=1)  # Отключить обмены с АСН1 0xE21A EXCH_OFF_ASN1
+            # sendFromJson(SCPICMD, 0xE21A, pause=1)  # Отключить обмены с АСН1 0xE21A EXCH_OFF_ASN1
+            sendFromJson(SCPICMD, 0xE005, AsciiHex('0106000000000000'), pause=1)  # Отключить АСН1
         else:
             print("УВ: Отключить обмены с АСН2")
-            sendFromJson(SCPICMD, 0xE231, pause=1)  # Отключить обмены с АСН1 0xE21A EXCH_OFF_ASN1
-        sendFromJson(SCPICMD, 0x43ED, pause=1)   # Отключить АСН  (Каналы 5 и 6)
+            # sendFromJson(SCPICMD, 0xE231, pause=1)  # Отключить обмены с АСН1 0xE21A EXCH_OFF_ASN1
+            sendFromJson(SCPICMD, 0xE005, AsciiHex('0109000000000000'), pause=1)  # Отключить АСН2
+        # sendFromJson(SCPICMD, 0x43ED, pause=1)   # Отключить АСН  (Каналы 5 и 6)
         ASN.cur_block = None
         ASN.cur_syst = None
         bprint("Проверка состояния АСН")
@@ -731,11 +741,12 @@ class ASN:
     def res_control(block_num):
         """Проверка результатов самоконтроля АСН"""
         ASN.__validate_block_num(block_num)
-        SS = ad_dict_SS(ASN.cur_syst)
-        DI_2 = ad_dict_DI_2(ASN.cur_syst)
-        DI_3 = ad_dict_DI_3(ASN.cur_syst)
-        DI_4 = ad_dict_DI_4(ASN.cur_syst)
-        DI_10 = ad_dict_DI_10(ASN.cur_syst)
+        syst_num = ASN.__get_syst_num(block_num)
+        SS = ad_dict_SS(syst_num)
+        DI_2 = ad_dict_DI_2(syst_num)
+        DI_3 = ad_dict_DI_3(syst_num)
+        DI_4 = ad_dict_DI_4(syst_num)
+        DI_10 = ad_dict_DI_10(syst_num)
         control_result = Ex.get('ТМИ', SS["ResControl"], 'КАЛИБР ТЕКУЩ')
         failure_flag = Ex.get('ТМИ', SS["FailureFlag"], 'КАЛИБР ТЕКУЩ')
         state_ASN = Ex.get('ТМИ', SS["PrgStateSvUS"], 'КАЛИБР ТЕКУЩ')
@@ -802,8 +813,9 @@ class ASN:
     def check_sm_output(block_num):
         """Функция проверки корректной выдачи СМ из АСН"""
         ASN.__validate_block_num(block_num)
-        ASN.__KSVCH_check(ASN.cur_syst)
-        DI_7 = ad_dict_DI_7(ASN.cur_syst)
+        syst_num = ASN.__get_syst_num(block_num)
+        ASN.__KSVCH_check(syst_num)
+        DI_7 = ad_dict_DI_7(syst_num)
         confirm_MV = Ex.get('ТМИ', DI_7["ConfirmMV"], 'КАЛИБР ТЕКУЩ')
         bprint('Подтверждение выдачи импульса МВ: ' + confirm_MV)
         controlGet(confirm_MV, 'импульс МВ выведен',
@@ -885,6 +897,7 @@ class ZD:
     @staticmethod
     @print_start_and_end(string='ЗД: ОПРОС ТОК')
     def ask_current_zd():
+        """опросить ток всез звездников"""
         equation = ' and '.join([ZD.uv_di['ZD%s_current' % x] for x in range(1, 5)])
         executeTMI(equation, pause=0, downBCK=True)
 
@@ -952,7 +965,7 @@ class KSO:
             executeTMI(' and '.join(("{05.02.VKSOA}@H>200",     # Напряжение канала коммутатора КСО Коммутатор А Ключевой элемент 1
                                      "{05.02.CKSOA}@H>7",       # Ток коммутатора КСО Коммутатор А Ключевой элемент 2
                                      "{00.01.ARO}@H>1")))       # Счётчик реконфигурации
-            KSO.cur = 1
+            cur = 1
         else:
             rprint("КСО КСО НЕ ЗАМКНУТ")
             inputG()
@@ -976,7 +989,7 @@ class KSO:
             BCK.downBCK()
             executeTMI(' and '.join(("{05.02.VKSOA}@H<10",     # Напряжение канала коммутатора КСО Коммутатор А Ключевой элемент 1
                                      "{05.02.CKSOA}@H<4")))       # Ток коммутатора КСО Коммутатор А Ключевой элемент 2
-            KSO.cur = None
+            cur = None
             sendFromJson(SCPICMD, 0x53ED)  # Остановка БИУС1
             sendFromJson(SCPICMD, 0x53EE)  # Остановка БИУС1
             sendFromJson(SCPICMD, 0x53E9)  # Остановка ММ
@@ -989,18 +1002,65 @@ class KSO:
             sendFromJson(SCPICMD, 0x5403)  # Остановка ДМ3
             sendFromJson(SCPICMD, 0x5404)  # Остановка ДМ4
         else:
-            rprint("Ключ КСО ЗАМКНУТ")
+            rprint("КСО КСО ЗАМКНУТ")
             inputG()
 
-    # TODO: првоерка состояния КСО
-    #  обороты ДМ - мб не надо
-    #  ЗД - кватарнионы
-    #  ММ - проверить значения
-    #  ДС - проверить значения - ?
-    #  БИУС - проверить значения
-    #  После того как включился КСО
     @staticmethod
-    def foo():
+    def is_normal():
+        # опросить ДМ раскручены
+        # ЗД включены, и есть кватернионы по имитаторам
+        # ММ значения, и что не сильно прыгают по сравнению с предыдущим запросом
+        # ДС - засвечены и включены имитаторы
+        # БИУС - значения
+        # 00.01.STR1Heads1        # Признак задействования ЗД1
+        # 00.01.STR1Heads2
+        # 00.01.STR2Heads1
+        # 00.01.STR2Heads2
+        # STR1TMValid               # Достоверность поступления информации ЗД1
+        # 00.01.BIUSchannelX        # Признак используемого БИУС канала X
+        # 00.01.BIUSchannelY        # Признак используемого БИУС канала Y
+        # 00.01.BIUSchannelZ        # Признак используемого БИУС канала Z
+        # GyroRateMeasurementValid  # Достоверность измерений БИУС
+        # SSTMValid             # Наличие информации ДС
+        # SSMeasurementValid    # Достоверность измерений ДС
+        # MTMTmValid            # Наличие информации ММ
+        # MTMMeasurementValid   # Достоверность измерений ММ
+        # GPSValid              # Достоверность АСН
+        # RateValid             # Рассогласование оценки и показаний ММ
+
+        # ARO = 15200 ждать пока установится после включения Ex.wait
+        # посмотреть что делает с БД Ex.wait
+
+        # чтобы включить ЗД и опросить
+        # 0x0065(0x1F00 0000)- подрежим ориентации (штатая ориентация)
+        # mode == 3
+        # submode == 31     # првоерка что режим сработал
+
+        #  ММ
+        # Sat_Bx
+        # Sat_By
+        # Sat_Bz
+        # 0x002A(0x02) - Включить ММ2
+        # 0x002A(0x01) - Включить ММ1
+        # по умолчанию включается ММ1
+
+        # ДС
+        # FT1_FD1   # каждый диод с ДС 1 или 0
+        # FT1_FD2
+        # FT1_FD3
+        # FT1_FD4
+        # FT2_FD1
+        # FT2_FD2
+        # FT2_FD3
+        # FT2_FD4
+
+        # Сброс ДОП ТМ
+        # BIUS1MeasX    # значения БИУС
+        # BIUS1MeasY
+        # BIUS1MeasZ
+        # BIUS2MeasX
+        # BIUS2MeasY
+        # BIUS2MeasZ
         pass
 
 
