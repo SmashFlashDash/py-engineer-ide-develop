@@ -206,7 +206,7 @@ class CommandsWidget(QDockWidget):
 
         if len(self.args_widget.arg_editors) == 1:
             self.args_widget.arg_editors[0].setText(self.readBinFile(filename, cpibase=True))
-        elif len(self.args_widget.arg_editors) == 1:
+        elif len(self.args_widget.arg_editors) == 3:
             self.args_widget.arg_editors[1].setText(self.readBinFile(filename))
 
         DbLog.log('одиночная команда', 'выбран бинарный файл ' + filename, False, None, None)
