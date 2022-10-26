@@ -46,6 +46,8 @@ from engineers_src.for_RLCI_EMS.EMSRLCI_foos import sendFromJson, doEquation, ex
 #     },
 #     })
 # s = redis_dp_get('KA_status')
+##################### COMMONS ######################
+forma = "%-20s --> %s"  # вывод шифр --> значение
 
 
 ###################### BCK ##############################
@@ -62,7 +64,7 @@ class BCK:
     @print_start_and_end(string='БЦК: СБРОС НАКОП')
     def downBCK():
         """Сброс ДИ с БЦК в БА КИС-Р всего накопителя"""
-        sendFromJson(SCPICMD, 0xE060, describe='Ждать 30 сек', pause=30)
+        sendFromJson(SCPICMD, 0xE060, describe='Ждать 30 сек', pause=20)
 
 
 # TODO: при включении СР если есть заранее определнынй уровень установить эт урвоень в КПА
@@ -590,7 +592,7 @@ class ASN:
     """ ПЕРЕД ЗАПУСУКОМ АСН ЗАПУСТИТЬ К2-100 и сценарий какойт"""
     cur_block = None
     cur_syst = None
-    _forma = "%-20s --> %s"
+    
 
     @staticmethod
     def __validate_block_num(num):
@@ -620,18 +622,18 @@ class ASN:
             sendFromJson(SCPICMD, 0xE243, pause=1)  # Включить приоритет АСН2
         ASN.cur_block = block_num
         ASN.cur_syst = ASN.__get_syst_num(block_num)
-        yprint("Проверка состояния АСН")
-        BCK.clc_BCK()
-        sendFromJson(SCPICMD, 0xE0A0, pause=5)   # Запрос ДИ2 ФКП-1 (КПТ)
-        BCK.downBCK()
-        DI_BA = ad_dict_DI_BA(block_num)
-        res, cyphs = executeTMI(doEquation(DI_BA["ASN_key2_state"], "@K", ref_val='\'включено\'') + " and " +
-                                doEquation(DI_BA["CASN"], "@K", ref_val='[0.5, 2.0]') + " and " +
-                                doEquation(DI_BA["VASN"], "@K", ref_val='[23.0, 34.0]'), pause=8)
-        if res:
-            gprint('НОРМА ВКЛЮЧЕНИЕ АСН')
-        else:
-            rprint("НЕ НОРМА ОТКЛЮЧИ АСН")
+        bprint("Проверка состояния АСН")
+        # BCK.clc_BCK()
+        # sendFromJson(SCPICMD, 0xE0A0, pause=5)   # Запрос ДИ2 ФКП-1 (КПТ)
+        # BCK.downBCK()
+        # DI_BA = ad_dict_DI_BA(block_num)
+        # res, cyphs = executeTMI(doEquation(DI_BA["ASN_key2_state"], "@K", ref_val='\'включено\'') + " and " +
+        #                         doEquation(DI_BA["CASN"], "@K", ref_val='[0.5, 2.0]') + " and " +
+        #                         doEquation(DI_BA["VASN"], "@K", ref_val='[23.0, 34.0]'), pause=8)
+        # if res:
+        #     gprint('НОРМА ВКЛЮЧЕНИЕ АСН')
+        # else:
+        #     rprint("НЕ НОРМА ОТКЛЮЧИ АСН")
             # ASN.off(block_num)
             # rprint('АСН не норма ТЕСТ ЗАВРЕШЕН')
         # sleep(5)
@@ -653,15 +655,15 @@ class ASN:
         # sendFromJson(SCPICMD, 0x43ED, pause=1)   # Отключить АСН  (Каналы 5 и 6)
         ASN.cur_block = None
         ASN.cur_syst = None
-        bprint("Проверка состояния АСН")
-        sleep(25)
-        BCK.clc_BCK()
-        sendFromJson(SCPICMD, 0xE0A0, pause=5)  # # Запрос ДИ2 ФКП-1 (КПТ)
-        BCK.downBCK()
-        DI_BA = ad_dict_DI_BA(block_num)
-        executeTMI(doEquation(DI_BA["ASN_key2_state"], "@K", ref_val='\'отключен\'') + " and " +
-                   doEquation(DI_BA["CASN"], "@K", ref_val='[0, 0.06]') + " and " +
-                   doEquation(DI_BA["VASN"], "@K", ref_val='[0, 0.4]'), pause=0)
+        # bprint("Проверка состояния АСН")
+        # sleep(25)
+        # BCK.clc_BCK()
+        # sendFromJson(SCPICMD, 0xE0A0, pause=5)  # # Запрос ДИ2 ФКП-1 (КПТ)
+        # BCK.downBCK()
+        # DI_BA = ad_dict_DI_BA(block_num)
+        # executeTMI(doEquation(DI_BA["ASN_key2_state"], "@K", ref_val='\'отключен\'') + " and " +
+        #            doEquation(DI_BA["CASN"], "@K", ref_val='[0, 0.06]') + " and " +
+        #            doEquation(DI_BA["VASN"], "@K", ref_val='[0, 0.4]'), pause=0)
 
     @staticmethod
     def __di_form(block_num, di_num):
@@ -753,10 +755,10 @@ class ASN:
         state_PN = Ex.get('ТМИ', SS["PrgStateSvPN"], 'КАЛИБР ТЕКУЩ')
         if control_result == 'АСН исправна' and failure_flag == "сбои не зафиксированы":
             # Достаточно считать 5 основных параметров самоконтроля и режимов работы УС и ПН
-            tprint('%-20s: %s' % ('Суммарный результат контроля АСН', Text.green + 'АСН исправна, сбои не зафиксированы') + Text.default)
+            tprint(forma % ('Суммарный результат контроля АСН', Text.green + 'АСН исправна, сбои не зафиксированы') + Text.default)
             keys = list(SS.keys())  # список шифров
             for cypher in keys[0:5]:
-                tprint(ASN._forma % (cypher, Ex.get('ТМИ', SS[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
+                tprint(forma % (cypher, Ex.get('ТМИ', SS[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
         elif control_result == 'АСН неисправна':
             # 	Неисправным называется такое состояние аппаратной части, при котором АСН в состоянии выполнять
             #   основные функции, но с некоторым ухудшением требуемых характеристик
@@ -770,31 +772,31 @@ class ASN:
             sleep(20)
             BCK.downBCK()
             for cypher in tuple(DI_2.keys())[0:-20]:  # Вывод расширенных результатов самоконтроля АСН (96 параметров)
-                tprint(ASN._forma % (cypher, Ex.get('ТМИ', DI_2[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
+                tprint(forma % (cypher, Ex.get('ТМИ', DI_2[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
             for cypher in tuple(DI_3.keys())[0:-3]:  # Описание сбоев АСН (43 параметра)
-                tprint(ASN._forma % (cypher, Ex.get('ТМИ', DI_3[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
+                tprint(forma % (cypher, Ex.get('ТМИ', DI_3[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
             for cypher in tuple(DI_4.keys())[0:8]:  # Описание сбоев АСН. Продолжение (8 параметров)
-                tprint(ASN._forma % (cypher, Ex.get('ТМИ', DI_4[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
+                tprint(forma % (cypher, Ex.get('ТМИ', DI_4[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
         elif control_result == 'отказ-ПН':
             bprint('Произошел отказ ПН. АСН может использоваться только как источник МВ, управляемой по УВ')
             for cypher in tuple(DI_2.keys())[5:9] + tuple(DI_2.keys())[31:-20]:
                 # Вывод расширенных результатов самоконтроля АСН (96 параметров)
-                tprint(ASN._forma % (cypher, Ex.get('ТМИ', DI_2[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
+                tprint(forma % (cypher, Ex.get('ТМИ', DI_2[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
             for cypher in tuple(DI_3.keys())[0:-3]:                 # Описание сбоев АСН (43 параметра)
-                tprint(ASN._forma % (cypher, Ex.get('ТМИ', DI_3[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
+                tprint(forma % (cypher, Ex.get('ТМИ', DI_3[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
             for cypher in tuple(DI_4.keys())[0:8]:                  # Описание сбоев АСН. Продолжение (8 параметров)
-                tprint(ASN._forma % (cypher, Ex.get('ТМИ', DI_4[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
+                tprint(forma % (cypher, Ex.get('ТМИ', DI_4[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
             AN_mode = Ex.get('ТМИ', DI_10["ASN_Mode"], 'НЕКАЛИБР ТЕКУЩ')
             print('АСН в режиме "Автономная навигация"' if AN_mode == 101 else
                   'АСН не переведена в режим "Автономная навигация"\nТекущий режим работы АСН: ' + AN_mode)
         else:
             bprint('Произошел отказ АСН (критическое нарушение в УС)', tab=1)
             for cypher in tuple(DI_2.keys())[9:31]:
-                tprint(ASN._forma % (cypher, Ex.get('ТМИ', DI_2[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
+                tprint(forma % (cypher, Ex.get('ТМИ', DI_2[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
             for cypher in tuple(DI_3.keys())[0:-3]:
-                tprint(ASN._forma % (cypher, Ex.get('ТМИ', DI_3[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
+                tprint(forma % (cypher, Ex.get('ТМИ', DI_3[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
             for cypher in tuple(DI_4.keys())[0:8]:
-                tprint(ASN._forma % (cypher, Ex.get('ТМИ', DI_4[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
+                tprint(forma % (cypher, Ex.get('ТМИ', DI_4[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
 
     @staticmethod
     @print_start_and_end(string='АСН: ПРОВЕРКА ПРИЗНАКА ДОСТОВЕРНОСТИ КСВЧ-РЕШЕНИЯ')
@@ -803,9 +805,9 @@ class ASN:
         DI_7 = ad_dict_DI_7(syst_num)
         DI_13 = ad_dict_DI_13(syst_num)
         Valid_KSVCh = Ex.get('ТМИ', DI_13["ValidKSVCh"], 'КАЛИБР ТЕКУЩ')
-        bprint('Достоверность координатно-скоростного решения: ' + Valid_KSVCh)
+        bprint('Достоверность координатно-скоростного решения: %s' % Valid_KSVCh)
         for cypher in tuple(DI_7.keys())[15:19]:
-            tprint(ASN._forma % (cypher, Ex.get('ТМИ', DI_7[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
+            tprint(forma % (cypher, Ex.get('ТМИ', DI_7[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
         controlGet(Valid_KSVCh, 'решение достоверно')
 
     @staticmethod

@@ -8,7 +8,8 @@ def DI_CYPHER(syst_num, pa, di_name):
     #     pa_str = '0' + str(pa)
     # else:
     #     pa_str = str(pa)
-    return '%02d' % syst_num + '.' + '%02d' % pa + '.' + di_name
+    # return '%s.%s.%s' % (syst_num, pa, di_name)
+    return '%02d' % int(syst_num) + '.' + '%02d' % int(pa) + '.' + di_name
 
 
 def UV_CYPHER(uv_number, numdev):
