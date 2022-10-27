@@ -1,14 +1,13 @@
 # DEBUG
 from time import sleep as sleep2
 import time
-
 time.sleep = lambda *args: sleep2(0)
 sleep = lambda *args: sleep2(0)
 # Импорт зависимостей на винде
 import sys
-
 sys.path.insert(0, 'lib/')
 from engineers_src.tools.tools import *
+
 """
 Скрипт имитации витков аппарата, вокруг земли, и изменения тока ИГБФ
 кол-во витков 6, виток по 90 минут
@@ -27,34 +26,35 @@ igbf_bf2_cond = lambda x: x < (32.5 / len(igbf_bf2))
 igbf_bf3_cond = lambda x: x < (12.5 / len(igbf_bf3))
 igbf_config = {                                         # конфиг для моделирования
     'Dark': {
-        'msg': '_____Тень_____',
+        'msg': '-'*100 + '\n' + '{:-^100}'.format('Тень') + '\n' + '-'*100,
         'minutes': None,
         'bfs': []
     },
     '1h-Light': {
-        'msg': '_____1БФ_____',
+        'msg': '-'*100 + '\n' + '{:-^100}'.format('1БФ') + '\n' + '-'*100,
         'minutes': None,
-        'bfs': ((igbf_bf1, 0.4, igbf_bf1_cond),
+        'bfs': ((igbf_bf1, 0.6, igbf_bf1_cond),
                 (igbf_bf2, 0.4, igbf_bf2_cond),
-                (igbf_bf3, 0.2, igbf_bf3_cond))
+                (igbf_bf3, 0.0, igbf_bf3_cond))
     },
     '2h-Light': {
-        'msg': '_____2БФ_____',
+        'msg': '-'*100 + '\n' + '{:-^100}'.format('2БФ') + '\n' + '-'*100,
         'minutes': None,
-        'bfs': ((igbf_bf1, 0.1, igbf_bf1_cond), 
-                (igbf_bf2, 0.8, igbf_bf2_cond), 
-                (igbf_bf3, 0.1, igbf_bf3_cond))
+        'bfs': ((igbf_bf1, 0.2, igbf_bf1_cond),
+                (igbf_bf2, 0.6, igbf_bf2_cond),
+                (igbf_bf3, 0.2, igbf_bf3_cond))
     },
     '3h-Light': {
-        'msg': '_____3БФ_____',
+        'msg': '-'*100 + '\n' + '{:-^100}'.format('3БФ') + '\n' + '-'*100,
         'minutes': None,
-        'bfs': ((igbf_bf1, 0.1, igbf_bf1_cond),
-                (igbf_bf2, 0.55, igbf_bf2_cond),
-                (igbf_bf3, 0.35, igbf_bf3_cond))
+        'bfs': ((igbf_bf1, 0.0, igbf_bf1_cond),
+                (igbf_bf2, 0.4, igbf_bf2_cond),
+                (igbf_bf3, 0.6, igbf_bf3_cond))
     }
 }
-min_in_circuit = 90                                     # минут на виток
-range_circuits = [14, 15]                               # витки смоделировать с 0 до 15 в файле
+min_circuit = 90                                     # минут на виток
+range_circuits = [1, 16]                               # витки смоделировать с 0 до 16 в файле
+
 
 ########################### FUNCTIONS ###########################################
 class CustomStdOut2:
@@ -84,14 +84,14 @@ def read_xlsx():
             igbf_model_current.append(float(value))
         except (ValueError, TypeError):
             pass
-    # проверяем что кол-во значений кратно min_in_circuit
-    if len(igbf_model_current) % min_in_circuit != 0:
+    # проверяем что кол-во значений кратно min_circuit
+    if len(igbf_model_current) % min_circuit != 0:
         raise Exception('ОШИБКА: Список ток ИГБФ, строка 81 в .xlsx, кол-во столбцов не кратно 90')
     # разбить на витки
     print('Список витков и ток ИГБФ:')
     sat_circuits = []
-    for index1 in range(0, len(igbf_model_current), min_in_circuit):
-        sat_circuits.append(igbf_model_current[index1 : index1 + min_in_circuit])
+    for index1 in range(0, len(igbf_model_current), min_circuit):
+        sat_circuits.append(igbf_model_current[index1 : index1 + min_circuit])
         print(sat_circuits[-1])
     return sat_circuits
 
@@ -148,7 +148,7 @@ def igbf_turn_on_set_UI(numbers, sum_current, condition, igbf_running):
     if len(numbers) == 0:
         return
     current = sum_current / len(numbers)
-    if not condition(current):
+    if not (condition(current) and current <= 3.2):
         rprint("Ток: %s  ИГБФ:%s" % (current, numbers))
         raise Exception("Слишком много тока на ИГБФ")
     voltage = 60.0
@@ -167,7 +167,7 @@ def igbf_turn_on_set_UI(numbers, sum_current, condition, igbf_running):
 
 def igbf_change_current(numbers, sum_current, condition):
     current = sum_current / len(numbers)
-    if not condition(current):
+    if not (condition(current) and current <= 3.2):
         rprint("Ток: %s  ИГБФ:%s" % (current, numbers))
         raise Exception("Слишком много тока на ИГБФ")
     yprint('ИЗМЕНИТЬ ТОК ИГБФ: %s' % numbers)
@@ -199,14 +199,28 @@ def igbf_turn_off(numbers):
     numbers.clear()
 
 
-def split_at_dp(sat_circuit_igbf_current):
+# TODO: считает неправильно если есть 0 не только в dark зоне
+def split_at_dp(sat_circuit, igbf_config):
     """
     вычислить сколько за виток минут освещается и поделить на части
     возвращает массив отвчающий за кол-во минут на витке соотве времени суток
     """
-    illuminate = min_in_circuit - sat_circuit_igbf_current.count(0)
-    same_part = illuminate // 3
-    return [same_part, same_part + illuminate % 3, same_part]
+    divider = 10
+    bf1 = 2
+    bf2 = 6
+    bf3 = 2
+    array = sat_circuit[:]
+    if bf1 + bf2 + bf3 != divider:
+        raise Exception('Ошибка при вычислении освещенность по бф')
+    while array[0] == 0.0:
+        array.pop(0)
+    while array[-1] == 0.0:
+        array.pop(len(array) - 1)
+    illuminate = len(array)
+    same_part = illuminate // divider
+    igbf_config['1h-Light']['minutes'] = same_part * bf1
+    igbf_config['2h-Light']['minutes'] = (same_part * bf2) + illuminate % divider
+    igbf_config['3h-Light']['minutes'] = same_part * bf3
 
 
 def is_unique_elements(array):
@@ -222,12 +236,10 @@ def is_unique_elements(array):
 ################################## MAIN ###############################################
 is_unique_elements(igbf_bf1 + igbf_bf2 + igbf_bf3)      # проверка что нет одинаковых ИГБФ
 sat_circuits = read_xlsx()                              # читаем 81 строку файла, получаем значения токов
-if range_circuits[1] >= len(sat_circuits):                   # првоерка количества витков
+if any([x > len(sat_circuits) for x in range_circuits]):                # првоерка количества витков
     raise Exception('Количество витков должно быть меньше чем в файлу')
-minutes = split_at_dp(sat_circuits[0])                  # вычислит сколько минут какая бф освещается по 1 витку
-igbf_config['1h-Light']['minutes'] = minutes[0]
-igbf_config['2h-Light']['minutes'] = minutes[1]
-igbf_config['3h-Light']['minutes'] = minutes[2]
+split_at_dp(sat_circuits[0], igbf_config)               # вычислит сколько минут какая бф освещается по 1 витку
+
 
 # TODO: зачем эта функция
 Ex.send('Ячейка ПИ', ICCELL('ВыходИБГФ', out=[0x00, 0x00, 0x00, 0x00]))     # отключить все игбф
@@ -236,20 +248,17 @@ igbf_turn_off(igbf_running)                                                 # о
 
 # проход по виткам
 inputG('Запустить?')
-#for idx_circl, spin in enumerate(sat_circuits):
-#    if idx_circl >= num_circuits:
-#        break
 idx_circl = range_circuits[0]
 counter = 0
 for spin in sat_circuits[range_circuits[0] : range_circuits[1]]:
-    print()
+    print('\n')
     yprint('ВИТОК %s' % idx_circl)
     count_min = 0
     prev_PD = None
     cur_PD = 'Dark'
     for current_sum in spin:
         # цикл по витку
-        gprint(str(current_sum))
+        bprint('Суммарный ток: %s' % current_sum)
         if cur_PD == 'Dark' and current_sum > 0.00001:
             cur_PD = '1h-Light'
         elif cur_PD == '1h-Light' and count_min == igbf_config[cur_PD]['minutes']:
@@ -261,7 +270,6 @@ for spin in sat_circuits[range_circuits[0] : range_circuits[1]]:
         if cur_PD != prev_PD:
             igbf_turn_off(igbf_running)                          # отключить бф, очистить running
             bprint(igbf_config[cur_PD]['msg'])
-            # [igbf_turn_on_set_UI(x[0], x[1] * current_sum, igbf_running) for x in igbf_config[cur_PD]['bfs']]
             for x in igbf_config[cur_PD]['bfs']:
                 igbf_turn_on_set_UI(x[0], x[1] * current_sum, x[2], igbf_running)     # включить бф, заполнить running
             count_min = 0
@@ -269,7 +277,7 @@ for spin in sat_circuits[range_circuits[0] : range_circuits[1]]:
         elif cur_PD != 'Dark':
             for x in igbf_config[cur_PD]['bfs']:
                 igbf_change_current(x[0], x[1] * current_sum, x[2])     # изменить ток бф, заполнить running
-        sleep(0)
+        sleep(60)
         count_min += 1
         bprint('Прошло минут: %s' % count_min)     # минут за цикл прошло
     idx_circl += 1
