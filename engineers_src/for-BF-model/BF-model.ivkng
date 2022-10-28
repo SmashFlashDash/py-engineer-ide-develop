@@ -1,12 +1,12 @@
 # DEBUG
-from time import sleep as sleep2
-import time
-time.sleep = lambda *args: sleep2(0)
-sleep = lambda *args: sleep2(0)
-# Импорт зависимостей на винде
-import sys
-sys.path.insert(0, 'lib/')
-from engineers_src.tools.tools import *
+# from time import sleep as sleep2
+# import time
+# time.sleep = lambda *args: sleep2(0)
+# sleep = lambda *args: sleep2(0)
+# # Импорт зависимостей на винде
+# import sys
+# sys.path.insert(0, 'lib/')
+# from engineers_src.tools.tools import *
 
 """
 Скрипт имитации витков аппарата, вокруг земли, и изменения тока ИГБФ
@@ -19,7 +19,7 @@ import openpyxl
 
 ################################## DATA ###############################################
 igbf_bf1 = [1, 2, 3, 4, 5, 6, 7, 8]
-igbf_bf2 = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22 ,23 ,24]
+igbf_bf2 = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
 igbf_bf3 = [25, 26, 27, 28, 29, 30, 31, 32]
 igbf_bf1_cond = lambda x: x < (25 / len(igbf_bf1))
 igbf_bf2_cond = lambda x: x < (32.5 / len(igbf_bf2))
@@ -57,22 +57,22 @@ range_circuits = [1, 16]                               # витки смодел
 
 
 ########################### FUNCTIONS ###########################################
-class CustomStdOut2:
-    """Пропустить вывод"""
-    def __init__(self):
-        self.real_stdout = sys.stdout
-        self.flush = self.real_stdout.flush
-        self.total_buffer = ""
-    def write(self, stream):
-        pass
-    def revert(self):
-        """вывод в консоль"""
-        sys.stdout = self.real_stdout
-    def redirect(self):
-        """нет вывода"""
-        sys.stdout = self
-        # pass
-print_disp = CustomStdOut2()
+# class CustomStdOut2:
+#     """Пропустить вывод"""
+#     def __init__(self):
+#         self.real_stdout = sys.stdout
+#         self.flush = self.real_stdout.flush
+#         self.total_buffer = ""
+#     def write(self, stream):
+#         pass
+#     def revert(self):
+#         """вывод в консоль"""
+#         sys.stdout = self.real_stdout
+#     def redirect(self):
+#         """нет вывода"""
+#         sys.stdout = self
+#         # pass
+# print_disp = CustomStdOut2()
 
 
 def read_xlsx():
@@ -153,14 +153,11 @@ def igbf_turn_on_set_UI(numbers, sum_current, condition, igbf_running):
         raise Exception("Слишком много тока на ИГБФ")
     voltage = 60.0
     yprint('ВКЛЮЧИТЬ ИГБФ: ИГБФ %s' % numbers)
-    yprint('::: Уст Ток: %s, Уст Напряж: %s' % (current, voltage))
-    print_disp.redirect()
     for el in numbers:
         device = 'ИГБФ%s' % el
         Ex.send(device, SCPI('УстСост', output=1))
         Ex.send(device, SCPI('УстНапряж', voltage=voltage))
         Ex.send(device, SCPI('УстТок', current=current))
-    print_disp.revert()
     yprint('ЗАВЕРШЕНО ВКЛЮЧИТЬ ИГБФ')
     igbf_running.extend(numbers)
 
@@ -172,11 +169,9 @@ def igbf_change_current(numbers, sum_current, condition):
         raise Exception("Слишком много тока на ИГБФ")
     yprint('ИЗМЕНИТЬ ТОК ИГБФ: %s' % numbers)
     yprint('::: Уст Ток: %s' % current)
-    print_disp.redirect()
     for el in numbers:
         device = 'ИГБФ%s' % el
         Ex.send(device, SCPI('УстТок', current=current))
-    print_disp.revert()
     yprint('ЗАВЕРШЕНО ИЗМЕНИТЬ ТОК ИГБФ')
 
 
@@ -188,13 +183,11 @@ def igbf_turn_off(numbers):
     voltage = 0.0
     yprint('ОТКЛЮЧИТь зап ИГБФ: ИГБФ %s' % numbers)
     yprint('::: Уст Ток: %s, Уст Напряж: %s' % (current, voltage))
-    print_disp.redirect()
     for el in numbers:
         device = 'ИГБФ%s' % el
         Ex.send(device, SCPI('УстНапряж', voltage=voltage))
         Ex.send(device, SCPI('УстТок', current=current))
         Ex.send(device, SCPI('УстСост', output=0))
-    print_disp.revert()
     yprint('ЗАВЕРШЕНО ОТКЛЮЧИТЬ ИГБФ')
     numbers.clear()
 
