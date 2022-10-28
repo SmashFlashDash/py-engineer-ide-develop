@@ -63,6 +63,10 @@ class CommandsWidget(QDockWidget):
         self.hex_checkbox.setChecked(False)
         self.hex_checkbox.setEnabled(True)
 
+        self.print_checkbox = QCheckBox('Print', self)
+        self.print_checkbox.setChecked(False)
+        self.print_checkbox.setEnabled(True)
+
         self.exchange_combo = QComboBox(self)
         self.exchange_combo.setEnabled(False)
 
@@ -87,7 +91,7 @@ class CommandsWidget(QDockWidget):
         lb = QBoxLayoutBuilder(buttons_widget, QBoxLayout.TopToBottom, spacing=6)
         lb.hbox(spacing=6).add(self.exchange_checkbox).add(self.exchange_combo).stretch().add(
             self.openFile_button).add(self.insert_button).add(self.run_button).fixW(100).up()
-        lb.hbox(spacing=6).add(self.hex_checkbox).add(self.simple_checkbox).up()
+        lb.hbox(spacing=6).add(self.hex_checkbox).add(self.print_checkbox).add(self.simple_checkbox).stretch().up()
 
         self.info_widget = QTextEdit()
         self.info_widget.setObjectName('autoCompeteInfoFrame')
@@ -117,10 +121,8 @@ class CommandsWidget(QDockWidget):
         self.adjustSize()
         self.hide()
 
-        self.hex_checkbox.clicked.connect(self.updHexRedis)
-
-    def updHexRedis(self):
-        updData('HEX', self.hex_checkbox.isChecked())
+        self.hex_checkbox.clicked.connect(lambda: updData('HEX', self.hex_checkbox.isChecked()))
+        self.print_checkbox.clicked.connect(lambda: updData('PRINT', self.print_checkbox.isChecked()))
 
     def getCommand(self):
         if not self.tree_widget.currentItem() or 'name' not in self.tree_widget.currentItem().command:

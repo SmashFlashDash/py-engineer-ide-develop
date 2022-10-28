@@ -588,6 +588,7 @@ res = Ex.wait('', '{ММ_X1.ЗапрТок} < 6.3 and {ММ_Z2.ЗапрНапр�
             raise Exception('Неверный пункт назначения "%s"' % queue_label)
 
         HEX = conf.getData('HEX')
+        PRINT = conf.getData('PRINT')
 
         local_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         local_sock_udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -605,7 +606,8 @@ res = Ex.wait('', '{ММ_X1.ЗапрТок} < 6.3 and {ММ_Z2.ЗапрНапр�
                 outdata = data.asByteStream()
                 for out in outdata:
                     stream = KPA('Отпр-КПИ', out).stream
-                    print('{#ffffff}Отправка {#f7f68f}%s {#ffffff}в {#bad9ff}КПА' % data.getDescription()['translation'])
+                    if PRINT:
+                        print('{#ffffff}Отправка {#f7f68f}%s {#ffffff}в {#bad9ff}КПА' % data.getDescription()['translation'])
                     if HEX:
                         print('{#0bbeea}%s' % stream.hex())
                     DbLog.log(Exchange.ivk_file_name, 'Отправка %s в КПА' % data.getDescription()['translation'], False,
@@ -614,8 +616,9 @@ res = Ex.wait('', '{ММ_X1.ЗапрТок} < 6.3 and {ММ_Z2.ЗапрНапр�
                     local_sock_udp.sendto(stream, kpa_adress)
             elif isinstance(data, OTC):
                 stream = KPA('Отпр-РКо' if data.isOpenOTC() else 'Отпр-РКз', data.asByteStreamKpa()).stream
-                print('{#ffffff}Отправка {#f7f68f}%s-%d {#ffffff}в {#bad9ff}КПА' % (
-                    'РКо' if data.isOpenOTC() else 'РКз', data.otc))
+                if PRINT:
+                    print('{#ffffff}Отправка {#f7f68f}%s-%d {#ffffff}в {#bad9ff}КПА' % (
+                        'РКо' if data.isOpenOTC() else 'РКз', data.otc))
                 if HEX:
                     print('{#0bbeea}%s' % stream.hex())
                 DbLog.log(Exchange.ivk_file_name,
@@ -624,7 +627,8 @@ res = Ex.wait('', '{ММ_X1.ЗапрТок} < 6.3 and {ММ_Z2.ЗапрНапр�
                 local_sock.sendall(dest + stream)
                 local_sock_udp.sendto(stream, kpa_adress)
             elif isinstance(data, KPA):
-                print('{#ffffff}Отправка {#ffe2ad}%s (%d) {#ffffff}в {#bad9ff}КПА' % (data.name, data.msg['id']))
+                if PRINT:
+                    print('{#ffffff}Отправка {#ffe2ad}%s (%d) {#ffffff}в {#bad9ff}КПА' % (data.name, data.msg['id']))
                 if HEX:
                     print('{#0bbeea}%s' % data.stream.hex())
                 DbLog.log(Exchange.ivk_file_name, 'Отправка %s (%d) в КПА' % (data.name, data.msg['id']), False,
@@ -635,7 +639,9 @@ res = Ex.wait('', '{ММ_X1.ЗапрТок} < 6.3 and {ММ_Z2.ЗапрНапр�
                 raise Exception('Неопределен тип отправляемых данных "%s"' % repr(type(data)))
         elif queue_label == 'Ячейка ПИ':
             if isinstance(data, ICCELL):
-                print('{#ffffff}Отправка {#ffe2ad}%s (%d) {#ffffff}в {#b9a9de}Ячейку ПИ' % (data.name, data.msg['id']))
+                if PRINT:
+                    print('{#ffffff}Отправка {#ffe2ad}%s (%d) {#ffffff}в {#b9a9de}Ячейку ПИ' % (
+                    data.name, data.msg['id']))
                 DbLog.log(Exchange.ivk_file_name, 'Отправка %s (%d) в Ячейку ПИ' % (data.name, data.msg['id']), False,
                           Exchange.ivk_file_path, str(data.stream))
                 if HEX:
@@ -649,8 +655,9 @@ res = Ex.wait('', '{ММ_X1.ЗапрТок} < 6.3 and {ММ_Z2.ЗапрНапр�
             if isinstance(data, SCPI):
                 # Проверка отправляемого сообщения в свзяке с источником питания (макс вольтаж, макс ток)
                 data.deviceCheck(queue_label)
-                print('{#ffffff}Отправка {#ffe2ad}%s (%d) {#ffffff}в {#bdffc2}%s' % (
-                    data.name, data.msg['id'], queue_label))
+                if PRINT:
+                    print('{#ffffff}Отправка {#ffe2ad}%s (%d) {#ffffff}в {#bdffc2}%s' % (
+                        data.name, data.msg['id'], queue_label))
                 if HEX:
                     print('{#0bbeea}%s' % data.stream.hex())
                 DbLog.log(Exchange.ivk_file_name, 'Отправка %s (%d) в %s' % (data.name, data.msg['id'], queue_label),
