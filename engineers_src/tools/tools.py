@@ -58,6 +58,7 @@ from PyQt5.QtCore import Qt
 # Ex.get = get
 # KPA = lambda *args: ' '.join([str(x) for x in args])
 # Ex.send = lambda *args: print('Отправка ' + ' '.join([str(x) for x in args]))
+# Ex.wait = lambda *args: True
 
 
 ################ TEXT ###################
@@ -294,8 +295,9 @@ def inputGG(btnsList, title=None, parent=None, labels=None, ret_btn=None):
         text = 'Выберите действие'
     else:
         text = title
-    if labels is not None and not(isinstance(labels, (tuple, list))) and len(labels) != len(btnsList):
-        raise Exception('Параметр labels должен быть tuple размером = btnsList')
+    if labels is not None and (not isinstance(labels, (tuple, list)) or len(labels) != len(btnsList)):
+        rprint('В функции inputGG параметр labels должен быть tuple размером = btnsList или None')
+        sys.exit()
     elif labels is None:
         labels = ['']*len(btnsList)
     box = CustomMessageBox()
