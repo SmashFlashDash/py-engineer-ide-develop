@@ -1,3 +1,13 @@
+# DEBUG
+# from time import sleep as sleep2
+# import time
+# time.sleep = lambda *args: sleep2(0)
+# sleep = lambda *args: sleep2(0)
+# # Импорт зависимостей на винде
+# import sys
+# sys.path.insert(0, 'lib/')
+# from engineers_src.tools.tools import *
+
 """
 Скрипт имитации витков аппарата, вокруг земли, и изменения тока ИГБФ
 кол-во витков 6, виток по 90 минут
@@ -47,6 +57,24 @@ range_circuits = [1, 16]                               # витки смодел
 
 
 ########################### FUNCTIONS ###########################################
+# class CustomStdOut2:
+#     """Пропустить вывод"""
+#     def __init__(self):
+#         self.real_stdout = sys.stdout
+#         self.flush = self.real_stdout.flush
+#         self.total_buffer = ""
+#     def write(self, stream):
+#         pass
+#     def revert(self):
+#         """вывод в консоль"""
+#         sys.stdout = self.real_stdout
+#     def redirect(self):
+#         """нет вывода"""
+#         sys.stdout = self
+#         # pass
+# print_disp = CustomStdOut2()
+
+
 def read_xlsx():
     sheet = openpyxl.load_workbook("engineers_src/for-BF-model/BF-model.xlsx", data_only=True).active
     igbf_model_current = []
@@ -66,6 +94,53 @@ def read_xlsx():
         sat_circuits.append(igbf_model_current[index1 : index1 + min_circuit])
         print(sat_circuits[-1])
     return sat_circuits
+
+
+# # TODO:  сколько ИГБФ на батарею. или ввести используемые номера источников ИГБФ
+# def ask_bout_ibgf():
+#     while True:
+#         bprint('Введите кол-во используемых ИГБФ')
+#         try:
+#             num_IGBF = int(input())
+#             break
+#         except (ValueError, TypeError):
+#             rprint('Ввод должен быть целым числом')
+#     return num_IGBF
+#
+#
+# # TODO: эта функция для коммутации выходов но похоже не нужна
+# def set_igbf_current(current, range_igbf):
+#     """Функция коммутации и установки тока ИГБФ"""
+#     # Управление коммутацией выходов ИГБФ (имитатор
+#     # генератора батареи фотоэлектрической). Четыре 8ми
+#     # битовых целых числа, каждый бит (0-7) отвечает за состояние
+#     # соответствующего выхода (1-8 для первого числа, 9-16 для
+#     # второго числа, 17-24 для третьего числа, 25-32 для четвертого
+#     # числа соответственно). Значение битов: 0 выход отключен, 1
+#     # выход включен.
+#     if not isinstance(range_igbf, list) or range_igbf[1]-range_igbf[0] < 1:
+#         raise Exception('Ошибка параметра range_igbf')
+#     coummutation_idx = list(range(range_igbf[0], range_igbf[1] + 1))
+#     commutation_bin = list('0' * 32)
+#     for x in coummutation_idx:
+#         commutation_bin[x] = '1'
+#     current_mean = current / len(coummutation_idx)
+#     # нарезать по 4 числа hex
+#     ranges = [None, None, None, None]
+#     ranges_out = [None, None, None, None]
+#     for x in range(0, 4):
+#         index1 = 8 * x
+#         index2 = 8 * (x + 1)
+#         ranges[x] = int('0b' + ''.join(commutation_bin[index1:index2]), 2)
+#         ranges_out[x] = '0x' + ('%02x' % ranges[x]).upper()
+#     # включить ИГБФ
+#     Ex.send('Ячейка ПИ', ICCELL('ВыходИБГФ', out=ranges))
+#     # установить ток на включнных
+#     for number in range(range_igbf[0], range_igbf[1] + 1):
+#         Ex.send('ИГБФ%s' % number, SCPI('УстНапряж', voltage=60.0))
+#         Ex.send('ИГБФ%s' % number, SCPI('УстТок', current=current_mean))
+#     bprint('::: ВКЛЮЧИТЬ ИГБФ: %s' % ranges_out)
+#     bprint('::: Напряжение: 60.0, Ток: %s' % current_mean)
 
 
 def igbf_turn_on_set_UI(numbers, sum_current, condition, igbf_running):
@@ -117,6 +192,7 @@ def igbf_turn_off(numbers):
     numbers.clear()
 
 
+# TODO: считает неправильно если есть 0 не только в dark зоне
 def split_at_dp(sat_circuit, igbf_config):
     """
     вычислить сколько за виток минут освещается и поделить на части

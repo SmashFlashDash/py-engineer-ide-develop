@@ -38,7 +38,6 @@ from PyQt5.QtCore import Qt
 ################ IMITATION ###############
 from random import randint
 # def get(*args):
-
 #     randint(0, 10)
 #     calibs = ('включен', 'отключен', 'Есть', 'Нет', 0, 100, None)
 #     uncalibs = (0, 1, 100, -100, 0.01, 1000, None)

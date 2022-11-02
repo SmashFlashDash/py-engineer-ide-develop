@@ -4,6 +4,7 @@ from engineers_src.tools.ivk_script_tools import *
 from engineers_src.tools.tools import SCPICMD, AsciiHex, KPA, SOTC, SKPA, Ex, sleep
 
 
+# TODO: если будет ошибка, то можно использовать мощн -- ++ и брать ДИ на уст ур КПА
 class KIS(Device):
     cur = None
     cyphs = {1: '1/2', 2: '2/2', 3: '3/4', 4: '4/4'}
@@ -128,7 +129,7 @@ class KIS(Device):
     # TODO: проверить
     @classmethod
     def __valid_KPA_power(cls, ref_power):
-        if not Ex.wait('КПА', '%s < {Мощность-уст} < %s' % (ref_power-0.1, ref_power+0.1), 10):
+        if not Ex.wait('КПА', '%s < {ДИ_КПА.мощн_ПРД} < %s' % (ref_power-0.1, ref_power+0.1), 10):
             rprint("Не удалось установить Мощность КПА %s" % ref_power)
             inputG("Не удалось установить Мощность КПА %s" % ref_power)
         else:

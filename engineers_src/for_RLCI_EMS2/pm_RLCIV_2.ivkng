@@ -5,8 +5,10 @@ time.sleep = lambda *args: sleep2(0)
 sleep = lambda *args: sleep2(0)
 # Импорт зависимостей
 import sys
-sys.path.insert(0, '../../lib/')
+sys.path.insert(0, 'lib/')
 from engineers_src.tools.tools import *
+Ex.ivk_file_name = "script.ivkng"
+Ex.ivk_file_path = "D:/VMShared/ivk-ng-myremote/engineers_src/script.ivkng"
 
 import traceback
 # Импорт с другой папки
@@ -19,9 +21,9 @@ import traceback
 # exec('from Dictionaries_UVDI import DIstorage')
 # exec('from EMSRLCI_foos import windowChooser, sendFromJson, doEquation, executeTMI')
 # Импорт с рабочей директории скрипта
-from engineers_src.for_RLCI_EMS.Dictionaries_UVDI import DIstorage
-from engineers_src.for_RLCI_EMS.EMSRLCI_foos import windowChooser, sendFromJson, doEquation, executeTMI
-from engineers_src.for_RLCI_EMS.DeviceClasses import KIS, RLCI, MB
+from engineers_src.Devices.functions import windowChooser, sendFromJson, doEquation, executeTMI, print_start_and_end
+from engineers_src.Devices.dictionariesUVDI import DIstorage
+from engineers_src.Devices import BCK, M778, KIS, RLCI, ASN, Imitators, BSK_BSPA, BSK_P, BSK_KU, KSO
 
 
 # TODO:
@@ -34,19 +36,27 @@ from engineers_src.for_RLCI_EMS.DeviceClasses import KIS, RLCI, MB
 #    ORDER BY tmid ASC LIMIT 100
 ##################### COMMUTATIONS ############################
 DIstorage.commute('M778B', False)
-MB.cur = 1
+# Включенные блоки
+KIS.cur = None
+M778.cur = None
+RLCI.EA332.cur = None
+RLCI.EA331.cur = None
+RLCI.PCH.cur = None
+RLCI.FIP.cur = None
+RLCI.MOD.cur = None
+RLCI.UM.cur = None
 
 
 ############################### TESTS ########################################
 def TEST_5():
     yprint('ТЕСТ 5: БА-О(ЭА332), ПЧ-О(ЭА331), ФИП-О(ЭА330), МОД-О(ЭА331), УМ-О(ЭА331)', 1)
-    RLCI.power_on_ea332(1)
-    RLCI.power_on_ea331(1)
+    RLCI.EA332.on(1)
+    RLCI.EA331.on(1)
     RLCI.mode('RS485-1')    # RS485-0
-    RLCI.on_PCH(1)          # Вкл ПЧ-О
-    RLCI.on_FIP(1)          # Вкл ФИП-О
-    RLCI.on_MOD(1)          # Вкл МОД-О
-    RLCI.on_UM(1)           # Вкл УМ-О
+    RLCI.PCH.on(1)          # Вкл ПЧ-О
+    RLCI.FIP.on(1)          # Вкл ФИП-О
+    RLCI.MOD.on(1)          # Вкл МОД-О
+    RLCI.UM.on(1)           # Вкл УМ-О
     RLCI.mode('VS1')        # Уст Симв Скор VS1
     RLCI.mode('M1')         # Уст реж М-1
     inputG('КПА запиши файл режим M1-VS1')
@@ -66,24 +76,25 @@ def TEST_5():
     inputG('КПА запиши файл режим M3-VS1 включен ИМ-ФИП')
     RLCI.mode('M4')         # Уст реж М-4
     inputG('КПА запиши файл режим M4-VS1 включен ИМ-ФИП')
-    RLCI.off_UM()           # Откл УМ
-    RLCI.off_MOD()          # Откл Мод
-    RLCI.off_FIP()          # Откл Фип
-    RLCI.off_PCH()          # Откл Пч
-    RLCI.power_off_ea331()
-    RLCI.power_off_ea332()
+    RLCI.UM.off()           # Откл УМ
+    RLCI.MOD.off()          # Откл Мод
+    RLCI.FIP.off()          # Откл Фип
+    RLCI.PCH.off()          # Откл Пч
+    RLCI.EA331.off()
+    RLCI.EA332.off()
     yprint('ТЕСТ 5 ЗВЕРШЕН', 1)
 
 
 def TEST_6(ea332=1):
     yprint('ТЕСТ 6: БА-О(ЭА332), ПЧ-Р(ЭА331), ФИП-Р(ЭА330), МОД-Р(ЭА331), УМ-Р(ЭА331)', 1)
-    RLCI.power_on_ea332(ea332)
-    RLCI.power_on_ea331(2)
+    RLCI.EA332.on(ea332)
+    RLCI.EA331.on(2)
     RLCI.mode('RS485-1')    # RS485-0
-    RLCI.on_PCH(2)          # Вкл ПЧ-Р
-    RLCI.on_FIP(2)          # Вкл ФИП-Р
-    RLCI.on_MOD(2)          # Вкл МОД-Р
-    RLCI.on_UM(2)           # Вкл УМ-Р
+    RLCI.PCH.on(2)          # Вкл ПЧ-Р
+    RLCI.FIP.on(2)          # Вкл ФИП-Р
+    RLCI.MOD.on(2)          # Вкл МОД-Р
+    RLCI.UM.on(2)           # Вкл УМ-Р
+    
     RLCI.mode('VS2')        # Уст Симв Скор VS2
     RLCI.mode('M1')         # Уст реж М-1
     inputG('КПА запиши файл режим M1-VS2')
@@ -103,24 +114,24 @@ def TEST_6(ea332=1):
     inputG('КПА запиши файл режим M3-VS2 включен ИМ-ФИП')
     RLCI.mode('M4')         # Уст реж М-4
     inputG('КПА запиши файл режим M4-VS2 включен ИМ-ФИП')
-    RLCI.off_UM()           # Откл УМ
-    RLCI.off_MOD()          # Откл Мод
-    RLCI.off_FIP()          # Откл Фип
-    RLCI.off_PCH()          # Откл Пч
-    RLCI.power_off_ea331()
-    RLCI.power_off_ea332()
+    RLCI.UM.on()           # Откл УМ
+    RLCI.MOD.off()          # Откл Мод
+    RLCI.FIP.off()          # Откл Фип
+    RLCI.PCH.off()          # Откл Пч
+    RLCI.EA331.off()
+    RLCI.EA332.off()
     yprint('ТЕСТ 6 ЗВЕРШЕН', 1)
 
 
 def TEST_7():
     yprint('ТЕСТ 7: БА-Р(ЭА332), ПЧ-О(ЭА331), ФИП-О(ЭА330), МОД-Р(ЭА331), УМ-Р(ЭА331)', 1)
-    RLCI.power_on_ea332(2)
-    RLCI.power_on_ea331(2)
+    RLCI.EA332.on(2)
+    RLCI.EA331.on(2)
     RLCI.mode('RS485-1')        # RS485-0
-    RLCI.on_PCH(1)              # Вкл ПЧ-О
-    RLCI.on_FIP(1)              # Вкл ФИП-О
-    RLCI.on_MOD(2)              # Вкл МОД-Р
-    RLCI.on_UM(2)               # Вкл УМ-Р
+    RLCI.PCH.on(1)              # Вкл ПЧ-О
+    RLCI.FIP.on(1)              # Вкл ФИП-О
+    RLCI.MOD.on(2)              # Вкл МОД-Р
+    RLCI.UM.on(2)               # Вкл УМ-Р
     RLCI.mode('VS1')            # Уст Симв Скор VS1
     RLCI.mode('M1')             # Уст реж М-1
     inputG('КПА запиши файл режим M1-VS1')
@@ -135,24 +146,24 @@ def TEST_7():
     RLCI.mode('off imFIP')      # Откл ИМ-Фип
     RLCI.mode('on imMOD')       # Вкл ИМ-Мод
     RLCI.mode('off imMOD')      # Откл ИМ-Мод
-    RLCI.off_UM()               # Откл УМ
-    RLCI.off_MOD()              # Откл Мод
-    RLCI.off_FIP()              # Откл Фип
-    RLCI.off_PCH()              # Откл Пч
-    RLCI.power_off_ea331()
-    RLCI.power_off_ea332()
+    RLCI.UM.on()               # Откл УМ
+    RLCI.MOD.off()              # Откл Мод
+    RLCI.FIP.off()              # Откл Фип
+    RLCI.PCH.off()              # Откл Пч
+    RLCI.EA331.off()
+    RLCI.EA332.off()
     yprint('ТЕСТ 7 ЗВЕРШЕН', 1)
 
 
 def TEST_8():
     yprint('ТЕСТ 8: БА-Р(ЭА332), ПЧ-Р(ЭА331), ФИП-Р(ЭА330), МОД-О(ЭА331), УМ-О(ЭА331)', 1)
-    RLCI.power_on_ea332(2)
-    RLCI.power_on_ea331(2)
+    RLCI.EA332.on(2)
+    RLCI.EA331.on(2)
     RLCI.mode('RS485-1')    # RS485-0
-    RLCI.on_PCH(2)          # Вкл ПЧ-Р
-    RLCI.on_FIP(2)          # Вкл ФИП-Р
-    RLCI.on_MOD(1)          # Вкл МОД-О
-    RLCI.on_UM(1)           # Вкл УМ-О
+    RLCI.PCH.on(2)          # Вкл ПЧ-Р
+    RLCI.FIP.on(2)          # Вкл ФИП-Р
+    RLCI.MOD.on(1)          # Вкл МОД-О
+    RLCI.UM.on(1)           # Вкл УМ-О
     RLCI.mode('VS2')        # Уст Симв Скор VS2
     RLCI.mode('M1')         # Уст реж М-1
     inputG('КПА запиши файл режим M1-VS2')
@@ -167,23 +178,23 @@ def TEST_8():
     RLCI.mode('off imFIP')  # Откл ИМ-Фип
     RLCI.mode('on imMOD')   # Вкл ИМ-Мод
     RLCI.mode('off imMOD')  # Откл ИМ-Мод
-    RLCI.off_UM()           # Откл УМ
-    RLCI.off_MOD()          # Откл Мод
-    RLCI.off_FIP()          # Откл Фип
-    RLCI.off_PCH()          # Откл Пч
-    RLCI.power_off_ea331()
-    RLCI.power_off_ea332()
+    RLCI.UM.on()           # Откл УМ
+    RLCI.MOD.off()          # Откл Мод
+    RLCI.FIP.off()          # Откл Фип
+    RLCI.PCH.off()          # Откл Пч
+    RLCI.EA331.off()
+    RLCI.EA332.off()
     yprint('ТЕСТ 8 ЗВЕРШЕН', 1)
 
 
 def TEST_11():
     yprint('ТЕСТ 11: БА-О(ЭА332), ПЧ-О(ЭА331), ФИП-О(ЭА330), МОД-О(ЭА331), УМ-О(ЭА331)', 1)
-    RLCI.power_on_ea332(1)
-    RLCI.power_on_ea331(1)
-    RLCI.on_PCH(1)      # Вкл ПЧ-О
-    RLCI.on_FIP(1)      # Вкл ФИП-О
-    RLCI.on_MOD(1)      # Вкл МОД-О
-    RLCI.on_UM(1)       # Вкл УМ-О
+    RLCI.EA332.on(1)
+    RLCI.EA331.on(1)
+    RLCI.PCH.on(1)      # Вкл ПЧ-О
+    RLCI.FIP.on(1)      # Вкл ФИП-О
+    RLCI.MOD.on(1)      # Вкл МОД-О
+    RLCI.UM.on(1)       # Вкл УМ-О
     RLCI.mode('VS1')    # Уст Симв Скор VS1
     RLCI.mode('M1')     # Уст реж М-1
     sleep(12 * 60 + 30)
@@ -202,19 +213,19 @@ def TEST_11():
                doEquation('10.01.PRD_UM1_BS', '@K', 'off') + " and " +
                doEquation('10.01.PRD_UM1_P', '@K', 'off') + " and " +
                doEquation('10.01.PRD_UM1_P_Out', '@K', 'off'), count=1)
-    RLCI.power_off_ea331()
-    RLCI.power_off_ea332()
+    RLCI.EA331.off()
+    RLCI.EA332.off()
     yprint('ТЕСТ 11 ЗВЕРШЕН', 1)
 
 
 def TEST_12():
     yprint('ТЕСТ 12: БА-Р(ЭА332), ПЧ-Р(ЭА331), ФИП-Р(ЭА330), МОД-Р(ЭА331), УМ-Р(ЭА331)', 1)
-    RLCI.power_on_ea332(2)
-    RLCI.power_on_ea331(2)
-    RLCI.on_PCH(2)      # Вкл ПЧ-Р
-    RLCI.on_FIP(2)      # Вкл ФИП-Р
-    RLCI.on_MOD(2)      # Вкл МОД-Р
-    RLCI.on_UM(2)       # Вкл УМ-Р
+    RLCI.EA332.on(2)
+    RLCI.EA331.on(2)
+    RLCI.PCH.on(2)      # Вкл ПЧ-Р
+    RLCI.FIP.on(2)      # Вкл ФИП-Р
+    RLCI.MOD.on(2)      # Вкл МОД-Р
+    RLCI.UM.on(2)       # Вкл УМ-Р
     RLCI.mode('VS2')    # Уст Симв Скор VS2
     RLCI.mode('M1')     # Уст реж М-1
     sleep(12 * 60 + 30)
@@ -233,8 +244,8 @@ def TEST_12():
                doEquation('10.01.PRD_UM2_BS', '@K', 'off') + " and " +
                doEquation('10.01.PRD_UM2_P', '@K', 'off') + " and " +
                doEquation('10.01.PRD_UM2_P_Out', '@K', 'off'), count=1)
-    RLCI.power_off_ea331()
-    RLCI.power_off_ea332()
+    RLCI.EA331.off()
+    RLCI.EA332.off()
     yprint('ТЕСТ 12 ЗВЕРШЕН', 1)
 
 
@@ -242,18 +253,18 @@ def TEST_12():
 #  т.к. нет теста где все блоки 2
 def TEST_13():
     yprint('ТЕСТ 13 аварийное отключение')
-    RLCI.power_on_ea332(1)
-    RLCI.power_on_ea331(1)
+    RLCI.EA332.on(1)
+    RLCI.EA331.on(1)
     RLCI.mode('RS485-1')    # RS485-0
-    RLCI.on_PCH(1)          # Вкл ПЧ-О
-    RLCI.on_FIP(1)          # Вкл ФИП-О
-    RLCI.on_MOD(1)          # Вкл МОД-О
-    RLCI.on_UM(1)           # Вкл УМ-О
+    RLCI.PCH.on(1)          # Вкл ПЧ-О
+    RLCI.FIP.on(1)          # Вкл ФИП-О
+    RLCI.MOD.on(1)          # Вкл МОД-О
+    RLCI.UM.on(1)           # Вкл УМ-О
     sleep(10)
     yprint('СНЯТЬ ПИТАНИЕ ФКП - АВАРИЙНОЕ ОТКЛЮЧЕНИ')
     inputG('Снять питание?')
-    RLCI.power_off_ea331()
-    RLCI.power_off_ea332()
+    RLCI.EA331.off()
+    RLCI.EA332.off()
     sleep(10)
     yprint('ПРОВЕРКА ВКЛЮЧЕНИЯ')
     inputG('Начать проверку?')
@@ -263,18 +274,18 @@ def TEST_13():
 
 def TEST_14():
     yprint('ТЕСТ 14 аварийное отключение')
-    RLCI.power_on_ea332(2)
-    RLCI.power_on_ea331(2)
+    RLCI.EA332.on(2)
+    RLCI.EA331.on(2)
     RLCI.mode('RS485-1')  # RS485-0
-    RLCI.on_PCH(2)  # Вкл ПЧ-Р
-    RLCI.on_FIP(2)  # Вкл ФИП-Р
-    RLCI.on_MOD(2)  # Вкл МОД-Р
-    RLCI.on_UM(2)  # Вкл УМ-Р
+    RLCI.PCH.on(2)  # Вкл ПЧ-Р
+    RLCI.FIP.on(2)  # Вкл ФИП-Р
+    RLCI.MOD.on(2)  # Вкл МОД-Р
+    RLCI.UM.on(2)  # Вкл УМ-Р
     sleep(10)
     yprint('СНЯТЬ ПИТАНИЕ ФКП - АВАРИЙНОЕ ОТКЛЮЧЕНИ')
     inputG('Снять питание?')
-    RLCI.power_off_ea331()
-    RLCI.power_off_ea332()
+    RLCI.EA331.off()
+    RLCI.EA332.off()
     sleep(10)
     yprint('ПРОВЕРКА ВКЛЮЧЕНИЯ')
     inputG('Начать проверку?')
@@ -285,23 +296,23 @@ def TEST_14():
 ############################## ANTENNA TEST ###############################
 def TEST_1():
     yprint('ТЕСТ 1 АФУ-Х ПРОВЕРКА ОСТАНОВКИ ШД - БА-О')
-    RLCI.power_on_ea332(1, stop_shd=False, ask_TMI=False)
+    RLCI.EA332.on(1, stop_shd=False, ask_TMI=False)
     sleep(10)
     RLCI.mode('stop SHD', valid_di=False)
     # sendFromJson(SCPICMD, 0xA018)  # ОСТАН ШД
     RLCI.waitAntennaStop(period=60, toPrint=False)  # ожидание на остановку антенны
-    RLCI.power_off_ea332()
+    RLCI.EA332.off()
     yprint('ТЕСТ 1 ЗВЕРШЕН', 1)
 
 
 def TEST_2():
     yprint('ТЕСТ 2 АФУ-Х ПРОВЕРКА ОСТАНОВКИ ШД - БА-Р')
-    RLCI.power_on_ea332(2, stop_shd=False, ask_TMI=False)
+    RLCI.EA332.on(2, stop_shd=False, ask_TMI=False)
     sleep(10)
     RLCI.mode('stop SHD', valid_di=False)
     # sendFromJson(SCPICMD, 0xA018)  # ОСТАН ШД
     RLCI.waitAntennaStop(period=60, toPrint=False)  # ожидание на остановку антенны
-    RLCI.power_off_ea332()
+    RLCI.EA332.off()
     yprint('ТЕСТ 2 ЗВЕРШЕН', 1)
 
 
@@ -338,17 +349,17 @@ def __TEST_3_4():
 
 def TEST_3():
     yprint('ТЕСТ 3 АФУ-Х ПРОВЕРКА ОТРАБОТКИ МАССИВА, ДНП, НП - БА-О')
-    RLCI.power_on_ea332(1, stop_shd=False, ask_TMI=False)
+    RLCI.EA332.on(1, stop_shd=False, ask_TMI=False)
     __TEST_3_4()
-    RLCI.power_off_ea332()
+    RLCI.EA332.off()
     yprint('ТЕСТ 3 ЗВЕРШЕН', 1)
 
 
 def TEST_4():
     yprint('ТЕСТ 4 АФУ-Х ПРОВЕРКА ОТРАБОТКИ МАССИВА, ДНП, НП - БА-Р')
-    RLCI.power_on_ea332(2, stop_shd=False, ask_TMI=False)
+    RLCI.EA332.on(2, stop_shd=False, ask_TMI=False)
     __TEST_3_4()
-    RLCI.power_off_ea332()
+    RLCI.EA332.off()
     yprint('ТЕСТ 4 ЗВЕРШЕН', 1)
 
 
@@ -379,17 +390,17 @@ def __TEST_9_10():
 
 def TEST_9():
     yprint('ТЕСТ 9 АФУ-Х ПРОВЕРКА ОТРАБОТКИ ДКП, КОЛ_ВО ИМПУЛЬСОВ - БА-О')
-    RLCI.power_on_ea332(1, stop_shd=False, ask_TMI=False)
+    RLCI.EA332.on(1, stop_shd=False, ask_TMI=False)
     __TEST_9_10()
-    RLCI.power_off_ea332()
+    RLCI.EA332.off()
     yprint('ТЕСТ 9 ЗВЕРШЕН', 1)
 
 
 def TEST_10():
     yprint('ТЕСТ 10 АФУ-Х ПРОВЕРКА ОТРАБОТКИ ДКП, КОЛ_ВО ИМПУЛЬСОВ - БА-Р')
-    RLCI.power_on_ea332(2, stop_shd=False, ask_TMI=False)
+    RLCI.EA332.on(2, stop_shd=False, ask_TMI=False)
     __TEST_9_10()
-    RLCI.power_off_ea332()
+    RLCI.EA332.off()
     yprint('ТЕСТ 10 ЗВЕРШЕН', 1)
 
 
@@ -415,20 +426,81 @@ def TEST_DESCRIPTION():
 ################### MAIN ###########################
 ####################################################
 foo = {
-    'ON ЭА331-О': lambda: sendFromJson(SCPICMD, 0xE004, AsciiHex('0111010000000000')),        # 0x40D9
-    'ON ЭА331-Р': lambda: sendFromJson(SCPICMD, 0xE004, AsciiHex('0111020000000000')),        # 0x41A1
-    'OFF ЭА331': lambda: sendFromJson(SCPICMD, 0xE005, AsciiHex('0111000000000000')),         # 0x43F9
-    'ON ЭА332-О': lambda: sendFromJson(SCPICMD, 0xE004, AsciiHex('0113010000000000')),        # 0x40DB
-    'ON ЭА332-Р': lambda: sendFromJson(SCPICMD, 0xE004, AsciiHex('0113020000000000')),        # 0x41A3
-    'OFF ЭА332': lambda: sendFromJson(SCPICMD, 0xE005, AsciiHex('0113000000000000')),         # 0x43FB
+'M778': lambda: windowChooser(
+                btnsText=(('ВКЛ А', 'ВКЛ Б'), 'ОТКЛ'),
+                title='ПИТАНИЕ М778',
+                fooDict={'ВКЛ А': lambda: M778.on(1),
+                         'ВКЛ Б': lambda: M778.on(2),
+                         'ОТКЛ': lambda: M778.off()},
+                ret_btn=True),
+    'РЛЦИ ЭА': lambda: windowChooser(
+        btnsText=(('ВКЛ ЭА332-1', 'ВКЛ ЭА332-2', 'ОТКЛ ЭА332'), ('ВКЛ ЭА331-1', 'ВКЛ ЭА331-2', 'ОТКЛ ЭА331')),
+        title='РЛЦИ ПОД ПИТАНИЕ',
+        fooDict={
+            'ВКЛ ЭА332-1': lambda: RLCI.EA332.on(1, stop_shd=True, ask_TMI=True),
+            'ВКЛ ЭА332-2': lambda: RLCI.EA332.on(2, stop_shd=True, ask_TMI=True),
+            'ОТКЛ ЭА332': lambda: RLCI.EA332.off(),
+            'ВКЛ ЭА331-1': lambda: RLCI.EA331.on(1),
+            'ВКЛ ЭА331-2': lambda: RLCI.EA332.on(2),
+            'ОТКЛ ЭА331': lambda: RLCI.EA331.off()},
+        labels=['ЭА332', 'ЭА331'],
+        ret_btn=True),
+    'РЛЦИ ПЧ': lambda: windowChooser(
+        btnsText=('ОСН', 'РЕЗ', 'ОТКЛ'),
+        title='РЛЦИ ПЧ',
+        fooDict={
+            'ОСН': lambda: RLCI.PCH.on(1),
+            'РЕЗ': lambda: RLCI.PCH.on(2),
+            'ОТКЛ': lambda: RLCI.PCH.off()},
+        ret_btn=True),
+    'РЛЦИ ФИП': lambda: windowChooser(
+        btnsText=('ОСН', 'РЕЗ', 'ОТКЛ'),
+        title='РЛЦИ ФИП',
+        fooDict={
+            'ОСН': lambda: RLCI.FIP.on(1),
+            'РЕЗ': lambda: RLCI.FIP.on(2),
+            'ОТКЛ': lambda: RLCI.FIP.off()},
+        ret_btn=True),
+    'РЛЦИ МОД': lambda: windowChooser(
+        btnsText=('ОСН', 'РЕЗ', 'ОТКЛ'),
+        title='РЛЦИ МОД',
+        fooDict={
+            'ОСН': lambda: RLCI.MOD.on(1),
+            'РЕЗ': lambda: RLCI.MOD.on(2),
+            'ОТКЛ': lambda: RLCI.MOD.off()},
+        ret_btn=True),
+    'РЛЦИ УМ': lambda: windowChooser(
+        btnsText=('ОСН', 'РЕЗ', 'ОТКЛ'),
+        title='РЛЦИ УМ',
+        fooDict={
+            'ОСН': lambda: RLCI.UM.on(1),
+            'РЕЗ': lambda: RLCI.UM.on(2),
+            'ОТКЛ': lambda: RLCI.UM.off()}),
+    'РЛЦИ РЕЖИМ': lambda: windowChooser(
+        btnsText=(('M1', 'M2', 'M3', 'M4'), ('VS1', 'VS2')),
+        title='РЛЦИ УМ',
+        fooDict={'M1': lambda: RLCI.mode('M1'),
+                 'M2': lambda: RLCI.mode('M2'),
+                 'M3': lambda: RLCI.mode('M3'),
+                 'M4': lambda: RLCI.mode('M4'),
+                 'VS1': lambda: RLCI.mode('VS1'),
+                 'VS2': lambda: RLCI.mode('VS2')},
+        ret_btn=True),
+    'РЛЦИ ОТКЛ ВСЕ': lambda: RLCI.off_all(),
+    # 'ON ЭА331-О': lambda: sendFromJson(SCPICMD, 0xE004, AsciiHex('0111010000000000')),        # 0x40D9
+    # 'ON ЭА331-Р': lambda: sendFromJson(SCPICMD, 0xE004, AsciiHex('0111020000000000')),        # 0x41A1
+    # 'OFF ЭА331': lambda: sendFromJson(SCPICMD, 0xE005, AsciiHex('0111000000000000')),         # 0x43F9
+    # 'ON ЭА332-О': lambda: sendFromJson(SCPICMD, 0xE004, AsciiHex('0113010000000000')),        # 0x40DB
+    # 'ON ЭА332-Р': lambda: sendFromJson(SCPICMD, 0xE004, AsciiHex('0113020000000000')),        # 0x41A3
+    # 'OFF ЭА332': lambda: sendFromJson(SCPICMD, 0xE005, AsciiHex('0113000000000000')),         # 0x43FB
     # 'ВКЛ ОПР РЛЦИ-В': lambda: sendFromJson(SCPICMD, 0xE06F, AsciiHex('0x0A01 0000 0000 0000'),
     #                                        describe='Вкл Опр РЛЦИВ'),
     # 'ОТКЛ ОПР РЛЦИ-В': lambda: sendFromJson(SCPICMD, 0xE06F, AsciiHex('0x0A00 0000 0000 0000'),
     #                                         describe='Откл Опр РЛЦИВ'),
-    'ON M778B1': lambda: MB.power_on(1),
-    'ON M778B2': lambda: MB.power_on(2),
-    'OFF M778B': lambda: MB.off(),
-    'ОТКЛ АП РЛЦИ-В': lambda: RLCI.off_all(),
+    # 'ON M778B1': lambda: M778.on(1),
+    # 'ON M778B2': lambda: M778.off(2),
+    # 'OFF M778B': lambda: M778.off(),
+    # 'ОТКЛ АП РЛЦИ-В': lambda: RLCI.off_all(),
     'ТЕСТ 1': lambda: TEST_1(),
     'ТЕСТ 2': lambda: TEST_2(),
     'ТЕСТ 3': lambda: TEST_3(),
@@ -443,7 +515,7 @@ foo = {
     'ТЕСТ 12': lambda: TEST_12(),
     'ТЕСТ 13': lambda: TEST_13(),
     'ТЕСТ 14': lambda: TEST_14(),
-    'ПОТОК SOTC': lambda: KIS._barl_run(),
+    #'ПОТОК SOTC': lambda: KIS._barl_run(),
     'ОПИСАНИЕ ТЕСТОВ': lambda: TEST_DESCRIPTION()
 }
 # кнопки
@@ -451,10 +523,8 @@ btns = (('ТЕСТ 1', 'ТЕСТ 2', 'ТЕСТ 3', 'ТЕСТ 4'),       # афу
         ('ТЕСТ 5', 'ТЕСТ 6', 'ТЕСТ 7', 'ТЕСТ 8'),       # рлци
         ('ТЕСТ 9', 'ТЕСТ 10'),                          # тех афу
         ('ТЕСТ 11', 'ТЕСТ 12', 'ТЕСТ 13', 'ТЕСТ 14'),   # тех рлци
-        ('ON ЭА331-О', 'ON ЭА331-Р', 'OFF ЭА331'),      # cmd
-        ('ON ЭА332-О', 'ON ЭА332-Р', 'OFF ЭА332'),
-        ('ON M778B1', 'ON M778B2', 'OFF M778B'),
-        ('ОТКЛ АП РЛЦИ-В', 'ПОТОК SOTC'),
+        'M778',
+        ('РЛЦИ ЭА', 'РЛЦИ ПЧ', 'РЛЦИ ФИП', 'РЛЦИ МОД', 'РЛЦИ УМ', 'РЛЦИ РЕЖИМ', 'РЛЦИ ОТКЛ ВСЕ'),
         'ОПИСАНИЕ ТЕСТОВ')
 
 
@@ -464,7 +534,7 @@ yprint('РЛЦИВ ПМ1', 2)
 while True:
     print()
     try:
-        windowChooser(btnsText=btns, fooDict=foo, labels=['АФУ-Х', 'РЛЦИ-В', 'ТЕХ АФУ-Х', 'ТЕХ РЛЦИ-В', 'ЭА331', 'ЭА332', 'M778', '', ''])
+        windowChooser(btnsText=btns, fooDict=foo, labels=['АФУ-Х', 'РЛЦИ-В', 'ТЕХ АФУ-Х', 'ТЕХ РЛЦИ-В', 'M778', 'РЛЦИ-В', ''])
     except Exception as ex:
         rprint("ОШИБКА В ТЕСТЕ")
         rprint(traceback.format_exc())
