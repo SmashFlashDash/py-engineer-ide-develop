@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 # Импорт с рабочей директории скрипта
 from engineers_src.for_RLCI_EMS.Dictionaries_UVDI import *
 from engineers_src.for_RLCI_EMS.EMSRLCI_foos import sendFromJson, doEquation, executeTMI, print_start_and_end
+from lib.tabulate.tabulate import *
 
 # TODO: чтобы хранить информацию по включенным блокам можно класть в редис
 # redis_dp_set('KA_status', {
@@ -385,8 +386,8 @@ class RLCI:
     @print_start_and_end(string='РЛЦИ: ПОДАТЬ ПИТАНИЕ ЭА332 %s')
     def power_on_ea332(ea332, stop_shd=True, ask_TMI=True):
         """КСО подать питание на блоки РЛЦИ ВКЛ ОПР и остановить антенну"""
-        # if RLCI.cur_EA332 is not None:
-        #     RLCI.power_off(ea332=True)
+        if RLCI.cur_EA332 is not None:
+            raise Exception('ЭА332 включен!')
         if ea332 == 1:
             # sendFromJson(SCPICMD, 0x40DB, pause=1)  # ЭА332-О
             sendFromJson(SCPICMD, 0xE004, AsciiHex('0113010000000000'), pause=1)  # ЭА332-О
@@ -406,8 +407,8 @@ class RLCI:
     @print_start_and_end(string='РЛЦИ: ПОДАТЬ ПИТАНИЕ ЭА331 %s')
     def power_on_ea331(ea331):
         """КСО подать питание на блоки РЛЦИ ВКЛ ОПР и остановить антенну"""
-        # if RLCI.cur_EA331 is not None:
-        #     RLCI.power_off(ea331=True)
+        if RLCI.cur_EA331 is not None:
+            raise Exception('ЭА331 включен!')
         if ea331 == 1:  # ЭА331-О
             # sendFromJson(SCPICMD, 0x40D9, pause=1)  # ЭА331-О
             sendFromJson(SCPICMD, 0xE004, AsciiHex('0111010000000000'))
@@ -439,6 +440,8 @@ class RLCI:
     @print_start_and_end(string='РЛЦИ: ВКЛ ПЧ %s')
     def on_PCH(block_num):
         """Включени РЛЦИ ПЧ"""
+        if RLCI.cur_PCH is not None:
+            raise Exception('РЛЦИ ПЧ включен!')
         if block_num == 1:
             sendFromJson(SCPICMD, 0xA000)  # Вкл ПЧ-О
         elif block_num == 2:
@@ -466,6 +469,8 @@ class RLCI:
     @print_start_and_end(string='РЛЦИ: ВКЛ ФИП %s')
     def on_FIP(block_num):
         """Включени РЛЦИ ФИП"""
+        if RLCI.cur_FIP is not None:
+            raise Exception('РЛЦИ ФИП включен!')
         if block_num == 1:
             sendFromJson(SCPICMD, 0xA003)  # Вкл ФИП-О
         elif block_num == 2:
@@ -500,6 +505,8 @@ class RLCI:
     @print_start_and_end(string='РЛЦИ: ВКЛ МОД %s')
     def on_MOD(block_num):
         """Включени РЛЦИ МОД"""
+        if RLCI.cur_MOD is not None:
+            raise Exception('РЛЦИ МОД включен!')
         if block_num == 1:
             sendFromJson(SCPICMD, 0xA006)  # Вкл МОД-О
         elif block_num == 2:
@@ -537,6 +544,8 @@ class RLCI:
     @print_start_and_end(string='РЛЦИ: ВКЛ УМ %s')
     def on_UM(block_num):
         """Включени РЛЦИ УМ"""
+        if RLCI.cur_UM is not None:
+            raise Exception('РЛЦИ УМ включен!')
         if block_num == 1:
             sendFromJson(SCPICMD, 0xA009)  # Вкл УМ-О
         elif block_num == 2:
@@ -565,8 +574,6 @@ class RLCI:
         RLCI.uv[mode]()
         if valid_di:
             RLCI.uv_di[mode]()
-        # TODO: состояния в redis режимов М надо передатвать
-        #  для опроса di_full
 
     @staticmethod
     @print_start_and_end(string='РЛЦИ: ОПРОСИТЬ ВСЕ')
@@ -609,6 +616,8 @@ class ASN:
     @print_start_and_end(string='АСН: ВКЛ %s')
     def on(block_num):
         """Включение АСН и проверка телеметри"""
+        if ASN.cur_block is not None:
+            raise Exception('АСН включен')
         ASN.__validate_block_num(block_num)
         if block_num == 1:
             # sendFromJson(SCPICMD, 0x4005, pause=1)   # Вкл АСН1 через канал 5
@@ -953,26 +962,69 @@ class BSPA:
 
 
 ##################### KSO ##############################
+# TODO: включить КИС
+#  включить КСО
+#  отключить КИС
+#  чтобы КСО набрал измерения
+#  включить КИС
+#  сбросить БЦК
+#  посмотреть тми
+#
 class KSO:
     cur = None
+    _tmi = config.odict(('00.02.Sat_Bx', []), ('00.02.Sat_By', []), ('00.02.Sat_Bz', []),
+                        ('00.02.Sat_Bx_2', []), ('00.02.Sat_By_2', []), ('00.02.Sat_Bz_2', []),
+                        ('00.01.FT1_FD1', []), ('00.01.FT1_FD2', []), ('00.01.FT1_FD3', []), ('00.01.FT1_FD4', []),
+                        ('00.01.FT2_FD1', []), ('00.01.FT2_FD2', []), ('00.01.FT2_FD3', []), ('00.01.FT2_FD4', []),
+                        ('00.05.BIUS1MeasX', []), ('00.05.BIUS1MeasY', []), ('00.05.BIUS1MeasZ', []),
+                        ('00.05.BIUS2MeasX', []), ('00.05.BIUS2MeasY', []), ('00.05.BIUS2MeasZ', []),
+                        ("00.08.Q_ST1_0", [],), ("00.08.Q_ST1_1", [],), ("00.08.Q_ST1_2", [],), ("00.08.Q_ST1_3", [],),
+                        ("00.08.Q_ST2_0", [],), ("00.08.Q_ST2_1", [],), ("00.08.Q_ST2_2", [],), ("00.08.Q_ST2_3", [],),
+                        ("00.08.Q_ST3_0", [],), ("00.08.Q_ST3_1", [],), ("00.08.Q_ST3_2", [],), ("00.08.Q_ST3_3", [],),
+                        ("00.08.Q_ST4_0", [],), ("00.08.Q_ST4_1", [],), ("00.08.Q_ST4_2", [],), ("00.08.Q_ST4_3", [],))
+    quaternions = {
+        1: (round(0.497978, 2), round(-0.599586, 2), round(-0.419021, 2), round(-0.465764, 2)),
+        2: (round(0.526215, 2), round(-0.625533, 2), round(-0.380668, 2), round(-0.432317, 2)),
+        3: (round(0.528514, 2), round(-0.625921, 2), round(-0.373003, 2), round(-0.43562, 2)),
+        4: (round(0.666464, 2), round(-0.722384, 2), round(-0.072327, 2), round(-0.169576, 2)),
+    }
+    # TODO: сделать функции условий для каждого шифра
+    #  в из нормал прогонять по условию последнее значение и печатаь
+    #  в гет тми просто печатать
 
     @staticmethod
     @print_start_and_end(string='Включить КСО')
     def on():
-        sendFromJson(SCPICMD, 0xE114, AsciiHex('0x4400 0000 0000 0000'))    # Отключить ЦНФ
+        if KSO.cur is True:
+            raise Exception("КСО включен")
+        sendFromJson(SCPICMD, 0xE114, AsciiHex('0x4400 0000 0000 0000'), describe='Отключить ЦНФ')    # Отключить ЦНФ
         sendFromJson(SCPICMD, 0xE004, AsciiHex('0x0209 0000 0000 0000'))    # Включить КСО + обмен
-        if executeTMI("{05.01.beKSOA2}@H==1")[0]:   # == 1 Состояние коммутатора КСО Коммутатор А Ключевой элемент 2
-            BCK.clc_BCK()
-            BCK.downBCK()
-            executeTMI(' and '.join(("{05.02.VKSOA}@H>200",     # Напряжение канала коммутатора КСО Коммутатор А Ключевой элемент 1
-                                     "{05.02.CKSOA}@H>7",       # Ток коммутатора КСО Коммутатор А Ключевой элемент 2
-                                     "{00.01.ARO}@H>1")))       # Счётчик реконфигурации
-            cur = 1
+        bprint(':::Ждем 60 сек 00.01.ARO == 15200 ')
+        if not Ex.wait('ТМИ', '{00.01.ARO.НЕКАЛИБР} == 15200', 60):                  # ждем КСО включился
+            rprint('00.01.ARO == 15200')
+            inputG('00.01.ARO не == 15200')
         else:
-            rprint("КСО КСО НЕ ЗАМКНУТ")
-            inputG()
+            gprint('00.01.ARO == 15200')
+        KSO.cur = True
+        # TODO: проверить какой КСО включн
+        # if executeTMI("{05.01.beKSOA2}@H==1")[0]:   # == 1 Состояние коммутатора КСО Коммутатор А Ключевой элемент 2
+        #     BCK.clc_BCK()
+        #     BCK.downBCK()
+        #     executeTMI(' and '.join(("{05.02.VKSOA}@H>200",     # Напряжение канала коммутатора КСО Коммутатор А Ключевой элемент 1
+        #                              "{05.02.CKSOA}@H>7",       # Ток коммутатора КСО Коммутатор А Ключевой элемент 2
+        #                              "{00.01.ARO}@H>1")))       # Счётчик реконфигурации
+        #     KSO.isOn = True
+        # else:
+        #     rprint("КСО КСО НЕ ЗАМКНУТ")
+        #     inputG()
+        prevLength = len(KSO._tmi)
+        KSO._get_tmi()    # опросить ТМИ
+        if prevLength != len(KSO._tmi):
+            raise Exception("Ошибка KSO._tmi")
+        KSO._printTmi(KSO._tmi)
 
     @staticmethod
+    @print_start_and_end(string='Отключить КСО')
     def off():
         sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0001 0000'))  # Установка статусов отказа для устройств БИУС1
         sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0101 0000'))  # БИУС2
@@ -981,17 +1033,27 @@ class KSO:
         sleep(10)   # пауза на остановку ДМ
         BCK.clc_BCK()
         BCK.downBCK()
-        executeTMI(' and '.join(("{00.02.MeasuredSpeed1}@H<10",  # Измеренная скорость ДМ1
-                                 "{00.02.MeasuredSpeed2}@H<10",  # Измеренная скорость ДМ2
-                                 "{00.02.MeasuredSpeed3}@H<10",  # Измеренная скорость ДМ3
-                                 "{00.02.MeasuredSpeed4}@H<10")))  # Измеренная скорость ДМ4
+        bprint('Ждем остановки ДМ 60 сек')
+        if not Ex.wait('{00.02.MeasuredSpeed1.НЕКАЛИБР} < 10 and {00.02.MeasuredSpeed2.НЕКАЛИБР} < 10 and '
+                       '{00.02.MeasuredSpeed3.НЕКАЛИБР} < 10 and {00.02.MeasuredSpeed4.НЕКАЛИБР} < 10', 60):
+            rprint('ДМ не остановлен')
+            inputG('ДМ не остановлен')
+        else:
+            gprint('ДМ остновлен')
+        # executeTMI(' and '.join(("{00.02.MeasuredSpeed1}@H<10",  # Измеренная скорость ДМ1
+        #                          "{00.02.MeasuredSpeed2}@H<10",  # Измеренная скорость ДМ2
+        #                          "{00.02.MeasuredSpeed3}@H<10",  # Измеренная скорость ДМ3
+        #                          "{00.02.MeasuredSpeed4}@H<10")))  # Измеренная скорость ДМ4
         sendFromJson(SCPICMD, 0x53F1)  # Отключить КСО
+        KSO.cur = None
+        for key in KSO._tmi.keys():
+            KSO._tmi[key] = []
+        # TODO: этот параметр нужно сбрасывать БЦК?
+        BCK.clc_BCK()
+        BCK.downBCK()
         if executeTMI("{05.01.beKSOA2}@H==0")[0]:   # == 1 Состояние коммутатора КСО Коммутатор А Ключевой элемент 2
-            BCK.clc_BCK()
-            BCK.downBCK()
-            executeTMI(' and '.join(("{05.02.VKSOA}@H<10",     # Напряжение канала коммутатора КСО Коммутатор А Ключевой элемент 1
-                                     "{05.02.CKSOA}@H<4")))       # Ток коммутатора КСО Коммутатор А Ключевой элемент 2
-            cur = None
+            executeTMI(' and '.join(("{05.02.VKSOA}@H<10",      # Напряжение канала коммутатора КСО Коммутатор А Ключевой элемент 1
+                                     "{05.02.CKSOA}@H<4")))     # Ток коммутатора КСО Коммутатор А Ключевой элемент 2
             sendFromJson(SCPICMD, 0x53ED)  # Остановка БИУС1
             sendFromJson(SCPICMD, 0x53EE)  # Остановка БИУС1
             sendFromJson(SCPICMD, 0x53E9)  # Остановка ММ
@@ -1008,61 +1070,110 @@ class KSO:
             inputG()
 
     @staticmethod
+    def _get_tmi():
+        # if KSO.cur is None:
+        #     raise Exception("КСО должен быть включен")
+        # Сброс БЦК чтобы опросить занчения БИУС
+        BCK.clc_BCK()
+        BCK.downBCK()
+        # Опрос ММ1, 2ДС, 2БИУС
+        tmi = Ex.get('ТМИ', {"00.02.Sat_Bx": 'НЕКАЛИБР',
+                             "00.02.Sat_By": 'НЕКАЛИБР',
+                             "00.02.Sat_Bz": 'НЕКАЛИБР',
+                             "00.01.FT1_FD1": 'НЕКАЛИБР',
+                             "00.01.FT1_FD2": 'НЕКАЛИБР',
+                             "00.01.FT1_FD3": 'НЕКАЛИБР',
+                             "00.01.FT1_FD4": 'НЕКАЛИБР',
+                             "00.01.FT2_FD1": 'НЕКАЛИБР',
+                             "00.01.FT2_FD2": 'НЕКАЛИБР',
+                             "00.01.FT2_FD3": 'НЕКАЛИБР',
+                             "00.01.FT2_FD4": 'НЕКАЛИБР',
+                             "00.05.BIUS1MeasX": 'НЕКАЛИБР',
+                             "00.05.BIUS1MeasY": 'НЕКАЛИБР',
+                             "00.05.BIUS1MeasZ": 'НЕКАЛИБР',
+                             "00.05.BIUS2MeasX": 'НЕКАЛИБР',
+                             "00.05.BIUS2MeasY": 'НЕКАЛИБР',
+                             "00.05.BIUS2MeasZ": 'НЕКАЛИБР'}, None)
+
+        # переключить ММ, опросить, добавить доп значения в словарь
+        # TODO: поставить неисправность 0x0084 с Asciihex
+        # sendFromJson(SCPICMD, 0x002A, AsciiHex('0x0200 0000'), pause=10)  # Включить ММ2
+        # mm2 = Ex.get('ТМИ', {"00.02.Sat_Bx": 'НЕКАЛИБР',
+        #                      "00.02.Sat_By": 'НЕКАЛИБР',
+        #                      "00.02.Sat_Bz": 'НЕКАЛИБР'}, None)
+        # for item in mm2.items():
+        #     tmi[item[0] + '_2'] = item[1]
+        # sendFromJson(SCPICMD, 0x002A, AsciiHex('0x0100 0000'))  # Включить ММ1
+
+        # Звездники работают только в режиме 0x0065(0x1F00 0000)- подрежим ориентации (штатая ориентация)
+        if not Ex.wait('ТМИ', '{00.01.mode.НЕКАЛИБР} == 3 and {00.01.submode.НЕКАЛИБР} == 31', 10):
+            sendFromJson(SCPICMD, 0x0065, AsciiHex('0x1F00 0000'))  # задать штатный режим ориентации
+            Ex.wait('ТМИ', '{00.01.mode.НЕКАЛИБР} == 3 and {00.01.submode.НЕКАЛИБР} == 31', 10)
+        zd = {}
+        # TODO: OrientReady_ST включаить АСН, задать ориент
+
+        for x in range(0, 4):
+            zd['00.08.Q_ST%s_0' % (x + 1)] = 'НЕКАЛИБР'
+            zd['00.08.Q_ST%s_1' % (x + 1)] = 'НЕКАЛИБР'
+            zd['00.08.Q_ST%s_2' % (x + 1)] = 'НЕКАЛИБР'
+            zd['00.08.Q_ST%s_3' % (x + 1)] = 'НЕКАЛИБР'
+            # zd['00.08.OrientReady_ST%s' % (x + 1)] = 'НЕКАЛИБР'
+        zd = Ex.get('ТМИ', zd, None)
+        for item in zd.items():
+            tmi[item[0]] = item[1]
+        # проверить кватернионы
+        # <= tmi['{00.08.Q_ST1_0}'] <=
+
+        # оринетация 91
+        #
+        # 0x0084 (0x0D00 0000) - сброс ошибок
+
+        # пров ориентации
+        # 'orient_ready': lambda x: executeTMI(doEquation('00.08.OrientReady_ST%s' % x, '@H', 'yes'), count=1, pause=8),
+        # bprint('Проверка построения ориентации ЗД %s' % num)
+        # result, values = ZD.uv_di['orient_ready'](num)
+        # bprint('Опрос кватернионов ЗД %s' % num)
+        # ZD.uv_di['zd_orient'](num, ZD.quaternions[num])
+        # 'zd_orient': lambda x, vals: executeTMI(
+        #     doEquation('00.08.Q_ST%s_0' % x, '@H', 'orient', ref_val=vals[0]) + ' and ' +
+        #     doEquation('00.08.Q_ST%s_1' % x, '@H', 'orient', ref_val=vals[1]) + ' and ' +
+        #     doEquation('00.08.Q_ST%s_2' % x, '@H', 'orient', ref_val=vals[2]) + ' and ' +
+        #     doEquation('00.08.Q_ST%s_3' % x, '@H', 'orient', ref_val=vals[3]), count=1, pause=8)
+
+        # заменяем значения
+        for item in tmi.items():
+            # KSO._tmi[item[0]] = item[1]
+            KSO._tmi[item[0]].append(item[1])
+
+    @staticmethod
+    def get_tmi():
+        """Получить тми и вывод"""
+        KSO._get_tmi()  # опросить ТМИ
+        KSO._printTmi(KSO._tmi)
+
+    @staticmethod
+    def _printTmi(tmi, twoVals=False):
+        """Вывод словаря тми, или сопоставить два одинаковых словаря"""
+        ar = []
+        for item in tmi.items():
+            if twoVals is True:
+                columns = item[1][-2]
+            else:
+                columns = item[1]
+            for index, x in enumerate(columns):
+                if not isinstance(x, str):
+                    columns[index] = str(x)
+            ar.append([item[0] + ':', *columns])
+        string = tabulate(ar, tablefmt='simple')
+        print(string.strip('- \n'))
+
+    @staticmethod
     def is_normal():
         # опросить ДМ раскручены
         # ЗД включены, и есть кватернионы по имитаторам
         # ММ значения, и что не сильно прыгают по сравнению с предыдущим запросом
         # ДС - засвечены и включены имитаторы
         # БИУС - значения
-        # 00.01.STR1Heads1        # Признак задействования ЗД1
-        # 00.01.STR1Heads2
-        # 00.01.STR2Heads1
-        # 00.01.STR2Heads2
-        # STR1TMValid               # Достоверность поступления информации ЗД1
-        # 00.01.BIUSchannelX        # Признак используемого БИУС канала X
-        # 00.01.BIUSchannelY        # Признак используемого БИУС канала Y
-        # 00.01.BIUSchannelZ        # Признак используемого БИУС канала Z
-        # GyroRateMeasurementValid  # Достоверность измерений БИУС
-        # SSTMValid             # Наличие информации ДС
-        # SSMeasurementValid    # Достоверность измерений ДС
-        # MTMTmValid            # Наличие информации ММ
-        # MTMMeasurementValid   # Достоверность измерений ММ
-        # GPSValid              # Достоверность АСН
-        # RateValid             # Рассогласование оценки и показаний ММ
-
-        # ARO = 15200 ждать пока установится после включения Ex.wait
-        # посмотреть что делает с БД Ex.wait
-
-        # чтобы включить ЗД и опросить
-        # 0x0065(0x1F00 0000)- подрежим ориентации (штатая ориентация)
-        # mode == 3
-        # submode == 31     # првоерка что режим сработал
-
-        #  ММ
-        # Sat_Bx
-        # Sat_By
-        # Sat_Bz
-        # 0x002A(0x02) - Включить ММ2
-        # 0x002A(0x01) - Включить ММ1
-        # по умолчанию включается ММ1
-
-        # ДС
-        # FT1_FD1   # каждый диод с ДС 1 или 0
-        # FT1_FD2
-        # FT1_FD3
-        # FT1_FD4
-        # FT2_FD1
-        # FT2_FD2
-        # FT2_FD3
-        # FT2_FD4
-
-        # Сброс ДОП ТМ
-        # BIUS1MeasX    # значения БИУС
-        # BIUS1MeasY
-        # BIUS1MeasZ
-        # BIUS2MeasX
-        # BIUS2MeasY
-        # BIUS2MeasZ
         pass
 
 

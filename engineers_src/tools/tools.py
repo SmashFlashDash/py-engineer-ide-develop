@@ -36,8 +36,9 @@ from PyQt5.QtCore import Qt
 
 
 ################ IMITATION ###############
+from random import randint
 # def get(*args):
-#     from random import randint
+
 #     randint(0, 10)
 #     calibs = ('включен', 'отключен', 'Есть', 'Нет', 0, 100, None)
 #     uncalibs = (0, 1, 100, -100, 0.01, 1000, None)
@@ -58,7 +59,9 @@ from PyQt5.QtCore import Qt
 # Ex.get = get
 # KPA = lambda *args: ' '.join([str(x) for x in args])
 # Ex.send = lambda *args: print('Отправка ' + ' '.join([str(x) for x in args]))
-# Ex.wait = lambda *args: True
+# Ex.wait = lambda *args: False if randint(0, 1) == 0 else True
+# Ex.ivk_file_name = "script.ivkng"
+# Ex.ivk_file_path = "D:/VMShared/ivk-ng-myremote/engineers_src/script.ivkng"
 
 
 ################ TEXT ###################

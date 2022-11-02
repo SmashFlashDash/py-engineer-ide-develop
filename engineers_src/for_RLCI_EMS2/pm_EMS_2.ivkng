@@ -16,7 +16,7 @@ time.sleep = lambda *args: sleep2(0)
 sleep = lambda *args: sleep2(0)
 # Импорт зависимостей на винде
 import sys
-sys.path.insert(0, '../../lib/')
+sys.path.insert(0, 'lib/')
 from engineers_src.tools.tools import *
 Ex.ivk_file_name = "script.ivkng"
 Ex.ivk_file_path = "D:/VMShared/ivk-ng-myremote/engineers_src/script.ivkng"
@@ -34,22 +34,49 @@ import traceback
 # exec('from EMSRLCI_foos import windowChooser, sendFromJson, doEquation, executeTMI, getAndSleep, executeDI')
 
 # Импорт с рабочей директории скрипта
-from engineers_src.for_RLCI_EMS.EMSRLCI_foos import windowChooser, sendFromJson, doEquation, executeTMI, print_start_and_end
-from engineers_src.for_RLCI_EMS.DeviceClasses import DIstorage, BCK, MB, KIS, RLCI, ASN, ZD, BSPA, BSK_P, BSK_KU, DUK, KSO
+from engineers_src.Devices.functions import windowChooser, sendFromJson, doEquation, executeTMI, print_start_and_end
+from engineers_src.Devices.dictionariesUVDI import DIstorage
+from engineers_src.Devices import BCK, M778, KIS, RLCI, ASN, Imitators, BSK_BSPA, BSK_P, BSK_KU, KSO
+
+# TODO: првоерить
+#  есть ли коммутация в DiStorage и RLCIV
+#  все функции
 
 
 ##################### COMMUTATIONS ############################
 DIstorage.commute('M778B', False)
-MB.cur = 1
-KIS.barl_names['1/2'] = None
-KIS.barl_names['2/2'] = None
-KIS.barl_names['3/4'] = None
-KIS.barl_names['4/4'] = None
+# уровние КИС
+# TODO: можно ли сюда отрицательные числа отправлять
+KIS.levels_kpa[1] = None
+KIS.levels_kpa[2] = None
+KIS.levels_kpa[3] = None
+KIS.levels_kpa[4] = None
+# Включенные блоки
+KIS.cur = None
+ASN.cur = None
+KSO.cur = None
+M778.cur = None
+RLCI.EA332.cur = None
+RLCI.EA331.cur = None
+RLCI.PCH.cur = None
+RLCI.FIP.cur = None
+RLCI.MOD.cur = None
+RLCI.UM.cur = None
+BSK_BSPA.cur = None
+BSK_P.cur = None
+BSK_KU.cur = None
 
 
 #####################    TESTS ###############################
 def TEST_DESCRIPTION():
     print(Text.yellow + "БАРЛ ВСЕ МПРД" + Text.default + ": ИЗМЕРИТЬ МИНИМАЛЬНУЮ МОЩНОСТЬ КПА;")
+    # Сначала настраиваем все комплекты КИС
+    # потом включаем АСН и имитатор АСН, проверяем что есть решение KSVCH
+    # включаем КСО, переводим в фейк режим, опрашиваем БИУС, ММ, ДС, ЗД, пров метку АСН
+    # включаем РЛЦИ првоеряем КИС, АСН, КСО, РЛЦИ на КПА
+    # включаем KU првоеряем КИС, АСН, КСО, РЛЦИ на КПА, KU
+    # включаем P проверяем КИС, АСН, КСО, РЛЦИ на КПА, KU, P
+    # включаем БСПА проверяем КИС, АСН, КСО, РЛЦИ на КПА, KU, P, БСПА
 
 
 def TEST_senseKIS():
@@ -57,28 +84,28 @@ def TEST_senseKIS():
     входит в СР по очереди на разных БАРЛ, меняет мощност КПА к минимуму, проверяет прохождение команд"""
     print()
     yprint('НАСТРОЙКА РЛ КИС И ЗАМЕР ИСХОДНОЙ ЧУВСТВИТЕЛЬНОСТИ ПРМ1', tab=2)
-    KIS.mode_SR('1/2')
-    KIS.conn_DI()
-    KIS.sens(5)
-    KIS.mode_DR()
+    KIS.on(1)
+    KIS.get_tmi()
+    KIS.sensitive_prm(5)
+    KIS.off()
     print()
     yprint('НАСТРОЙКА РЛ КИС И ЗАМЕР ИСХОДНОЙ ЧУВСТВИТЕЛЬНОСТИ ПРМ2', tab=2)
-    KIS.mode_SR('2/2')
-    KIS.conn_DI()
-    KIS.sens(5)
-    KIS.mode_DR()
+    KIS.on(2)
+    KIS.get_tmi()
+    KIS.sensitive_prm(5)
+    KIS.off()
     print()
     yprint('НАСТРОЙКА РЛ КИС И ЗАМЕР ИСХОДНОЙ ЧУВСТВИТЕЛЬНОСТИ ПРМ3', tab=2)
-    KIS.mode_SR('3/4')
-    KIS.conn_DI()
-    KIS.sens(5)
-    KIS.mode_DR()
+    KIS.on(3)
+    KIS.get_tmi()
+    KIS.sensitive_prm(5)
+    KIS.off()
     print()
     yprint('НАСТРОЙКА РЛ КИС И ЗАМЕР ИСХОДНОЙ ЧУВСТВИТЕЛЬНОСТИ ПРМ4', tab=2)
-    KIS.mode_SR('4/4')
-    KIS.conn_DI()
-    KIS.sens(5)
-    KIS.mode_DR()
+    KIS.on(4)
+    KIS.get_tmi()
+    KIS.sensitive_prm(5)
+    KIS.off()
     comm_print("Полученные значения мощности:")
     KIS.print_BARL_levels()
 
@@ -89,76 +116,96 @@ print()
 foo = {
     'ОЧИСТ НАКОПИТЕЛЬ': lambda: BCK.clc_BCK(),
     'СБРОС НАКОПИТЕЛЬ': lambda: BCK.downBCK(),
-    'БАРЛ СР': lambda: windowChooser(
-        btnsText=('1/2', '2/2', '3/4', '4/4'),
-        title='БАРЛ В СР',
+    'БАРЛ СР ДР': lambda: windowChooser(
+        btnsText=('СР 1/2', 'СР 2/2', 'СР 3/4', 'СР 4/4', 'ДР'),
+        title='БАРЛ СР ДР',
         fooDict={
-            '1/2': lambda: KIS.mode_SR('1/2'),
-            '2/2': lambda: KIS.mode_SR('2/2'),
-            '3/4': lambda: KIS.mode_SR('3/4'),
-            '4/4': lambda: KIS.mode_SR('4/4')},
+            'СР 1/2': lambda: KIS.on(1),
+            'СР 2/2': lambda: KIS.on(2),
+            'СР 3/4': lambda: KIS.on(3),
+            'СР 4/4': lambda: KIS.on(4),
+            'ДР': lambda: KIS.off()},
         ret_btn=True),
-    'БАРЛ УСТ КПА': lambda: KIS.set_KPA_level(),
-    'БАРЛ ДР': lambda: KIS.mode_DR(),
-    'БАРЛ ИзмУр КПА': lambda: KIS.sens(5),
-    'БАРЛ ТЕСТ ПРИЕМА': lambda: [x for x in (KIS.conn_DI(), sleep(5), KIS.conn_test(5))],
-    'УВРОНИ КПА': lambda: KIS.print_BARL_levels(),
-    'ПОТОК SOTC': lambda: KIS._barl_run(),
-    'АСН ВКЛ': lambda: windowChooser(
-        btnsText=('1', '2'),
+    'БАРЛ КПА УСТ МОЩ': lambda: KIS.set_KPA_level(),
+    'БАРЛ КПА ИЗМ МОЩ': lambda: KIS.sensitive_prm(5),
+    'БАРЛ ТЕСТ ПРИЕМА': lambda: KIS.get_tmi_conn_test(),
+    'БАРЛ КПА ВЫВОД МОЩ': lambda: KIS.print_BARL_levels(),
+    # 'ПОТОК SOTC': lambda: KIS._barl_run(),
+    'АСН ВКЛ ОТКЛ': lambda: windowChooser(
+        btnsText=('ВКЛ 1', 'ВКЛ 2', 'ОТКЛ 1', 'ОТКЛ2',),
         title='АСН ВКЛ',
         fooDict={
-            '1': lambda: ASN.on(1),
-            '2': lambda: ASN.on(2)},
+            'ВКЛ 1': lambda: ASN.on(1),
+            'ВКЛ 2': lambda: ASN.on(2),
+            'ОТКЛ 1': lambda: ASN.off(1),
+            'ОТКЛ2': lambda: ASN.off(2)},
         ret_btn=True),
-    'АСН ВЫКЛ': lambda: windowChooser(
-        btnsText=('1', '2'),
-        title='АСН ВЫКЛ',
+    'АСН ПРОВ СИГНАЛ': lambda: ASN.check_sm_output(),
+    'АСН КОНТРОЛЬ РАБОТЫ': lambda: ASN.res_control(),
+    'ИМ ДС ВКЛ': lambda: Imitators.on_imitators_DS(),
+    'ИМ ДС ОТКЛ': lambda: Imitators.off_imitators_DS(),
+    'ИМ ЗД ВКЛ': lambda: Imitators.on_imitators_ZD(),
+    'ИМ ЗД ОТКЛ': lambda: Imitators.off_imitators_ZD(),
+    'КСО ВКЛ ОТКЛ': lambda: windowChooser(
+        btnsText=('ВКЛ', 'ОТКЛ'),
+        title='КСО ВКЛ ОТКЛ',
         fooDict={
-            '1': lambda: ASN.off(1),
-            '2': lambda: ASN.off(2)},
+            'ВКЛ': lambda: KSO.on(),
+            'ОТКЛ': lambda: KSO.off()},
         ret_btn=True),
-    'АСН ПРОВ СИГНАЛ': lambda: ASN.check_sm_output(ASN.cur_block),
-    'АСН КОНТРОЛЬ РАБОТЫ': lambda: ASN.res_control(ASN.cur_block),
-    'РЛЦИ БА': lambda: windowChooser(
-        btnsText=('ОСН', 'РЕЗ', 'ОТКЛ'),
+    'КСО ТМИ': lambda: KSO.get_tmi(),
+    '!!!КСО ПРОВ ТМИ': KSO.__unrealized__,
+    '!!!КСО ТОК': KSO.__unrealized__,
+    'M778': lambda: windowChooser(
+                btnsText=(('ВКЛ А', 'ВКЛ Б'), 'ОТКЛ'),
+                title='ПИТАНИЕ М778',
+                fooDict={'ВКЛ А': lambda: M778.on(1),
+                         'ВКЛ Б': lambda: M778.on(2),
+                         'ОТКЛ': lambda: M778.off()},
+                ret_btn=True),
+    'РЛЦИ ЭА': lambda: windowChooser(
+        btnsText=(('ВКЛ ЭА332-1', 'ВКЛ ЭА332-2', 'ОТКЛ ЭА332'), ('ВКЛ ЭА331-1', 'ВКЛ ЭА331-2', 'ОТКЛ ЭА331')),
         title='РЛЦИ ПОД ПИТАНИЕ',
         fooDict={
-            'ОСН': lambda: RLCI.power_on_ea332(1),
-            'РЕЗ': lambda: RLCI.power_on_ea332(2),
-            'ОТКЛ': lambda: RLCI.power_off_ea332()},
+            'ВКЛ ЭА332-1': lambda: RLCI.EA332.on(1, stop_shd=True, ask_TMI=True),
+            'ВКЛ ЭА332-2': lambda: RLCI.EA332.on(2, stop_shd=True, ask_TMI=True),
+            'ОТКЛ ЭА332': lambda: RLCI.EA332.off(),
+            'ВКЛ ЭА331-1': lambda: RLCI.EA331.on(1),
+            'ВКЛ ЭА331-2': lambda: RLCI.EA332.on(2),
+            'ОТКЛ ЭА331': lambda: RLCI.EA331.off()},
+        labels=['ЭА332', 'ЭА331'],
         ret_btn=True),
     'РЛЦИ ПЧ': lambda: windowChooser(
         btnsText=('ОСН', 'РЕЗ', 'ОТКЛ'),
         title='РЛЦИ ПЧ',
         fooDict={
-            'ОСН': lambda: RLCI.on_PCH(1),
-            'РЕЗ': lambda: RLCI.on_PCH(2),
-            'ОТКЛ': lambda: RLCI.off_PCH()},
+            'ОСН': lambda: RLCI.PCH.on(1),
+            'РЕЗ': lambda: RLCI.PCH.on(2),
+            'ОТКЛ': lambda: RLCI.PCH.off()},
         ret_btn=True),
     'РЛЦИ ФИП': lambda: windowChooser(
         btnsText=('ОСН', 'РЕЗ', 'ОТКЛ'),
         title='РЛЦИ ФИП',
         fooDict={
-            'ОСН': lambda: RLCI.on_FIP(1),
-            'РЕЗ': lambda: RLCI.on_FIP(2),
-            'ОТКЛ': lambda: RLCI.off_FIP()},
+            'ОСН': lambda: RLCI.FIP.on(1),
+            'РЕЗ': lambda: RLCI.FIP.on(2),
+            'ОТКЛ': lambda: RLCI.FIP.off()},
         ret_btn=True),
     'РЛЦИ МОД': lambda: windowChooser(
         btnsText=('ОСН', 'РЕЗ', 'ОТКЛ'),
         title='РЛЦИ МОД',
         fooDict={
-            'ОСН': lambda: RLCI.on_MOD(1),
-            'РЕЗ': lambda: RLCI.on_MOD(2),
-            'ОТКЛ': lambda: RLCI.off_MOD()},
+            'ОСН': lambda: RLCI.MOD.on(1),
+            'РЕЗ': lambda: RLCI.MOD.on(2),
+            'ОТКЛ': lambda: RLCI.MOD.off()},
         ret_btn=True),
     'РЛЦИ УМ': lambda: windowChooser(
         btnsText=('ОСН', 'РЕЗ', 'ОТКЛ'),
         title='РЛЦИ УМ',
         fooDict={
-            'ОСН': lambda: RLCI.on_UM(1),
-            'РЕЗ': lambda: RLCI.on_UM(2),
-            'ОТКЛ': lambda: RLCI.off_UM()}),
+            'ОСН': lambda: RLCI.UM.on(1),
+            'РЕЗ': lambda: RLCI.UM.on(2),
+            'ОТКЛ': lambda: RLCI.UM.off()}),
     'РЛЦИ РЕЖИМ': lambda: windowChooser(
         btnsText=(('M1', 'M2', 'M3', 'M4'), ('VS1', 'VS2')),
         title='РЛЦИ УМ',
@@ -170,45 +217,6 @@ foo = {
                  'VS2': lambda: RLCI.mode('VS2')},
         ret_btn=True),
     'РЛЦИ ОТКЛ ВСЕ': lambda: RLCI.off_all(),
-    'M778': lambda: windowChooser(
-            btnsText=(('ВКЛ А', 'ВКЛ Б'), 'ОТКЛ'),
-            title='ПИТАНИЕ М778',
-            fooDict={'ВКЛ А': lambda: MB.power_on(1),
-                     'ВКЛ Б': lambda: MB.power_on(2),
-                     'ОТКЛ': lambda: MB.off()},
-            ret_btn=True),
-    'ЗД ВКЛ': lambda: windowChooser(
-        btnsText=(('1', '2', '3', '4'),),
-        title='ВКЛЮЧИТЬ ЗД',
-        fooDict={'1': lambda: ZD.on_ZD(1),
-                 '2': lambda: ZD.on_ZD(2),
-                 '3': lambda: ZD.on_ZD(3),
-                 '4': lambda: ZD.on_ZD(4)},
-        ret_btn=True),
-    'ЗД ОТКЛ': lambda: windowChooser(
-        btnsText=(('1', '2', '3', '4'),),
-        title='ОТКЛЮЧИТЬ ЗД',
-        fooDict={'1': lambda: ZD.off_ZD(1),
-                 '2': lambda: ZD.off_ZD(2),
-                 '3': lambda: ZD.off_ZD(3),
-                 '4': lambda: ZD.off_ZD(4)},
-        ret_btn=True),
-    'ЗД ТОК': lambda: ZD.ask_current_zd(),
-    'Им ЗД ВКЛ': lambda: ZD.on_imitators(),
-    'Им ЗД ОТКЛ': lambda: ZD.off_imitators(),
-    'ПРОВ ОРИЕНТ': lambda: windowChooser(
-        btnsText=(('1', '2', '3', '4'),),
-        title='ПРОВЕРИТЬ ОРИЕНТАЦИЮ ЗД',
-        fooDict={'1': lambda: ZD.quaternion_orentation(1),
-                 '2': lambda: ZD.quaternion_orentation(2),
-                 '3': lambda: ZD.quaternion_orentation(3),
-                 '4': lambda: ZD.quaternion_orentation(4)},
-        ret_btn=True),
-    'КСО ВКЛ': lambda: KSO.on(),
-    'КСО ОТКЛ': lambda: KSO.off(),
-    'КСО ТМИ': lambda: KSO.get_tmi(),
-    'КСО ПРОВ ТМИ': '',
-    'КСО ТОК': '',
     'ОПИСАНИЕ ТЕСТОВ': lambda: TEST_DESCRIPTION(),
     'АВТОМАТИЗ ТЕСТЫ': lambda: windowChooser(
         btnsText=('ИЗМ P БАРЛ',),
@@ -218,12 +226,12 @@ foo = {
 }
 # кнопки
 btns = (('ОЧИСТ НАКОПИТЕЛЬ', 'СБРОС НАКОПИТЕЛЬ'),
+        ('БАРЛ СР ДР', 'БАРЛ КПА УСТ МОЩ', 'БАРЛ КПА ИЗМ МОЩ', 'БАРЛ ТЕСТ ПРИЕМА', 'БАРЛ КПА ВЫВОД МОЩ'),
+        ('АСН ВКЛ ОТКЛ', 'АСН ПРОВ СИГНАЛ', 'АСН КОНТРОЛЬ РАБОТЫ'),
+        ('ИМ ДС ВКЛ', 'ИМ ДС ОТКЛ', 'ИМ ЗД ВКЛ', 'ИМ ЗД ОТКЛ',),
+        ('КСО ВКЛ ОТКЛ', 'КСО ТМИ', '!!!КСО ПРОВ ТМИ', '!!!КСО ТОК'),
         'M778',
-        ('БАРЛ СР', 'БАРЛ УСТ КПА', 'БАРЛ ДР', 'БАРЛ ИзмУр КПА', 'БАРЛ ТЕСТ ПРИЕМА', 'ПОТОК SOTC', 'УВРОНИ КПА'),
-        ('АСН ВКЛ', 'АСН ВЫКЛ', 'АСН ПРОВ СИГНАЛ', 'АСН КОНТРОЛЬ РАБОТЫ'),
-        ('РЛЦИ БА', 'РЛЦИ ПЧ', 'РЛЦИ ФИП', 'РЛЦИ МОД', 'РЛЦИ УМ', 'РЛЦИ РЕЖИМ', 'РЛЦИ ОТКЛ ВСЕ'),
-        ('ЗД ВКЛ', 'ЗД ОТКЛ', 'Им ЗД ВКЛ', 'Им ЗД ОТКЛ', 'ПРОВ ОРИЕНТ', 'ЗД ТОК'),
-        ('КСО ВКЛ', 'КСО ОТКЛ', 'КСО ТМИ', 'КСО ПРОВ ТМИ', 'КСО ТОК'),
+        ('РЛЦИ ЭА', 'РЛЦИ ПЧ', 'РЛЦИ ФИП', 'РЛЦИ МОД', 'РЛЦИ УМ', 'РЛЦИ РЕЖИМ', 'РЛЦИ ОТКЛ ВСЕ'),
         ('ОПИСАНИЕ ТЕСТОВ', 'АВТОМАТИЗ ТЕСТЫ'))
 print()
 yprint('ИСПЫТАНИЕ: АИП ИСПЫТАНИЙ МКА НА ЭМС ЧАСТЬ 1 НАСТРОЙКА РЭС', tab=3)
@@ -231,10 +239,15 @@ yprint('ИСПЫТАНИЕ: АИП ИСПЫТАНИЙ МКА НА ЭМС ЧАС�
 while True:
     print()
     try:
-        windowChooser(btnsText=btns, fooDict=foo, labels=['БЦК', 'M778', 'БАРЛ', 'АСН', 'РЛЦИ', 'ЗД', 'КСО', 'CMD'])
+        windowChooser(btnsText=btns, fooDict=foo, labels=['БЦК', 'БАРЛ', 'АСН', 'ИМИТ КСО', 'КСО', 'M778', 'РЛЦИ', 'ТЕСТЫ'])
     except Exception as ex:
         rprint("ОШИБКА В ТЕСТЕ")
         rprint(traceback.format_exc())
+
+
+
+
+
 
 # начать с АСН, включить имитатор и асн, посмотреть что он поймал от 4 спутниклов
 # выдвать команды на КИС смотреть есть ли влияние на навигацию
