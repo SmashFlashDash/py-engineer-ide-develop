@@ -86,25 +86,25 @@ def TEST_senseKIS():
     yprint('НАСТРОЙКА РЛ КИС И ЗАМЕР ИСХОДНОЙ ЧУВСТВИТЕЛЬНОСТИ ПРМ1', tab=2)
     KIS.on(1)
     KIS.get_tmi()
-    KIS.sensitive_prm(5)
+    KIS.sensitive_prm_bin(5)
     KIS.off()
     print()
     yprint('НАСТРОЙКА РЛ КИС И ЗАМЕР ИСХОДНОЙ ЧУВСТВИТЕЛЬНОСТИ ПРМ2', tab=2)
     KIS.on(2)
     KIS.get_tmi()
-    KIS.sensitive_prm(5)
+    KIS.sensitive_prm_bin(5)
     KIS.off()
     print()
     yprint('НАСТРОЙКА РЛ КИС И ЗАМЕР ИСХОДНОЙ ЧУВСТВИТЕЛЬНОСТИ ПРМ3', tab=2)
     KIS.on(3)
     KIS.get_tmi()
-    KIS.sensitive_prm(5)
+    KIS.sensitive_prm_bin(5)
     KIS.off()
     print()
     yprint('НАСТРОЙКА РЛ КИС И ЗАМЕР ИСХОДНОЙ ЧУВСТВИТЕЛЬНОСТИ ПРМ4', tab=2)
     KIS.on(4)
     KIS.get_tmi()
-    KIS.sensitive_prm(5)
+    KIS.sensitive_prm_bin(5)
     KIS.off()
     comm_print("Полученные значения мощности:")
     KIS.print_BARL_levels()
@@ -128,7 +128,7 @@ foo = {
         ret_btn=True),
     'БАРЛ КПА УСТ МОЩ': lambda: KIS.set_KPA_level(),
     'БАРЛ КПА ИЗМ МОЩ': lambda: KIS.sensitive_prm(5),
-    'БАРЛ КПА ОПРЕД ДИАП МОЩ': lambda: KIS.sensitive_prm_bin(),
+    'БАРЛ КПА ИЗМ МОЩ БИН': lambda: KIS.sensitive_prm_bin(5),
     'БАРЛ ТЕСТ ПРИЕМА': lambda: KIS.get_tmi_conn_test(),
     'БАРЛ КПА ВЫВОД МОЩ': lambda: KIS.print_BARL_levels(),
     # 'ПОТОК SOTC': lambda: KIS._barl_run(),
@@ -227,7 +227,7 @@ foo = {
 }
 # кнопки
 btns = (('ОЧИСТ НАКОПИТЕЛЬ', 'СБРОС НАКОПИТЕЛЬ'),
-        ('БАРЛ СР ДР', 'БАРЛ КПА УСТ МОЩ', 'БАРЛ КПА ОПРЕД ДИАП МОЩ', 'БАРЛ КПА ИЗМ МОЩ', 'БАРЛ ТЕСТ ПРИЕМА', 'БАРЛ КПА ВЫВОД МОЩ'),
+        ('БАРЛ СР ДР', 'БАРЛ КПА УСТ МОЩ', 'БАРЛ КПА ИЗМ МОЩ БИН', 'БАРЛ КПА ИЗМ МОЩ', 'БАРЛ ТЕСТ ПРИЕМА', 'БАРЛ КПА ВЫВОД МОЩ'),
         ('АСН ВКЛ ОТКЛ', 'АСН ПРОВ СИГНАЛ', 'АСН КОНТРОЛЬ РАБОТЫ'),
         ('ИМ ДС ВКЛ', 'ИМ ДС ОТКЛ', 'ИМ ЗД ВКЛ', 'ИМ ЗД ОТКЛ',),
         ('КСО ВКЛ ОТКЛ', 'КСО ТМИ', '!!!КСО ПРОВ ТМИ', '!!!КСО ТОК'),

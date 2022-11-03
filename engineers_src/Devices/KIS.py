@@ -95,7 +95,7 @@ class KIS(Device):
 
     @classmethod
     @print_start_and_end(string='КИС: настройка бинарным поиском ПРД КПА')
-    def sensitive_prm_bin(cls):
+    def sensitive_prm_bin(cls, n_cmd):
         """Предварительно определяет диапазон для настройки КПА"""
         if cls.cur is None:
             raise Exception("Замер чувствит ПРМ производится при включенном БАРЛ")
@@ -107,7 +107,7 @@ class KIS(Device):
         while True:
             values.append(powers_tx[mid])
             cls.__valid_KPA_power(powers_tx[mid])
-            errors = cls.conn_test(5)
+            errors = cls.conn_test(n_cmd)
             if low >= high or low == mid or high == mid:
                 break
             elif errors == 0:
