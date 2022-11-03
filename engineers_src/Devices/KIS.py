@@ -38,6 +38,7 @@ class KIS(Device):
     def off(cls):
         """ перевод БАРЛ в ДР
         :return: None"""
+        cls.__run_cmd('standby')
         cls.cur = None
 
     @classmethod
