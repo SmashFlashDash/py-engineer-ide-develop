@@ -19,6 +19,9 @@ class KIS(Device):
         'uncog': ((SOTC, 41),),
         'fx': ((SOTC, 87),)
     }
+    kpa_powers = [x * 1.0 for x in tuple(range(-60, -85, -2)) + tuple(range(-85, -110, -2))]  # значения мощности КПА
+    kpa_powers_search = None
+
 
     @classmethod
     @print_start_and_end(string='КИС: включить')
@@ -63,6 +66,7 @@ class KIS(Device):
         yprint('\n'.join(['\tБАРЛ %s: %s' % (cls.cyphs[num], cls.levels_kpa[num]) for num in range(1, 5)]))
 
     @classmethod
+    @print_start_and_end(string='КИС: настройка ПРД КПА')
     def sensitive_prm(cls, n_cmd):
         """Поиск минимального уровня мощности КПА КИС, чтобы проходили команды на БАРЛ
         :param n_cmd: кол-во раз сколько будет выдана комманда"""
@@ -71,29 +75,54 @@ class KIS(Device):
             raise Exception("Замер чувствит ПРМ производится при включенном БАРЛ")
         cypher = cls.cyphs[cls.cur]
         yprint('КИС замер чувствительности БАРЛ %s' % cypher, tab=1)
-        power_count = 0
-        powers_tx = [x * 1.0 for x in tuple(range(-60, -85, -2)) + tuple(range(-85, -110, -2))]  # значения мощности КПА
-        # -60 -62 ... -84 -85 -87 ... -109
-        run_setting = True
-        while run_setting and power_count < len(powers_tx):
-            power_transmitter = powers_tx[power_count]
-            bprint('Уст Мощность КПА %s dbm...' % power_transmitter)
-            Ex.send('КПА', KPA('Мощность-уст', power_transmitter))  # установить заданую мощность КПА
-            cls.__valid_KPA_power(power_transmitter)
+        if cls.kpa_powers_search is None:
+            powers_tx = cls.kpa_powers  # -60 -62 ... -84 -85 -87 ... -109 значения мощности КПА
+        else:
+            powers_tx = cls.kpa_powers_search
+        for index, power in enumerate(powers_tx):
+            cls.__valid_KPA_power(power)
             cls.conn_test(n_cmd)
             # решение оператор установить уровень, предыдущий или продолжить настройку
             btn_name = inputGG(title='Настройка мощности КПА КИС',
                                btnsList=([('Продолжить', 'ЗАВ НАСТ ИСП ПРЕД УРОВЕНЬ')]))
             if btn_name != 'Продолжить':
-                run_setting = False
-            power_count += 1
-        power_count -= 1
-        power_count = power_count if power_count in (
-        0, len(powers_tx) - 1) else power_count - 1  # крайние индексы не менять
-        bprint('Настроенный уровень сигнала КПА: %s dbm' % powers_tx[power_count])
+                index = index if index == 0 else index - 1  # перейти на предыдущий уровень
+                break
+        bprint('Настроенный уровень сигнала КПА: %s dbm' % powers_tx[index])
         # добавить в словарь урвоень сигнала
-        cls.levels_kpa[cls.cur] = powers_tx[power_count]
+        cls.levels_kpa[cls.cur] = powers_tx[index]
         Ex.send('КПА', KPA('Мощность-уст', cls.levels_kpa[cls.cur]))
+
+    @classmethod
+    @print_start_and_end(string='КИС: настройка бинарным поиском ПРД КПА')
+    def sensitive_prm_bin(cls):
+        """Предварительно определяет диапазон для настройки КПА"""
+        if cls.cur is None:
+            raise Exception("Замер чувствит ПРМ производится при включенном БАРЛ")
+        powers_tx = cls.kpa_powers
+        mid = len(powers_tx) // 2
+        low = 0
+        high = len(powers_tx) - 1
+        values = []
+        while True:
+            values.append(powers_tx[mid])
+            cls.__valid_KPA_power(powers_tx[mid])
+            errors = cls.conn_test(5)
+            if low >= high or low == mid or high == mid:
+                break
+            elif errors == 0:
+                low = mid + 1
+            else:
+                high = mid - 1
+            mid = (low + high) // 2
+        print("Проверенные значения: %s" % values)
+        if errors != 0:
+            raise Exception('Ошибка при определении уровня')
+        # добавить в словарь урвоень сигнала
+        cls.levels_kpa[cls.cur] = powers_tx[mid]
+        gprint('Уровень определен')
+        bprint('Настроенный уровень сигнала КПА: %s dbm' % cls.levels_kpa[cls.cur])
+        # cls.kpa_powers_search = powers_tx[mid-2 : [mid+2]]
 
     @classmethod
     def conn_test(cls, n_cmd):
@@ -123,13 +152,13 @@ class KIS(Device):
         if power is None:
             rprint('Не измерен уровень передатчика КПА для текущего БАРЛ')
             return
-        bprint("Устаовить уровень мощности прд КПА...")
-        Ex.send('КПА', KPA('Мощность-уст', power))  # установить заданую мощность КПА
-        cls.__valid_KPA_power(power)
+        cls.__valid_KPA_power(power)        # установить заданую мощность КПА
 
     # TODO: проверить
     @classmethod
     def __valid_KPA_power(cls, ref_power):
+        bprint("Устаовить уровень мощности прд КПА...")
+        Ex.send('КПА', KPA('Мощность-уст', ref_power))  # установить заданую мощность КПА
         if not Ex.wait('КПА', '%s < {ДИ_КПА.мощн_ПРД} < %s' % (ref_power-0.1, ref_power+0.1), 10):
             rprint("Не удалось установить Мощность КПА %s" % ref_power)
             inputG("Не удалось установить Мощность КПА %s" % ref_power)
