@@ -20,8 +20,6 @@ class KIS(Device):
         'fx': ((SOTC, 87),)
     }
     kpa_powers = [x * 1.0 for x in tuple(range(-60, -85, -2)) + tuple(range(-85, -110, -2))]  # значения мощности КПА
-    kpa_powers_search = None
-
 
     @classmethod
     @print_start_and_end(string='КИС: включить')
@@ -75,10 +73,7 @@ class KIS(Device):
             raise Exception("Замер чувствит ПРМ производится при включенном БАРЛ")
         cypher = cls.cyphs[cls.cur]
         yprint('КИС замер чувствительности БАРЛ %s' % cypher, tab=1)
-        if cls.kpa_powers_search is None:
-            powers_tx = cls.kpa_powers  # -60 -62 ... -84 -85 -87 ... -109 значения мощности КПА
-        else:
-            powers_tx = cls.kpa_powers_search
+        powers_tx = cls.kpa_powers  # -60 -62 ... -84 -85 -87 ... -109 значения мощности КПА
         for index, power in enumerate(powers_tx):
             cls.__valid_KPA_power(power)
             cls.conn_test(n_cmd)
@@ -104,25 +99,27 @@ class KIS(Device):
         low = 0
         high = len(powers_tx) - 1
         values = []
-        while True:
+        value = None
+        while low <= high:
             values.append(powers_tx[mid])
             cls.__valid_KPA_power(powers_tx[mid])
             errors = cls.conn_test(n_cmd)
-            if low >= high or low == mid or high == mid:
-                break
-            elif errors == 0:
+            # errors = 1 if powers_tx[mid] < -109.0 else 0
+            if errors == 0:
+                value = powers_tx[mid]
+            if errors == 0:
                 low = mid + 1
             else:
                 high = mid - 1
             mid = (low + high) // 2
         print("Проверенные значения: %s" % values)
-        if errors != 0:
-            raise Exception('Ошибка при определении уровня')
-        # добавить в словарь урвоень сигнала
-        cls.levels_kpa[cls.cur] = powers_tx[mid]
+        if value is None:
+            cls.levels_kpa[cls.cur] = powers_tx[0]
+            rprint('Настроен максимальный уровень')
+        else:
+            cls.levels_kpa[cls.cur] = value
         gprint('Уровень определен')
         bprint('Настроенный уровень сигнала КПА: %s dbm' % cls.levels_kpa[cls.cur])
-        # cls.kpa_powers_search = powers_tx[mid-2 : [mid+2]]
 
     @classmethod
     def conn_test(cls, n_cmd):
