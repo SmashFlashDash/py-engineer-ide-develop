@@ -147,26 +147,49 @@ class RokotTmi:
     #Выполняется из pydev процесса, не использовать переменные ui-процесса, выбрасывать исключения
     #params = {'name1' : 'КАЛИБР', 'name2' : 'НЕКАЛИБР', ...}
     @staticmethod
-    def getTmis(params):
-        for value_type in params.values():
+    def getTmis(params, field_name=None):
+        res = {}
+        for param_name, value_type in params.items():
             if value_type not in ('КАЛИБР', 'НЕКАЛИБР'):
                 raise Exception('Выбран неизвестный тип получаемых данных "%s"' % value_type)
+            res[param_name] = None
         RokotTmi.connectDb()
         tmsid = config.getData('rokot_current_tmsid')
         if tmsid is None:
             raise Exception("Не выбран сеанс для получения данных ТМИ")
+
+        if field_name == 'ИНТЕРВАЛ':
+            query = "SELECT value, tmid FROM tm WHERE tmsid = %s AND (" % tmsid
+            tmp_query = []
+            for param_name in params.keys():
+                last_tmid = config.getData("%d_%s" % (threading.get_ident(), param_name))
+                if last_tmid is None:
+                    raise Exception('Не удалось обнаружить предыдущий запрос параметра "%s"' % param_name)
+                tmp_query.append("(tmid > %s AND value->>'name' = '%s')" % (last_tmid, param_name))
+            query += ' OR '.join(tmp_query) + ") ORDER BY tmid ASC"
+        else:
+            query = "SELECT DISTINCT ON(tmparamsid) value, tmid FROM tm " \
+                    "WHERE tmsid = %s AND value->>'name' IN %s " \
+                    "ORDER BY tmparamsid, tmid DESC " % (tmsid, str(tuple(params.keys())).replace(',)', ')'))
+
         cur = RokotTmi.db_connection.cursor()
-        cur.execute("SELECT DISTINCT ON(tmparamsid) value, tmid "
-                    "FROM tm "
-                    "WHERE tmsid = %s AND value->>'name' IN %s "
-                    "ORDER BY tmparamsid, tmid DESC ", (tmsid, tuple(params.keys())))
-        res = {}
+        cur.execute(query)
         for row in cur:
-            config.updData("%d_%s" % (threading.get_ident(), row[0]['name']), row[0]['value'])
-            res[row[0]['name']] = row[0]['value'] if 'НЕКАЛИБР' in params[row[0]['name']] else row[0]['calibrated_value']
-            del params[row[0]['name']]
-        for param_name in params:
-            res[param_name] = None
+            config.updData("%d_%s" % (threading.get_ident(), row[0]['name']), row[1])
+
+            ##################### DEBUG
+            # if field_name != 'ИНТЕРВАЛ':
+            #     config.updData("%d_%s" % (threading.get_ident(), row[0]['name']), 648681700)
+            # print("%d_%s = %s" % (threading.get_ident(), row[0]['name'],
+            #       config.getData("%d_%s" % (threading.get_ident(), row[0]['name']))))
+
+            value = row[0]['value'] if 'НЕКАЛИБР' in params[row[0]['name']] else row[0]['calibrated_value']
+            if field_name == 'ИНТЕРВАЛ' and res[row[0]['name']] is None:
+                res[row[0]['name']] = [value]
+            elif field_name == 'ИНТЕРВАЛ':
+                res[row[0]['name']].append(value)
+            else:
+                res[row[0]['name']] = value
         cur.close()
         return res
 

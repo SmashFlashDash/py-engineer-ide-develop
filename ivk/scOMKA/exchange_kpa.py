@@ -683,7 +683,7 @@ res = Ex.wait('', '{ММ_X1.ЗапрТок} < 6.3 and {ММ_Z2.ЗапрНапр�
             if isinstance(msg_name, str):
                 return RokotTmi.getTmi(msg_name, field_name)
             elif isinstance(msg_name, dict):
-                return RokotTmi.getTmis(msg_name)
+                return RokotTmi.getTmis(msg_name, field_name)
             else:
                 raise Exception("Тип данных поля шифров должны быть: str, dict")
 
