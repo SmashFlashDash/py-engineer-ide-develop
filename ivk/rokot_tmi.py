@@ -152,7 +152,10 @@ class RokotTmi:
         for param_name, value_type in params.items():
             if value_type not in ('КАЛИБР', 'НЕКАЛИБР'):
                 raise Exception('Выбран неизвестный тип получаемых данных "%s"' % value_type)
-            res[param_name] = None
+            if field_name == 'ИНТЕРВАЛ':
+                res[param_name] = []
+            else:
+                res[param_name] = None
         RokotTmi.connectDb()
         tmsid = config.getData('rokot_current_tmsid')
         if tmsid is None:
@@ -184,9 +187,7 @@ class RokotTmi:
             #       config.getData("%d_%s" % (threading.get_ident(), row[0]['name']))))
 
             value = row[0]['value'] if 'НЕКАЛИБР' in params[row[0]['name']] else row[0]['calibrated_value']
-            if field_name == 'ИНТЕРВАЛ' and res[row[0]['name']] is None:
-                res[row[0]['name']] = [value]
-            elif field_name == 'ИНТЕРВАЛ':
+            if field_name == 'ИНТЕРВАЛ':
                 res[row[0]['name']].append(value)
             else:
                 res[row[0]['name']] = value
