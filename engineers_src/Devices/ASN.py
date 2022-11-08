@@ -33,7 +33,7 @@ class ASN(Device):
         else:
             raise Exception('Номер блока только 1 и 2')
         cls.cur = num
-        cls.res_control()
+        # cls.res_control()
 
     @classmethod
     @print_start_and_end(string='АСН: отключить')

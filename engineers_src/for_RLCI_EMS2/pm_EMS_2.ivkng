@@ -42,6 +42,13 @@ from engineers_src.Devices import BCK, M778, KIS, RLCI, ASN, Imitators, BSK_BSPA
 #  есть ли коммутация в DiStorage и RLCIV
 #  все функции
 
+# TODO:
+#  когда вклчили асн
+#  выключили КИС
+#  получить ТМИ по всем ДИ за это врумя
+#  config.updData("%d_%s" % (threading.get_ident(), param_name), res[1])
+#  Ex.getTMIS - не работает для кучи зачений
+#  получить словрь записать в словарь
 
 ##################### COMMUTATIONS ############################
 DIstorage.commute('M778B', False)
