@@ -50,6 +50,14 @@ from lib.tabulate.tabulate import *
 ##################### COMMONS ######################
 forma = "%-20s --> %s"  # вывод шифр --> значение
 
+# TODO:
+#  - сделать абстрактрный класс, и подключать блоки RLCI.PCH, RLCI.EA332 и т.д.
+#  - разбить программу на классы по файлам выннести одну общую папку из этих ПМ
+#    в классе есть текущий включенный блок, эксепшен или ретурн на вкл если блок включен
+#    функция опроса тока, опрос телеметрии блока в массив, функция сбросить массив накопленной тми
+#  - сделать global параметр для пере определения параметров пауз в EMSRLCI_foos
+#  - дописать в скрипт ПМ где определяются включенные блоки устройств
+
 
 ###################### BCK ##############################
 class BCK:
@@ -199,7 +207,6 @@ class KIS:
         power_count = 0
         powers_tx = [x * 1.0 for x in tuple(range(-60, -85, -2)) + tuple(range(-85, -110, -2))]  # значения мощности КПА
         # -60 -62 ... -84 -85 -87 ... -109
-        # TODO: здесь можно сделать bubble sort
         run_setting = True
         while run_setting and power_count < len(powers_tx):
             power_transmitter = powers_tx[power_count]
@@ -833,93 +840,29 @@ class ASN:
                    text=('', 'Проверьте, что на Имитаторе К2-100 запущен сценарий имитации!'))
 
 
-##################### ZD ##############################
-class ZD:
-    # TODO: после того как включил все ЗД надо сбросить #Очистить область накопителя #Чтение накопителя
-    uv = {
-        'ZD1_on': lambda: sendFromJson(SCPICMD, 0x0032, AsciiHex('0x0000 0000')),
-        'ZD2_on': lambda: sendFromJson(SCPICMD, 0x0032, AsciiHex('0x0100 0000')),
-        'ZD3_on': lambda: sendFromJson(SCPICMD, 0x0032, AsciiHex('0x0200 0000')),
-        'ZD4_on': lambda: sendFromJson(SCPICMD, 0x0032, AsciiHex('0x0300 0000')),
-        'ZD1_off': lambda: sendFromJson(SCPICMD, 0x0033, AsciiHex('0x0000 0000')),
-        'ZD2_off': lambda: sendFromJson(SCPICMD, 0x0033, AsciiHex('0x0100 0000')),
-        'ZD3_off': lambda: sendFromJson(SCPICMD, 0x0033, AsciiHex('0x0200 0000')),
-        'ZD4_off': lambda: sendFromJson(SCPICMD, 0x0033, AsciiHex('0x0300 0000')),
-    }
-    uv_di = {
-        # поидее ДИ это ток, и его можно не запрашивать тогда можно без downBCK
-        'ZD1_key': lambda: executeTMI(doEquation('05.01.beBOD1OG11', '@H', 'on'), count=1, pause=8),            # ключ
-        'ZD2_key': lambda: executeTMI(doEquation('05.01.beBOD1OG21', '@H', 'on'), count=1, pause=8),            # ключ
-        'ZD3_key': lambda: executeTMI(doEquation('05.01.beBOD2OG11', '@H', 'on'), count=1, pause=8),            # ключ
-        'ZD4_key': lambda: executeTMI(doEquation('05.01.beBOD2OG21', '@H', 'on'), count=1, pause=8),            # ключ
-        'ZD1_current': doEquation('05.02.CBOD1OG12', '@H', 'on'),    # ток
-        'ZD2_current': doEquation('05.02.CBOD1OG22', '@H', 'on'),    # ток
-        'ZD3_current': doEquation('05.02.CBOD2OG12', '@H', 'on'),    # ток
-        'ZD4_current': doEquation('05.02.CBOD2OG22', '@H', 'on'),    # ток
-        'orient_ready': lambda x: executeTMI(doEquation('00.08.OrientReady_ST%s' % x, '@H', 'yes'), count=1, pause=8),
-        'zd_orient': lambda x, vals: executeTMI(doEquation('00.08.Q_ST%s_0' % x, '@H', 'orient', ref_val=vals[0]) + ' and ' +
-                                                doEquation('00.08.Q_ST%s_1' % x, '@H', 'orient', ref_val=vals[1]) + ' and ' +
-                                                doEquation('00.08.Q_ST%s_2' % x, '@H', 'orient', ref_val=vals[2]) + ' and ' +
-                                                doEquation('00.08.Q_ST%s_3' % x, '@H', 'orient', ref_val=vals[3]), count=1, pause=8)
-    }
-    quaternions = {
-        1: (round(0.497978, 2), round(-0.599586, 2), round(-0.419021, 2), round(-0.465764, 2)),
-        2: (round(0.526215, 2), round(-0.625533, 2), round(-0.380668, 2), round(-0.432317, 2)),
-        3: (round(0.528514, 2), round(-0.625921, 2), round(-0.373003, 2), round(-0.43562, 2)),
-        4: (round(0.666464, 2), round(-0.722384, 2), round(-0.072327, 2), round(-0.169576, 2)),
-    }
-
+##################### IMITATORS ##############################
+class Imitators:
     @staticmethod
-    def __validate_num_zd(num):
-        if not isinstance(num, int) or not (0 < num < 5):
-            raise Exception('Неверный параметр')
-
-    # Включить отключить иматоторы ЗД
-    @staticmethod
-    @print_start_and_end(string='ЗД: ВКЛ ИМ')
-    def on_imitators():
+    @print_start_and_end(string='ЗД ИМИТАТОР ВКЛ')
+    def on_imitators_ZD():
         Ex.send('Ячейка ПИ', ICCELL('ВыходЗД', out=0x0F))  # Включение имитаторов ЗД
         sleep(3)
 
     @staticmethod
-    @print_start_and_end(string='ЗД: ОТКЛ ИМ')
-    def off_imitators():
-        sleep(0.5)
+    @print_start_and_end(string='ЗД ИМИТАТОР ОТКЛ')
+    def off_imitators_ZD():
         Ex.send('Ячейка ПИ', ICCELL('ВыходЗД', out=0x00))  # Имитаторы ЗД отключены
 
     @staticmethod
-    @print_start_and_end(string='ЗД: ВКЛ ЗД')
-    def on_ZD(num):
-        ZD.__validate_num_zd(num)
-        ZD.uv['ZD%s_on' % num]()    # включение ЗД
+    @print_start_and_end(string='ДС ИМИТАТОР ВКЛ')
+    def on_imitators_DS():
+        Ex.send('Ячейка ПИ', ICCELL('ВыходДС', out=0xFF))  # Включение имитаторов ДС
         sleep(3)
-        ZD.uv_di['ZD%s_key' % num]()        # опрос ключа
-        # executeTMI(ZD.uv_di['ZD%s_current' % num], pause=0, downBCK=True)    # опрос тока
 
     @staticmethod
-    @print_start_and_end(string='ЗД: ОТКЛ ЗД')
-    def off_ZD(num):
-        ZD.__validate_num_zd(num)
-        ZD.uv['ZD%s_off' % num]()  # Отключение ЗД
-        sleep(3)
-        ZD.uv_di['ZD%s_key' % num]()  # опрос ключа
-        # executeTMI(ZD.uv_di['ZD%s_current' % num], pause=0, downBCK=True)    # опрос тока
-
-    @staticmethod
-    @print_start_and_end(string='ЗД: ОПРОС ТОК')
-    def ask_current_zd():
-        """опросить ток всез звездников"""
-        equation = ' and '.join([ZD.uv_di['ZD%s_current' % x] for x in range(1, 5)])
-        executeTMI(equation, pause=0, downBCK=True)
-
-    @staticmethod
-    @print_start_and_end(string='ЗД: ПРОВ ОРИЕНТАЦИИ')
-    def quaternion_orentation(num):
-        ZD.__validate_num_zd(num)
-        bprint('Проверка построения ориентации ЗД %s' % num)
-        result, values = ZD.uv_di['orient_ready'](num)
-        bprint('Опрос кватернионов ЗД %s' % num)
-        ZD.uv_di['zd_orient'](num, ZD.quaternions[num])
+    @print_start_and_end(string='ДС ИМИТАТОР ОТКЛ')
+    def on_imitators_DS():
+        Ex.send('Ячейка ПИ', ICCELL('ВыходДС', out=0x00))  # Включение имитаторов ДС
 
 
 ##################### BSK-P ##############################
@@ -972,7 +915,8 @@ class BSPA:
 #
 class KSO:
     cur = None
-    _tmi = config.odict(('00.02.Sat_Bx', []), ('00.02.Sat_By', []), ('00.02.Sat_Bz', []),
+    _tmi = config.odict(('00.01.PPS1', []), ('00.01.PPS2', []),
+                        ('00.02.Sat_Bx', []), ('00.02.Sat_By', []), ('00.02.Sat_Bz', []),
                         ('00.02.Sat_Bx_2', []), ('00.02.Sat_By_2', []), ('00.02.Sat_Bz_2', []),
                         ('00.01.FT1_FD1', []), ('00.01.FT1_FD2', []), ('00.01.FT1_FD3', []), ('00.01.FT1_FD4', []),
                         ('00.01.FT2_FD1', []), ('00.01.FT2_FD2', []), ('00.01.FT2_FD3', []), ('00.01.FT2_FD4', []),
@@ -1005,18 +949,24 @@ class KSO:
             inputG('00.01.ARO не == 15200')
         else:
             gprint('00.01.ARO == 15200')
+        sendFromJson(SCPICMD, 0x0082, AsciiHex('0x0100 0000'), describe='Фейк мод', pause=10)  # Фейк мод
+        executeTMI("{00.01.fakeAocsMode}@H == 1")    # Ex.wait('ТМИ', '{00.01.fakeAocsMode} == 1', 10)
+        sendFromJson(SCPICMD, 0x0064, AsciiHex('0x0300 0000'), describe='Перейти 2ЗКТ', pasuse=10)  # перейти в 2ЗКТ для ЗД
+        executeTMI("{00.01.mode}@H == 1 and {00.01.submode}@H == 31")   # Ex.wait('ТМИ', '{00.01.mode.НЕКАЛИБР} == 3 and {00.01.submode.НЕКАЛИБР} == 31', 10)
         KSO.cur = True
         # TODO: проверить какой КСО включн
         # if executeTMI("{05.01.beKSOA2}@H==1")[0]:   # == 1 Состояние коммутатора КСО Коммутатор А Ключевой элемент 2
         #     BCK.clc_BCK()
         #     BCK.downBCK()
-        #     executeTMI(' and '.join(("{05.02.VKSOA}@H>200",     # Напряжение канала коммутатора КСО Коммутатор А Ключевой элемент 1
-        #                              "{05.02.CKSOA}@H>7",       # Ток коммутатора КСО Коммутатор А Ключевой элемент 2
+        #     executeTMI(' and '.join(("{05.02.VKSOA}@H>100",     # Напряжение канала коммутатора КСО Коммутатор А Ключевой элемент 1
+        #                              "{05.02.CKSOA}@H>3",       # Ток коммутатора КСО Коммутатор А Ключевой элемент 2
         #                              "{00.01.ARO}@H>1")))       # Счётчик реконфигурации
         #     KSO.isOn = True
         # else:
         #     rprint("КСО КСО НЕ ЗАМКНУТ")
         #     inputG()
+
+        # первичный опрос ТМИ
         prevLength = len(KSO._tmi)
         KSO._get_tmi()    # опросить ТМИ
         if prevLength != len(KSO._tmi):
@@ -1073,13 +1023,25 @@ class KSO:
     def _get_tmi():
         # if KSO.cur is None:
         #     raise Exception("КСО должен быть включен")
+
+        # проверить секундную от АСН, что меняется в КСО счетчи
+        res, values = executeTMI(doEquation('00.01.PPS1', '@H', ref_val='@unsame') + " or " +
+                   doEquation('00.01.PPS2', '@Y', ref_val='@unsame'), count=2, period=8)
+        if res:
+            print('Есть связь с АСН')
+
+
+
         # Сброс БЦК чтобы опросить занчения БИУС
         BCK.clc_BCK()
         BCK.downBCK()
+        # sleep(8)
+
+
         # Опрос ММ1, 2ДС, 2БИУС
-        tmi = Ex.get('ТМИ', {"00.02.Sat_Bx": 'НЕКАЛИБР',
-                             "00.02.Sat_By": 'НЕКАЛИБР',
-                             "00.02.Sat_Bz": 'НЕКАЛИБР',
+        tmi = Ex.get('ТМИ', {"00.02.Sat_Bx": 'КАЛИБР',
+                             "00.02.Sat_By": 'КАЛИБР',
+                             "00.02.Sat_Bz": 'КАЛИБР',
                              "00.01.FT1_FD1": 'НЕКАЛИБР',
                              "00.01.FT1_FD2": 'НЕКАЛИБР',
                              "00.01.FT1_FD3": 'НЕКАЛИБР',
@@ -1088,24 +1050,30 @@ class KSO:
                              "00.01.FT2_FD2": 'НЕКАЛИБР',
                              "00.01.FT2_FD3": 'НЕКАЛИБР',
                              "00.01.FT2_FD4": 'НЕКАЛИБР',
-                             "00.05.BIUS1MeasX": 'НЕКАЛИБР',
-                             "00.05.BIUS1MeasY": 'НЕКАЛИБР',
-                             "00.05.BIUS1MeasZ": 'НЕКАЛИБР',
-                             "00.05.BIUS2MeasX": 'НЕКАЛИБР',
-                             "00.05.BIUS2MeasY": 'НЕКАЛИБР',
-                             "00.05.BIUS2MeasZ": 'НЕКАЛИБР'}, None)
+                             "00.05.BIUS1MeasX": 'КАЛИБР',
+                             "00.05.BIUS1MeasY": 'КАЛИБР',
+                             "00.05.BIUS1MeasZ": 'КАЛИБР',
+                             "00.05.BIUS2MeasX": 'КАЛИБР',
+                             "00.05.BIUS2MeasY": 'КАЛИБР',
+                             "00.05.BIUS2MeasZ": 'КАЛИБР'}, None)
 
         # переключить ММ, опросить, добавить доп значения в словарь
         # TODO: поставить неисправность 0x0084 с Asciihex
+        sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0201 0000'), pause=10)  # Отказ ММ1
         # sendFromJson(SCPICMD, 0x002A, AsciiHex('0x0200 0000'), pause=10)  # Включить ММ2
-        # mm2 = Ex.get('ТМИ', {"00.02.Sat_Bx": 'НЕКАЛИБР',
-        #                      "00.02.Sat_By": 'НЕКАЛИБР',
-        #                      "00.02.Sat_Bz": 'НЕКАЛИБР'}, None)
-        # for item in mm2.items():
-        #     tmi[item[0] + '_2'] = item[1]
+        sleep(10)   # пауза на переключение
+        mm2 = Ex.get('ТМИ', {"00.02.Sat_Bx": 'КАЛИБР',
+                             "00.02.Sat_By": 'КАЛИБР',
+                             "00.02.Sat_Bz": 'КАЛИБР'}, None)
+        for item in mm2.items():
+            tmi[item[0] + '_2'] = item[1]
         # sendFromJson(SCPICMD, 0x002A, AsciiHex('0x0100 0000'))  # Включить ММ1
+        sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0200 0000'), pause=1)  # Сброс отказ ММ1
+        sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0301 0000'), pause=1)  # отказ ММ2
+
 
         # Звездники работают только в режиме 0x0065(0x1F00 0000)- подрежим ориентации (штатая ориентация)
+
         if not Ex.wait('ТМИ', '{00.01.mode.НЕКАЛИБР} == 3 and {00.01.submode.НЕКАЛИБР} == 31', 10):
             sendFromJson(SCPICMD, 0x0065, AsciiHex('0x1F00 0000'))  # задать штатный режим ориентации
             Ex.wait('ТМИ', '{00.01.mode.НЕКАЛИБР} == 3 and {00.01.submode.НЕКАЛИБР} == 31', 10)
@@ -1113,14 +1081,14 @@ class KSO:
         # TODO: OrientReady_ST включаить АСН, задать ориент
 
         for x in range(0, 4):
-            zd['00.08.Q_ST%s_0' % (x + 1)] = 'НЕКАЛИБР'
-            zd['00.08.Q_ST%s_1' % (x + 1)] = 'НЕКАЛИБР'
-            zd['00.08.Q_ST%s_2' % (x + 1)] = 'НЕКАЛИБР'
-            zd['00.08.Q_ST%s_3' % (x + 1)] = 'НЕКАЛИБР'
+            zd['00.08.Q_ST%s_0' % (x + 1)] = 'КАЛИБР'
+            zd['00.08.Q_ST%s_1' % (x + 1)] = 'КАЛИБР'
+            zd['00.08.Q_ST%s_2' % (x + 1)] = 'КАЛИБР'
+            zd['00.08.Q_ST%s_3' % (x + 1)] = 'КАЛИБР'
             # zd['00.08.OrientReady_ST%s' % (x + 1)] = 'НЕКАЛИБР'
         zd = Ex.get('ТМИ', zd, None)
         for item in zd.items():
-            tmi[item[0]] = item[1]
+            tmi[item[0]] = round(item[1], 2)
         # проверить кватернионы
         # <= tmi['{00.08.Q_ST1_0}'] <=
 

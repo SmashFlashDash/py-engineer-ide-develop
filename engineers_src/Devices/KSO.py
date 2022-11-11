@@ -19,6 +19,41 @@ class KSO(Device):
                         ("00.08.Q_ST2_0", [],), ("00.08.Q_ST2_1", [],), ("00.08.Q_ST2_2", [],), ("00.08.Q_ST2_3", [],),
                         ("00.08.Q_ST3_0", [],), ("00.08.Q_ST3_1", [],), ("00.08.Q_ST3_2", [],), ("00.08.Q_ST3_3", [],),
                         ("00.08.Q_ST4_0", [],), ("00.08.Q_ST4_1", [],), ("00.08.Q_ST4_2", [],), ("00.08.Q_ST4_3", [],))
+    __di_list = [
+        {"00.01.FT1_FD1": 'НЕКАЛИБР',
+         "00.01.FT1_FD2": 'НЕКАЛИБР',
+         "00.01.FT1_FD3": 'НЕКАЛИБР',
+         "00.01.FT1_FD4": 'НЕКАЛИБР',
+         "00.01.FT2_FD1": 'НЕКАЛИБР',
+         "00.01.FT2_FD2": 'НЕКАЛИБР',
+         "00.01.FT2_FD3": 'НЕКАЛИБР',
+         "00.01.FT2_FD4": 'НЕКАЛИБР',
+         "00.05.BIUS1MeasX": 'КАЛИБР',
+         "00.05.BIUS1MeasY": 'КАЛИБР',
+         "00.05.BIUS1MeasZ": 'КАЛИБР',
+         "00.05.BIUS2MeasX": 'КАЛИБР',
+         "00.05.BIUS2MeasY": 'КАЛИБР',
+         "00.05.BIUS2MeasZ": 'КАЛИБР'},
+        {"00.02.Sat_Bx": 'КАЛИБР',
+         "00.02.Sat_By": 'КАЛИБР',
+         "00.02.Sat_Bz": 'КАЛИБР'},
+        {'00.08.Q_ST1_0': 'КАЛИБР',
+         '00.08.Q_ST1_1': 'КАЛИБР',
+         '00.08.Q_ST1_2': 'КАЛИБР',
+         '00.08.Q_ST1_3': 'КАЛИБР',
+         '00.08.Q_ST2_0': 'КАЛИБР',
+         '00.08.Q_ST2_1': 'КАЛИБР',
+         '00.08.Q_ST2_2': 'КАЛИБР',
+         '00.08.Q_ST2_3': 'КАЛИБР',
+         '00.08.Q_ST3_0': 'КАЛИБР',
+         '00.08.Q_ST3_1': 'КАЛИБР',
+         '00.08.Q_ST3_2': 'КАЛИБР',
+         '00.08.Q_ST3_3': 'КАЛИБР',
+         '00.08.Q_ST4_0': 'КАЛИБР',
+         '00.08.Q_ST4_1': 'КАЛИБР',
+         '00.08.Q_ST4_2': 'КАЛИБР',
+         '00.08.Q_ST4_3': 'КАЛИБР'}
+    ]
     quaternions = {
         1: (round(0.497978, 2), round(-0.599586, 2), round(-0.419021, 2), round(-0.465764, 2)),
         2: (round(0.526215, 2), round(-0.625533, 2), round(-0.380668, 2), round(-0.432317, 2)),
@@ -109,68 +144,74 @@ class KSO(Device):
         cls._printTmi(cls.di)
 
     @classmethod
-    def _get_tmi(cls):
+    def _get_tmi(cls, isInterval=None):
         if KSO.cur is None:
             raise Exception("КСО должен быть включен")
         # проверить секундную от АСН, что меняется в КСО счетчи
-        res, values = executeTMI(doEquation('00.01.PPS1', '@H', ref_val='@unsame') + " or " +
-                                 doEquation('00.01.PPS2', '@H', ref_val='@unsame'), count=2, stopFalse=False)
+        res = executeTMI(doEquation('00.01.PPS1', '@H', ref_val='@unsame') + " or " +
+                         doEquation('00.01.PPS2', '@H', ref_val='@unsame'), count=2, stopFalse=False)[0]
         if res:
             gprint('Есть секундная метка от АСН')
         else:
             rprint('Не изменяется секундная метка от АСН')
-            inputG('Не изменяется секундная метка от АСН')
+            res = inputGG(btnsList=["Продолжить", "Отменить"], title='Не изменяется секундная метка от АСН')
+            if res == 'Отменить':
+                return
 
         # Сброс БЦК чтобы опросить занчения БИУС
-        BCK.clc_BCK()
-        BCK.downBCK()
-        # Опрос ММ1, 2ДС, 2БИУС
-        tmi = Ex.get('ТМИ', {"00.02.Sat_Bx": 'КАЛИБР',
-                             "00.02.Sat_By": 'КАЛИБР',
-                             "00.02.Sat_Bz": 'КАЛИБР',
-                             "00.01.FT1_FD1": 'НЕКАЛИБР',
-                             "00.01.FT1_FD2": 'НЕКАЛИБР',
-                             "00.01.FT1_FD3": 'НЕКАЛИБР',
-                             "00.01.FT1_FD4": 'НЕКАЛИБР',
-                             "00.01.FT2_FD1": 'НЕКАЛИБР',
-                             "00.01.FT2_FD2": 'НЕКАЛИБР',
-                             "00.01.FT2_FD3": 'НЕКАЛИБР',
-                             "00.01.FT2_FD4": 'НЕКАЛИБР',
-                             "00.05.BIUS1MeasX": 'КАЛИБР',
-                             "00.05.BIUS1MeasY": 'КАЛИБР',
-                             "00.05.BIUS1MeasZ": 'КАЛИБР',
-                             "00.05.BIUS2MeasX": 'КАЛИБР',
-                             "00.05.BIUS2MeasY": 'КАЛИБР',
-                             "00.05.BIUS2MeasZ": 'КАЛИБР'}, None)
+        if isInterval:
+            isInterval = 'ИНТЕРВАЛ'
+            BCK.downBCK()
+            values = {}
+            for x in cls.__di_list:
+                values.update(**x)
+            tmi = Ex.get('ТМИ', values, isInterval)
+            mm2 = Ex.get('ТМИ', cls.__di_list[1], isInterval)
+            length = len(mm2["00.02.Sat_Bx"])
+            for item in mm2.items():
+                tmi[item[0] + '_2'] = [None] * length
+            for key in cls.__di_list[2].keys():
+                rounded = []
+                for value in tmi[key]:
+                    if value is None or isinstance(value, str):
+                        rprint('%s - %s Значение нельзя округлить' % (key, value))
+                        rounded.append('Err')
+                        continue
+                    rounded.append(round(value, 2))
+                tmi[key] = rounded
+        else:
+            BCK.clc_BCK()
+            BCK.downBCK()
+            # Опрос ММ1, 2ДС, 2БИУС
+            tmi = Ex.get('ТМИ', {**cls.__di_list[0], **cls.__di_list[1]}, None)
+            # переключить ММ, опросить, добавить доп значения в словарь
+            sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0201 0000'), pause=10)  # Отказ ММ1
+            sleep(10)  # пауза на переключение
+            mm2 = Ex.get('ТМИ', cls.__di_list[1], None)
+            for item in mm2.items():
+                tmi[item[0] + '_2'] = item[1]
+            sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0200 0000'), pause=1)  # Сброс отказ ММ1
+            sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0301 0000'), pause=1)  # отказ ММ2
+            # Звездники работают только в режиме 0x0065(0x1F00 0000)- подрежим ориентации (штатая ориентация)
+            if not Ex.wait('ТМИ', '{00.01.mode.НЕКАЛИБР} == 3 and {00.01.submode.НЕКАЛИБР} == 31', 10):
+                sendFromJson(SCPICMD, 0x0065, AsciiHex('0x1F00 0000'))  # задать штатный режим ориентации
+                if not Ex.wait('ТМИ', '{00.01.mode.НЕКАЛИБР} == 3 and {00.01.submode.НЕКАЛИБР} == 31', 10):
+                    inputG('Выставить 2ЗКТ')
+            zd = Ex.get('ТМИ', cls.__di_list[2], None)
+            for item in zd.items():
+                if item[1] is None or isinstance(item[1], str):
+                    rprint('%s - %s Значение нельзя округлить' % (item[0], item[1]))
+                    tmi[item[0]] = 'Err'
+                    continue
+                tmi[item[0]] = round(item[1], 2)
 
-        # переключить ММ, опросить, добавить доп значения в словарь
-        sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0201 0000'), pause=10)  # Отказ ММ1
-        sleep(10)  # пауза на переключение
-        mm2 = Ex.get('ТМИ', {"00.02.Sat_Bx": 'КАЛИБР',
-                             "00.02.Sat_By": 'КАЛИБР',
-                             "00.02.Sat_Bz": 'КАЛИБР'}, None)
-        for item in mm2.items():
-            tmi[item[0] + '_2'] = item[1]
-        sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0200 0000'), pause=1)  # Сброс отказ ММ1
-        sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0301 0000'), pause=1)  # отказ ММ2
-
-        # Звездники работают только в режиме 0x0065(0x1F00 0000)- подрежим ориентации (штатая ориентация)
-        if not Ex.wait('ТМИ', '{00.01.mode.НЕКАЛИБР} == 3 and {00.01.submode.НЕКАЛИБР} == 31', 10):
-            sendFromJson(SCPICMD, 0x0065, AsciiHex('0x1F00 0000'))  # задать штатный режим ориентации
-            Ex.wait('ТМИ', '{00.01.mode.НЕКАЛИБР} == 3 and {00.01.submode.НЕКАЛИБР} == 31', 10)
-        zd = {}
-        for x in range(0, 4):
-            zd['00.08.Q_ST%s_0' % (x + 1)] = 'КАЛИБР'
-            zd['00.08.Q_ST%s_1' % (x + 1)] = 'КАЛИБР'
-            zd['00.08.Q_ST%s_2' % (x + 1)] = 'КАЛИБР'
-            zd['00.08.Q_ST%s_3' % (x + 1)] = 'КАЛИБР'
-        zd = Ex.get('ТМИ', zd, None)
-        for item in zd.items():
-            tmi[item[0]] = round(item[1], 2) if item[1] is not None else 'None'
-
+        # Здесь можно посчитать по массивам среднне нафиг их сейвить в строку
         # заменяем значения
         for item in tmi.items():
-            cls.di[item[0]].append(item[1])
+            if isinstance(item[1], (list, tuple)):
+                cls.di[item[0]].extend(item[1])
+            else:
+                cls.di[item[0]].append(item[1])
 
     @classmethod
     def _printTmi(cls, tmi, twoVals=False):
