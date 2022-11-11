@@ -36,7 +36,7 @@ from PyQt5.QtCore import Qt
 
 
 ################ IMITATION ###############
-from random import randint
+# from random import randint
 # def get(*args):
 #     randint(0, 10)
 #     calibs = ('включен', 'отключен', 'Есть', 'Нет', 0, 100, None)
@@ -499,6 +499,8 @@ def controlGetEQ(equation, count=1, period=0, toPrint=True, downBCK=False):
             caliber_sign = part[2]
             self._operator = part[3]
             value_text = part[4].strip()
+            if value_text.strip('\"\'').endswith(('@all', '@any')):
+                raise Exception('Ошибка в выражении:\n', part, 'нет разделителя @all @any')
             self.all_any_operator = part[5].lower()
             self._cls_backw = part[6]
             self._log_operator = part[7]

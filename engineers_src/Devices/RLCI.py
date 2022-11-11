@@ -13,6 +13,7 @@ class EA332(Device):
     def on(cls, num, stop_shd=True, ask_TMI=True):
         if cls.cur is not None:
             raise Exception('ЭА332 включен!')
+        cls.log('Включить', num)
         cls.cur = num
         if num == 1:
             # sendFromJson(SCPICMD, 0x40DB, pause=1)  # ЭА332-О
@@ -49,8 +50,7 @@ class EA332(Device):
 
     @classmethod
     def off(cls):
-        # sendFromJson(SCPICMD, 0x43FB, pause=1)  # Снять питание ЭА332
-        # sendFromJson(SCPICMD, 0xE06F, AsciiHex('0x0A00 0000 0000 0000'), describe='ОТКЛ ОПР РЛЦИ-В')
+        cls.log('Отключить')
         sendFromJson(SCPICMD, 0xE005, AsciiHex('0113000000000000'), pause=1)  # Снять питание ЭА332
         cls.cur = None
 
@@ -66,6 +66,7 @@ class EA331(Device):
     def on(cls, num):
         if cls.cur is not None:
             raise Exception('ЭА331 включен!')
+        cls.log('Включить', num)
         cls.cur = num
         if num == 1:  # ЭА331-О
             # sendFromJson(SCPICMD, 0x40D9, pause=1)  # ЭА331-О
@@ -79,6 +80,7 @@ class EA331(Device):
     @classmethod
     def off(cls):
         # sendFromJson(SCPICMD, 0x43F9, pause=1)  # Снять питание ЭА331
+        cls.log('Отключить')
         sendFromJson(SCPICMD, 0xE005, AsciiHex('0111000000000000'), pause=1)  # Снять питание ЭА331
         cls.cur = None
 
@@ -94,6 +96,7 @@ class PCH(Device):
     def on(cls, num):
         if cls.cur is not None:
             raise Exception('ПЧ включен!')
+        cls.log('Включить', num)
         cls.cur = num
         if num == 1:
             sendFromJson(SCPICMD, 0xA000)  # Вкл ПЧ-О
@@ -108,6 +111,7 @@ class PCH(Device):
 
     @classmethod
     def off(cls):
+        cls.log('Отключить')
         sendFromJson(SCPICMD, 0xA002)  # Откл Пч
         executeTMI(doEquation('10.01.BA_PCH%s' % cls.cur, '@K', 'off') + " and " +
                    doEquation('10.01.PRD_PCH%s_BS' % cls.cur, '@K', 'off') + " and " +
@@ -128,6 +132,7 @@ class FIP(Device):
     def on(cls, num):
         if cls.cur is not None:
             raise Exception('ФИП включен!')
+        cls.log('Включить', num)
         if num == 1:
             sendFromJson(SCPICMD, 0xA003)  # Вкл ФИП-О
         elif num == 2:
@@ -148,6 +153,7 @@ class FIP(Device):
 
     @classmethod
     def off(cls):
+        cls.log('Отключить')
         sendFromJson(SCPICMD, 0xA005)  # Откл Фип
         executeTMI(doEquation('10.01.BA_FIP%s' % cls.cur, '@K', 'off') + " and " +
                    doEquation('10.01.FIP%s_BS' % cls.cur, '@K', 'off') + " and " +
@@ -170,6 +176,7 @@ class MOD(Device):
     def on(cls, num):
         if cls.cur is not None:
             raise Exception('МОД включен!')
+        cls.log('Включить', num)
         if num == 1:
             sendFromJson(SCPICMD, 0xA006)  # Вкл МОД-О
         elif num == 2:
@@ -177,22 +184,23 @@ class MOD(Device):
         else:
             raise Exception('Неверный параметр')
         cls.cur = num
-        executeTMI(doEquation('10.01.BA_MOD%s' % num, '@K', 'on') + " and " +
-                   doEquation('10.01.FIP_MOD%s_CONNECT' % num, '@K', 'on') + " and " +
-                   doEquation('10.01.PRD_MOD%s_BS' % num, '@K', 'on') + " and " +
-                   doEquation('10.01.PRD_MOD%s_U' % num, '@K', 'on') + " and " +
-                   doEquation('10.01.PRD_MOD_INFO', '@K', 'cele') + " and " +
-                   doEquation('10.01.PRD_MOD_M', '@K', 'M4') + " and " +
-                   doEquation('10.01.PRD_MOD_FIP%s_CONNECT' % FIP.cur, '@K', 'on') + " and " +
-                   doEquation('10.01.PRD_MOD_STAT_FREQ_PLL', '@K', 'on') + " and " +
-                   doEquation('10.01.PRD_MOD_TEMP_CARD', '@K') + " and " +
-                   doEquation('10.01.PRD_MOD_TEMP_PLIS', '@K') + " and " +
-                   doEquation('10.01.PRD_PCH%s_P' % FIP.cur, '@K', 'on'), count=1)
+        # executeTMI(doEquation('10.01.BA_MOD%s' % num, '@K', 'on') + " and " +
+        #            doEquation('10.01.FIP_MOD%s_CONNECT' % num, '@K', 'on') + " and " +
+        #            doEquation('10.01.PRD_MOD%s_BS' % num, '@K', 'on') + " and " +
+        #            doEquation('10.01.PRD_MOD%s_U' % num, '@K', 'on') + " and " +
+        #            doEquation('10.01.PRD_MOD_INFO', '@K', 'cele') + " and " +
+        #            doEquation('10.01.PRD_MOD_M', '@K', 'M4') + " and " +
+        #            doEquation('10.01.PRD_MOD_FIP%s_CONNECT' % FIP.cur, '@K', 'on') + " and " +
+        #            doEquation('10.01.PRD_MOD_STAT_FREQ_PLL', '@K', 'on') + " and " +
+        #            doEquation('10.01.PRD_MOD_TEMP_CARD', '@K') + " and " +
+        #            doEquation('10.01.PRD_MOD_TEMP_PLIS', '@K') + " and " +
+        #            doEquation('10.01.PRD_PCH%s_P' % FIP.cur, '@K', 'on'), count=1)
         executeTMI(doEquation('10.01.PRD_MOD_FIP_INF', '@K', 'on') + " and " +
                    doEquation('10.01.FIP_M778B_INF', '@K', 'on'), count=5, period=5)
 
     @classmethod
     def off(cls):
+        cls.log('Отключить')
         sendFromJson(SCPICMD, 0xA008)  # Откл Мод
         executeTMI(doEquation('10.01.BA_MOD%s' % cls.cur, '@K', 'off') + " and " +
                    doEquation('10.01.FIP_MOD%s_CONNECT' % cls.cur, '@K', 'off') + " and " +
@@ -214,6 +222,7 @@ class UM(Device):
     def on(cls, num):
         if cls.cur is not None:
             raise Exception('УМ включен!')
+        cls.log('Включить', num)
         if num == 1:
             sendFromJson(SCPICMD, 0xA009)  # Вкл УМ-О
         elif num == 2:
@@ -226,9 +235,9 @@ class UM(Device):
                    doEquation('10.01.PRD_UM%s_P' % num, '@K', 'on') + " and " +
                    doEquation('10.01.PRD_UM%s_P_Out' % num, '@K', 'on'), count=1)
 
-
     @classmethod
     def off(cls):
+        cls.log('Отключить')
         sendFromJson(SCPICMD, 0xA00B)  # Откл УМ
         executeTMI(doEquation('10.01.BA_UM%s' % cls.cur, '@K', 'off') + " and " +
                    doEquation('10.01.PRD_UM%s_BS' % cls.cur, '@K', 'off') + " and " +
@@ -240,7 +249,7 @@ class UM(Device):
         cls.__unrealized__()
 
 
-class RLCI:
+class RLCI(Device):
     EA332 = EA332
     EA331 = EA331
     PCH = PCH
@@ -289,6 +298,18 @@ class RLCI:
     }
 
     @classmethod
+    def on(cls, *args, **kwargs):
+        cls.__unrealized__()
+
+    @classmethod
+    def off(cls, *args, **kwargs):
+        cls.__unrealized__()
+
+    @classmethod
+    def get_tmi(cls, *args, **kwargs):
+        cls.__unrealized__()
+
+    @classmethod
     def isAntennaMoving(cls):
         bprint('Проверка что антенна движется...')
         executeTMI("{10.01.BA_AFU_IMP_OZ}@H==@unsame@all" + " and " +
@@ -316,6 +337,7 @@ class RLCI:
 
     @classmethod
     def sendArrayToAntenna(cls, *sendArgs):
+        cls.log('Выдать массив на антенну')
         inputG('Выдать массива на Антенну?')
         print('ВЫДАЧА МАССИВА')
         Ex.send(*sendArgs)
@@ -326,6 +348,7 @@ class RLCI:
     @print_start_and_end(string='РЛЦИ: режим')
     def mode(cls, mode, valid_di=True):
         """ЗАпустить режим M1 M2 M3 M4 имитатор МОД ИМ ФИП, MOD_VS"""
+        cls.log('РЕЖИМ %s' % mode)
         cls.uv[mode]()
         if valid_di:
             cls.uv_di[mode]()
@@ -334,6 +357,7 @@ class RLCI:
     @print_start_and_end(string='РЛЦИ: откл все блоки')
     def off_all(cls):
         """ОТКЛ ВСЕ БЛОКИ РЛЦИ"""
+        cls.log('Отключить все')
         sendFromJson(SCPICMD, 0xA00B),  # Откл УМ
         cls.UM.cur = None
         sendFromJson(SCPICMD, 0xA008),  # Откл Мод

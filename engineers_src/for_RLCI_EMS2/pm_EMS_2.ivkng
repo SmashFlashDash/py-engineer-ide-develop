@@ -37,6 +37,8 @@ import traceback
 from engineers_src.Devices.functions import windowChooser, sendFromJson, doEquation, executeTMI, print_start_and_end
 from engineers_src.Devices.dictionariesUVDI import DIstorage
 from engineers_src.Devices import BCK, M778, KIS, RLCI, ASN, Imitators, BSK_BSPA, BSK_P, BSK_KU, KSO
+from engineers_src.Devices.Device import LOGGER
+from engineers_src.Devices.functions import DB
 
 # TODO: првоерить
 #  есть ли коммутация в DiStorage и RLCIV
@@ -49,17 +51,22 @@ from engineers_src.Devices import BCK, M778, KIS, RLCI, ASN, Imitators, BSK_BSPA
 #  config.updData("%d_%s" % (threading.get_ident(), param_name), res[1])
 #  Ex.getTMIS - не работает для кучи зачений
 #  получить словрь записать в словарь
+##################### LOGGER ##################################
+LOGGER.handlers[0].setStream(open('engineers_src/for_RLCI_EMS2/devices.log', 'a', encoding='UTF8'))
+LOGGER.info('\n')
+LOGGER.info('Начало скрипта ' + sys.argv[0])
 
 ##################### COMMUTATIONS ############################
 DIstorage.commute('M778B', False)
+# пауза на опросБД
+DB.pause = 0
 # уровние КИС
-# TODO: можно ли сюда отрицательные числа отправлять
 KIS.levels_kpa[1] = None
 KIS.levels_kpa[2] = None
 KIS.levels_kpa[3] = None
 KIS.levels_kpa[4] = None
 # Включенные блоки
-KIS.cur = 1
+KIS.cur = None
 ASN.cur = None
 KSO.cur = None
 M778.cur = None

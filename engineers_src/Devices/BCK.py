@@ -23,10 +23,12 @@ class BCK(Device):
     @print_start_and_end(string='БЦК: очистить накопитель')
     def clc_BCK():
         """Очистить весь накопитель БЦК"""
-        sendFromJson(SCPICMD, 0xE107, describe='Ждать 10 сек', pause=10)
+        pause = 10
+        sendFromJson(SCPICMD, 0xE107, describe='Ждать 10 сек', pause=pause)
 
     @staticmethod
     @print_start_and_end(string='БЦК: сбросить накопитель')
     def downBCK():
         """Сброс ДИ с БЦК в БА КИС-Р всего накопителя"""
-        sendFromJson(SCPICMD, 0xE060, describe='Ждать 30 сек', pause=20)
+        pause = 20
+        sendFromJson(SCPICMD, 0xE060, describe='Ждать 30 сек', pause=pause)

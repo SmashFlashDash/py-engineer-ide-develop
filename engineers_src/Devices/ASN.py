@@ -20,6 +20,7 @@ class ASN(Device):
     def on(cls, num):
         if cls.cur is not None:
             raise Exception('АСН-%s уже включен!' % cls.cur)
+        cls.log('Включить', num)
         if num == 1:
             # sendFromJson(SCPICMD, 0x4005, pause=1)   # Вкл АСН1 через канал 5
             # sendFromJson(SCPICMD, 0xE219, pause=1)   # Вкл обмен АСН1
@@ -39,6 +40,7 @@ class ASN(Device):
     @print_start_and_end(string='АСН: отключить')
     def off(cls, num):
         """Отключение АСН"""
+        cls.log('Отключить', num)
         syst_num = cls.__get_syst_num(num)
         if num == 1:
             print("УВ: Отключить обмены с АСН1")

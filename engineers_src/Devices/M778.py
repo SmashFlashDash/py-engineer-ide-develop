@@ -12,6 +12,7 @@ class M778(Device):
     def on(cls, num):
         if cls.cur is not None:
             raise Exception('M778-%s уже включен!' % cls.cur)
+        cls.log('Включить', num)
         cls.cur = num
         if num == 1:
             sendFromJson(SCPICMD, 0x40CB, describe='Вкл M778B1', pause=1)
@@ -23,6 +24,7 @@ class M778(Device):
     @classmethod
     @print_start_and_end(string='М778: отключить')
     def off(cls):
+        cls.log('Отключить')
         sendFromJson(SCPICMD, 0x43EB, describe='Отключить M778B', pause=1)
         cls.cur = None
 

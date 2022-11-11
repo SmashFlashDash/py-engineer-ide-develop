@@ -1,22 +1,28 @@
 from abc import ABCMeta, abstractmethod, ABC
+import logging
+import logging.handlers
 # from engineers_src.Devices.functions import *
 # from engineers_src.tools.tools import *
+from engineers_src.tools.tools import Ex
 
 
-# class Cur:
-#     def __init__(self):
-#         self.value = None
-#
-#     def __get__(self, obj, cls):
-#         print('getter')
-#         return self.value
-#
-#     def __set__(self, obj, value):
-#         print('setter')
-#         self.value = value
+old_factory = logging.getLogRecordFactory()
+def record_factory(*args, **kwargs):
+    record = old_factory(*args, **kwargs)
+    record.bshv = 'БШВ: ' + str(Ex.get('ТМИ', '00.00.BSHV', 'КАЛИБР ТЕКУЩ'))
+    return record
+logging.setLogRecordFactory(record_factory)
+
+LOGGER = logging.getLogger('DeviceLogger')
+LOGGER.setLevel(logging.DEBUG)
+file_logger = logging.StreamHandler()
+file_logger.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(bshv)s  - %(message)s'))
+LOGGER.addHandler(file_logger)
 
 
 class Device(ABC):
+    LOGGER = LOGGER
+
     # def __init__(self):
     #     self.__cur = None
     #
@@ -39,6 +45,13 @@ class Device(ABC):
         raise Exception('Запрещено создавать обьект')
 
     @classmethod
+    def log(cls, msg, msg2=None):
+        if msg2 is not None:
+            cls.LOGGER.info('%s - %s %s' % (cls.__name__, msg, msg2))
+        else:
+            cls.LOGGER.info('%s - %s' % (cls.__name__, msg))
+
+    @classmethod
     def __unrealized__(cls):
         raise Exception('Нереализованный метод')
 
@@ -59,3 +72,25 @@ class Device(ABC):
     def get_tmi(cls, *args, **kwargs):
         """опрос ди блока устройства"""
         pass
+
+# TODO:
+#  включения и выключения блоков писать лог файл в директорию скрипта
+#  логгер можно прописать прямо в abstract
+
+# TODO:
+#  желательно опросить КСО при выключенном КИС
+#  нужно опросить ТМИ КСО и очтистить БЦК, выключить КИС
+#  спустя минуту включить КИС, сбросить БЦК, подождать когда сбросится
+#  опросить БД ДИ КСО в режиме интервал
+#  исходя из этих значений можно оценить магнитную обстановку в БЭК
+#  и сделать условия проверки для КСО
+#  -----идет к тому что сделать мини рокот
+#  МНИИ БД в скрипте
+#  делаем словарь ключей в значения пишем словарь или класс
+#  в класс пишм значения проверять ли тми
+#  значение для проверки
+#  при вызове обьекта, проверяем ТМИ
+
+
+class DiStatus:
+    pass

@@ -7,6 +7,10 @@ Ex = config.get_exchange()
 from time import sleep
 
 
+class DB:
+    pause = 8
+
+
 """открыть json с SCPICMD и SOTC"""
 try:
     dataJSON = DataListUV(path=['engineers_src', 'list_uv.json'])
@@ -89,10 +93,10 @@ def doEquation(cyph, calib, status=None, ref_val=None, all_any=None):
     return equaton + '@' + all_any
 
 
-def executeTMI(*args, pause=8, stopFalse=True, **kwargs):
+def executeTMI(*args, pause=DB.pause, stopFalse=True, **kwargs):
     """Вычислить выражние ТМИ с паузой перед опросом"""
     if 'period' not in kwargs:
-        kwargs['period'] = 8
+        kwargs['period'] = DB.pause
     sleep(pause)  # пауза перед опросм ДИ чтобы записалось в БД
     result, dict_cpyphers = controlGetEQ(*args, **kwargs)
     if stopFalse and not result:
@@ -100,7 +104,7 @@ def executeTMI(*args, pause=8, stopFalse=True, **kwargs):
     return result, dict_cpyphers
 
 
-def getAndSleep(*args, pause=8, **kwargs):
+def getAndSleep(*args, pause=DB.pause, **kwargs):
     """Получить значение ДИ с паузой перед опросом чтобы обновилась БД"""
     sleep(pause)  # пауза перед опросм ДИ чтобы записалось в БД
     return Ex.get(*args, **kwargs)

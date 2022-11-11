@@ -27,6 +27,7 @@ class KIS(Device):
         """перевод БАРЛ в СР
         :param num: номер БАРЛ
         :return: None"""
+        cls.log('Включить', num)
         if cls.cur is not None:
             raise Exception('КИС-%s уже включен!' % cls.cur)
         elif not 0 < num < 5:
@@ -39,6 +40,7 @@ class KIS(Device):
     def off(cls):
         """ перевод БАРЛ в ДР
         :return: None"""
+        cls.log('Отключить')
         cls.__run_cmd('standby')
         cls.cur = None
 
@@ -49,9 +51,12 @@ class KIS(Device):
             raise Exception("Для провеки СР нужно включить БАРЛ")
         bprint('Проверка: обмена по мкпд, номера активного БАРЛ, уровня сигнала БАРЛ')
         cypher = cls.cyphs[cls.cur]
-        executeTMI(' and '.join((doEquation('15.00.MKPD%s' % cypher, '@H', ref_val=1),
-                                 doEquation('15.00.NBARL', '@H', ref_val=cls.cur - 1),
-                                 doEquation('15.00.UPRM%s' % cypher, '@H', ref_val='[80,255]'))), count=1)
+        # executeTMI(' and '.join((doEquation('15.00.MKPD%s' % cypher, '@H', ref_val=1),
+        #                          doEquation('15.00.NBARL', '@H', ref_val=cls.cur - 1),
+        #                          doEquation('15.00.UPRM%s' % cypher, '@H', ref_val='[80,255]'))), count=1)
+        executeTMI('{15.00.MKPD%s}@H==1 and ' % cypher +
+                   '{15.00.NBARL}@H==%s and' % (cls.cur - 1) +
+                   '{15.00.UPRM%s}@H==[80,255]' % cypher, count=1)
 
     @classmethod
     def get_tmi_conn_test(cls):
@@ -130,10 +135,10 @@ class KIS(Device):
         for cmd_count in range(0, n_cmd):
             cls.__run_cmd('uncog')
             result.append(executeTMI('{15.00.NRK%s}@H == %s' % (cls.cyphs[cls.cur], cls.cmds['uncog'][0][1]),
-                                     pause=8, count=1, stopFalse=False)[0])
+                                     count=1, stopFalse=False)[0])
             cls.__run_cmd('fx')
             result.append(executeTMI('{15.00.NRK%s}@H == %s' % (cls.cyphs[cls.cur], cls.cmds['fx'][0][1]),
-                                     pause=8, count=1, stopFalse=False)[0])
+                                     count=1, stopFalse=False)[0])
         errors_count = result.count(False)
         comm_print('Ошибок приема %s из %s' % (errors_count, 2 * n_cmd))
         return errors_count

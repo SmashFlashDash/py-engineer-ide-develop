@@ -31,6 +31,7 @@ class KSO(Device):
     def on(cls):
         if cls.cur is not None:
             raise Exception('КСО уже включен!')
+        cls.log('Включить')
         cls.cur = True  # или определить какой включится
         sendFromJson(SCPICMD, 0xE114, AsciiHex('0x4400 0000 0000 0000'), describe='Отключить ЦНФ')  # Отключить ЦНФ
         sendFromJson(SCPICMD, 0xE004, AsciiHex('0x0209 0000 0000 0000'))  # Включить КСО + обмен
@@ -55,6 +56,7 @@ class KSO(Device):
     @classmethod
     @print_start_and_end(string='КСО: отключить')
     def off(cls):
+        cls.log('Отключить')
         sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0001 0000'))  # Установка статусов отказа для устройств БИУС1
         sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0101 0000'))  # БИУС2
         sendFromJson(SCPICMD, 0x006E, AsciiHex('0x8100 0000'))  # Установка режима управления ДМ
