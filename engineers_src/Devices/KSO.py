@@ -112,17 +112,14 @@ class KSO(Device):
     def _get_tmi(cls):
         if KSO.cur is None:
             raise Exception("КСО должен быть включен")
-
         # проверить секундную от АСН, что меняется в КСО счетчи
         res, values = executeTMI(doEquation('00.01.PPS1', '@H', ref_val='@unsame') + " or " +
-                                 doEquation('00.01.PPS2', '@H', ref_val='@unsame'), count=2, period=8, stopFalse=False)
+                                 doEquation('00.01.PPS2', '@H', ref_val='@unsame'), count=2, stopFalse=False)
         if res:
             gprint('Есть секундная метка от АСН')
         else:
             rprint('Не изменяется секундная метка от АСН')
             inputG('Не изменяется секундная метка от АСН')
-
-        # СС КСО Флаги наличи
 
         # Сброс БЦК чтобы опросить занчения БИУС
         BCK.clc_BCK()

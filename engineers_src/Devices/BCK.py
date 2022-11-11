@@ -6,6 +6,8 @@ from engineers_src.tools.tools import SCPICMD, AsciiHex, KPA, SOTC, SKPA, Ex, sl
 
 class BCK(Device):
     cur = None
+    clc_pause = 10
+    down_pause = 20
 
     @classmethod
     def on(cls):
@@ -19,16 +21,14 @@ class BCK(Device):
     def get_tmi(cls):
         cls.__unrealized__()
 
-    @staticmethod
+    @classmethod
     @print_start_and_end(string='БЦК: очистить накопитель')
-    def clc_BCK():
+    def clc_BCK(cls):
         """Очистить весь накопитель БЦК"""
-        pause = 10
-        sendFromJson(SCPICMD, 0xE107, describe='Ждать 10 сек', pause=pause)
+        sendFromJson(SCPICMD, 0xE107, describe='Ждать %s сек' % cls.clc_pause, pause=cls.clc_pause)
 
-    @staticmethod
+    @classmethod
     @print_start_and_end(string='БЦК: сбросить накопитель')
-    def downBCK():
+    def downBCK(cls):
         """Сброс ДИ с БЦК в БА КИС-Р всего накопителя"""
-        pause = 20
-        sendFromJson(SCPICMD, 0xE060, describe='Ждать 30 сек', pause=pause)
+        sendFromJson(SCPICMD, 0xE060, describe='Ждать %s сек' % cls.down_pause, pause=cls.down_pause)

@@ -93,19 +93,23 @@ def doEquation(cyph, calib, status=None, ref_val=None, all_any=None):
     return equaton + '@' + all_any
 
 
-def executeTMI(*args, pause=DB.pause, stopFalse=True, **kwargs):
+def executeTMI(*args, pause=None, stopFalse=True, **kwargs):
     """Вычислить выражние ТМИ с паузой перед опросом"""
     if 'period' not in kwargs:
         kwargs['period'] = DB.pause
-    sleep(pause)  # пауза перед опросм ДИ чтобы записалось в БД
+    if pause is None:
+        pause = DB.pause
+    sleep(pause)
     result, dict_cpyphers = controlGetEQ(*args, **kwargs)
     if stopFalse and not result:
         inputG('Проверь ТМИ')
     return result, dict_cpyphers
 
 
-def getAndSleep(*args, pause=DB.pause, **kwargs):
+def getAndSleep(*args, pause=None, **kwargs):
     """Получить значение ДИ с паузой перед опросом чтобы обновилась БД"""
+    if pause is None:
+        pause = DB.pause
     sleep(pause)  # пауза перед опросм ДИ чтобы записалось в БД
     return Ex.get(*args, **kwargs)
 

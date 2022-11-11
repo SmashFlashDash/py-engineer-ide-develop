@@ -59,7 +59,10 @@ LOGGER.info('Начало скрипта ' + sys.argv[0])
 ##################### COMMUTATIONS ############################
 DIstorage.commute('M778B', False)
 # пауза на опросБД
-DB.pause = 0
+DB.pause = 8
+# паузы БЦК
+BCK.clc_pause = 10
+BCK.down_pause = 20
 # уровние КИС
 KIS.levels_kpa[1] = None
 KIS.levels_kpa[2] = None

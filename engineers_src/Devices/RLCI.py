@@ -184,17 +184,17 @@ class MOD(Device):
         else:
             raise Exception('Неверный параметр')
         cls.cur = num
-        # executeTMI(doEquation('10.01.BA_MOD%s' % num, '@K', 'on') + " and " +
-        #            doEquation('10.01.FIP_MOD%s_CONNECT' % num, '@K', 'on') + " and " +
-        #            doEquation('10.01.PRD_MOD%s_BS' % num, '@K', 'on') + " and " +
-        #            doEquation('10.01.PRD_MOD%s_U' % num, '@K', 'on') + " and " +
-        #            doEquation('10.01.PRD_MOD_INFO', '@K', 'cele') + " and " +
-        #            doEquation('10.01.PRD_MOD_M', '@K', 'M4') + " and " +
-        #            doEquation('10.01.PRD_MOD_FIP%s_CONNECT' % FIP.cur, '@K', 'on') + " and " +
-        #            doEquation('10.01.PRD_MOD_STAT_FREQ_PLL', '@K', 'on') + " and " +
-        #            doEquation('10.01.PRD_MOD_TEMP_CARD', '@K') + " and " +
-        #            doEquation('10.01.PRD_MOD_TEMP_PLIS', '@K') + " and " +
-        #            doEquation('10.01.PRD_PCH%s_P' % FIP.cur, '@K', 'on'), count=1)
+        executeTMI(doEquation('10.01.BA_MOD%s' % num, '@K', 'on') + " and " +
+                   doEquation('10.01.FIP_MOD%s_CONNECT' % num, '@K', 'on') + " and " +
+                   doEquation('10.01.PRD_MOD%s_BS' % num, '@K', 'on') + " and " +
+                   doEquation('10.01.PRD_MOD%s_U' % num, '@K', 'on') + " and " +
+                   doEquation('10.01.PRD_MOD_INFO', '@K', 'cele') + " and " +
+                   doEquation('10.01.PRD_MOD_M', '@K', 'M4') + " and " +
+                   doEquation('10.01.PRD_MOD_FIP%s_CONNECT' % FIP.cur, '@K', 'on') + " and " +
+                   doEquation('10.01.PRD_MOD_STAT_FREQ_PLL', '@K', 'on') + " and " +
+                   doEquation('10.01.PRD_MOD_TEMP_CARD', '@K') + " and " +
+                   doEquation('10.01.PRD_MOD_TEMP_PLIS', '@K') + " and " +
+                   doEquation('10.01.PRD_PCH%s_P' % FIP.cur, '@K', 'on'), count=1)
         executeTMI(doEquation('10.01.PRD_MOD_FIP_INF', '@K', 'on') + " and " +
                    doEquation('10.01.FIP_M778B_INF', '@K', 'on'), count=5, period=5)
 

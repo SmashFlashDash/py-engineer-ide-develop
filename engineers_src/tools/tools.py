@@ -36,31 +36,31 @@ from PyQt5.QtCore import Qt
 
 
 ################ IMITATION ###############
-# from random import randint
-# def get(*args):
-#     randint(0, 10)
-#     calibs = ('включен', 'отключен', 'Есть', 'Нет', 0, 100, None)
-#     uncalibs = (0, 1, 100, -100, 0.01, 1000, None)
-#     if isinstance(args[1], dict):
-#         result = args[1]
-#         for k, v in result.items():
-#             # result[k] = 'Включено' if v in 'КАЛИБР' else 0.1
-#             result[k] = calibs[randint(0, len(calibs)-1)] if v in 'КАЛИБР' else uncalibs[randint(0, len(uncalibs)-1)]
-#         return result
-#     if args[2] == 'КАЛИБР ТЕКУЩ':
-#         return calibs[randint(0, len(calibs)-1)]    # 'Включено'   #   calibs[randint(0, len(calibs)-1)]
-#     elif args[2] == 'НЕКАЛИБР ТЕКУЩ':
-#         return uncalibs[randint(0, len(uncalibs)-1)]    # 0.1          #   uncalibs[randint(0, len(uncalibs)-1)]
-#     elif args[2] == 'КАЛИБР ИНТЕРВАЛ':
-#         return ['Включено', 'Включено']
-#     elif args[2] == 'НЕКАЛИБР ИНТЕРВАЛ':
-#         return [1, 1]
-# Ex.get = get
-# KPA = lambda *args: ' '.join([str(x) for x in args])
-# Ex.send = lambda *args: print('Отправка ' + ' '.join([str(x) for x in args]))
-# Ex.wait = lambda *args: False if randint(0, 1) == 0 else True
-# Ex.ivk_file_name = "script.ivkng"
-# Ex.ivk_file_path = "D:/VMShared/ivk-ng-myremote/engineers_src/script.ivkng"
+from random import randint
+def get(*args):
+    randint(0, 10)
+    calibs = ('включен', 'отключен', 'Есть', 'Нет', 0, 100, None)
+    uncalibs = (0, 1, 100, -100, 0.01, 1000, None)
+    if isinstance(args[1], dict):
+        result = args[1]
+        for k, v in result.items():
+            # result[k] = 'Включено' if v in 'КАЛИБР' else 0.1
+            result[k] = calibs[randint(0, len(calibs)-1)] if v in 'КАЛИБР' else uncalibs[randint(0, len(uncalibs)-1)]
+        return result
+    if args[2] == 'КАЛИБР ТЕКУЩ':
+        return calibs[randint(0, len(calibs)-1)]    # 'Включено'   #   calibs[randint(0, len(calibs)-1)]
+    elif args[2] == 'НЕКАЛИБР ТЕКУЩ':
+        return uncalibs[randint(0, len(uncalibs)-1)]    # 0.1          #   uncalibs[randint(0, len(uncalibs)-1)]
+    elif args[2] == 'КАЛИБР ИНТЕРВАЛ':
+        return ['Включено', 'Включено']
+    elif args[2] == 'НЕКАЛИБР ИНТЕРВАЛ':
+        return [1, 1]
+Ex.get = get
+KPA = lambda *args: ' '.join([str(x) for x in args])
+Ex.send = lambda *args: print('Отправка ' + ' '.join([str(x) for x in args]))
+Ex.wait = lambda *args: False if randint(0, 1) == 0 else True
+Ex.ivk_file_name = "script.ivkng"
+Ex.ivk_file_path = "D:/VMShared/ivk-ng-myremote/engineers_src/script.ivkng"
 
 
 ################ TEXT ###################
@@ -656,6 +656,7 @@ def controlGetEQ(equation, count=1, period=0, toPrint=True, downBCK=False):
                 equations_dict[constrait_key].append(fromDB[key])
 
     """ПАРСИНГ"""
+    bprint('ОПРОС ТМИ')
     pattern = re.compile(r"""\s?([not\s(]*)?                                        # _operator not and bacwards        
                             \s?({.+?})                                              # the _cypher
                             \s?(@[КKНH])?                                           # the _caliber
@@ -677,8 +678,11 @@ def controlGetEQ(equation, count=1, period=0, toPrint=True, downBCK=False):
     started_query = None
     started_query_full = datetime.now()
     while count_passed < count:
-        while started_query and datetime.now() < started_query + timedelta(seconds=period):
-            pass
+        waiter = 0
+        if started_query:
+            waiter = (started_query + timedelta(seconds=period) - datetime.now()).total_seconds()
+        if waiter > 0.1:
+            sleep(waiter)
         started_query = datetime.now()
         if downBCK:
             bprint('Очистка и сброс БЦК')
@@ -727,17 +731,17 @@ def controlGetEQ(equation, count=1, period=0, toPrint=True, downBCK=False):
             rows_text[idx_row][idx_col] = new_text + sep
 
     """ВЫВОД В ТРЕМИНАЛ"""
-    out = Text.colors['blue'] + 'ОПРОС ТМИ:' + Text.default + '\n'
-    if toPrint == 2:
-        out += '%-25s%s\n' % ('Исходное выражение:', equation)
-        out += '%-25s%s\n' % ('Вычисленное выражение:', main_equation_reparsed)
-        out += '%-25s%s\n' % ('Время опроса БД:', time_duration.total_seconds())
-        out += '%-25s%s\n' % ('Время опроса БД + вычисления:', (datetime.now() - started_query_full).total_seconds())
-        out += '%s%s %s\n' % (Text.default, 'Результат:', Text.color_bool(main_eq_result, main_eq_result))
-    for x in rows_text:
-        out += ''.join(x)
-        out += '\n'
     if toPrint:
+        out = ''
+        if toPrint == 2:
+            out += '%-25s%s\n' % ('Исходное выражение:', equation)
+            out += '%-25s%s\n' % ('Вычисленное выражение:', main_equation_reparsed)
+            out += '%-25s%s\n' % ('Время опроса БД:', time_duration.total_seconds())
+            out += '%-25s%s\n' % ('Время опроса БД + вычисления:', (datetime.now() - started_query_full).total_seconds())
+            out += '%s%s %s\n' % (Text.default, 'Результат:', Text.color_bool(main_eq_result, main_eq_result))
+        for x in rows_text:
+            out += ''.join(x)
+            out += '\n'
         print(out[:-1])
     # TODO: вернуть число ошибок
     errors = sum([1 for x in rows_bools if not x[0]])
