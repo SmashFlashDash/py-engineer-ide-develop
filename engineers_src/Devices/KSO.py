@@ -109,8 +109,7 @@ class KSO(Device):
         sendFromJson(SCPICMD, 0x53F1)  # Отключить КСО
 
         cls.cur = None
-        for key in cls.di.keys():
-            cls.di[key] = []
+        cls.clear_tmi()
 
         BCK.clc_BCK()
         BCK.downBCK()
@@ -134,11 +133,21 @@ class KSO(Device):
             inputG()
 
     @classmethod
+    @print_start_and_end(string='КСО: очистить словарь ДИ')
+    def clear_tmi(cls):
+        """Очистить словари ди"""
+        for key in cls.di.keys():
+            cls.di[key] = []
+
+    @classmethod
     @print_start_and_end(string='КСО: опросить ТМИ')
-    def get_tmi(cls):
+    def get_tmi(cls, isInterval=None):
         """Получить тми и вывод"""
         prevLength = len(cls.di)
-        cls._get_tmi()  # опросить ТМИ
+        if isInterval is None:
+            cls._get_tmi()  # опросить ТМИ
+        else:
+            cls._get_tmi(isInterval='ИНТЕРВАЛ')
         if prevLength != len(cls.di):
             raise Exception("Ошибка KSO._tmi")
         cls._printTmi(cls.di)
@@ -160,8 +169,6 @@ class KSO(Device):
 
         # Сброс БЦК чтобы опросить занчения БИУС
         if isInterval:
-            isInterval = 'ИНТЕРВАЛ'
-            BCK.downBCK()
             values = {}
             for x in cls.__di_list:
                 values.update(**x)
