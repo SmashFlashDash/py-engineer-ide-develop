@@ -55,7 +55,7 @@ from engineers_src.Devices.functions import DB
 # TODO: в абстрактном классе сделать методы для опроса телеметрии интервалом и по одному
 #  на универсальных занчения, методы приватными и их можно юзать в классах блоков
 ##################### LOGGER ##################################
-LOGGER.handlers[0].setStream(open('engineers_src/for_RLCI_EMS2/devices.log', 'a', encoding='UTF8'))
+LOGGER.handlers[0].setStream(open('engineers_src/for_RLCI_EMS2/ems.log', 'a', encoding='UTF8'))
 LOGGER.info('\n')
 LOGGER.info('Начало скрипта ' + sys.argv[0])
 

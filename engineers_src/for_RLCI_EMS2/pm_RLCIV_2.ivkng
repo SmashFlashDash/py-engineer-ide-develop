@@ -24,7 +24,8 @@ import traceback
 from engineers_src.Devices.functions import windowChooser, sendFromJson, doEquation, executeTMI, print_start_and_end
 from engineers_src.Devices.dictionariesUVDI import DIstorage
 from engineers_src.Devices import BCK, M778, KIS, RLCI, ASN, Imitators, BSK_BSPA, BSK_P, BSK_KU, KSO
-
+from engineers_src.Devices.Device import LOGGER
+from engineers_src.Devices.functions import DB
 
 # TODO:
 #  - поток на продление сеанса при запуске проги, должен не вседа продлевать
@@ -34,8 +35,18 @@ from engineers_src.Devices import BCK, M778, KIS, RLCI, ASN, Imitators, BSK_BSPA
 #    SELECT * FROM dbo.tm
 #    WHERE value->>'name' IN ('10.01.BA_FIP1', '10.01.BA_MOD1', '10.01.BA_PCH1', '10.01.BA_UM1') AND value->'value' = '0'
 #    ORDER BY tmid ASC LIMIT 100
+##################### LOGGER ##################################
+LOGGER.handlers[0].setStream(open('engineers_src/for_RLCI_EMS2/rlci.log', 'a', encoding='UTF8'))
+LOGGER.info('\n')
+LOGGER.info('Начало скрипта ' + sys.argv[0])
+
 ##################### COMMUTATIONS ############################
 DIstorage.commute('M778B', False)
+# пауза на опросБД
+DB.pause = 8
+# паузы БЦК
+BCK.clc_pause = 10
+BCK.down_pause = 20
 # Включенные блоки
 KIS.cur = None
 M778.cur = None
@@ -45,6 +56,67 @@ RLCI.PCH.cur = None
 RLCI.FIP.cur = None
 RLCI.MOD.cur = None
 RLCI.UM.cur = None
+
+
+############################### FUNCTIONS ####################################
+# '04.01.beKKEA11'
+# '04.01.beKKEA12'
+# '04.01.beKKEA21'
+# '04.01.beKKEA22'
+# '04.01.beBAEA11'
+# '04.01.beBAEA12'
+# '04.01.beBAEA21'
+# '04.01.beBAEA22'
+def validVC_PCH(stat):
+    cond = None
+    if stat == 'on':
+        cond = [0.1, 2.1]   # условие ток, напряжние
+    elif stat == 'off':
+        cond = [0.1, 2.1]   # условие ток, напряжние
+    else:
+        raise Exception('Недопустимый параметры stat')
+    executeTMI(
+        ' and '.join(("{05.02.VKSOA}@H<10",  # Напряжение канала коммутатора КСО Коммутатор А Ключевой элемент 1
+                      "{05.02.CKSOA}@H<4")))  # Ток коммутатора КСО Коммутатор А Ключевой элемент 2
+
+
+def validVC_FIP(stat):
+    cond = None
+    if stat == 'on':
+        cond = [0.1, 2.1]  # условие ток, напряжние
+    elif stat == 'off':
+        cond = [0.1, 2.1]  # условие ток, напряжние
+    else:
+        raise Exception('Недопустимый параметры stat')
+    executeTMI(
+        ' and '.join(("{05.02.VKSOA}@H<10",  # Напряжение канала коммутатора КСО Коммутатор А Ключевой элемент 1
+                      "{05.02.CKSOA}@H<4")))  # Ток коммутатора КСО Коммутатор А Ключевой элемент 2
+
+
+def validVC_MOD(stat):
+    cond = None
+    if stat == 'on':
+        cond = [0.1, 2.1]  # условие ток, напряжние
+    elif stat == 'off':
+        cond = [0.1, 2.1]  # условие ток, напряжние
+    else:
+        raise Exception('Недопустимый параметры stat')
+    executeTMI(
+        ' and '.join(("{05.02.VKSOA}@H<10",  # Напряжение канала коммутатора КСО Коммутатор А Ключевой элемент 1
+                      "{05.02.CKSOA}@H<4")))  # Ток коммутатора КСО Коммутатор А Ключевой элемент 2
+
+
+def validVC_UM(stat):
+    cond = None
+    if stat == 'on':
+        cond = [0.1, 2.1]  # условие ток, напряжние
+    elif stat == 'off':
+        cond = [0.1, 2.1]  # условие ток, напряжние
+    else:
+        raise Exception('Недопустимый параметры stat')
+    executeTMI(
+        ' and '.join(("{05.02.VKSOA}@H<10",  # Напряжение канала коммутатора КСО Коммутатор А Ключевой элемент 1
+                      "{05.02.CKSOA}@H<4")))  # Ток коммутатора КСО Коммутатор А Ключевой элемент 2
 
 
 ############################### TESTS ########################################
@@ -501,6 +573,30 @@ foo = {
     # 'ON M778B2': lambda: M778.off(2),
     # 'OFF M778B': lambda: M778.off(),
     # 'ОТКЛ АП РЛЦИ-В': lambda: RLCI.off_all(),
+    'ФКП ПЧ': lambda: windowChooser(
+        btnsText=('ВКЛ', 'ОТКЛ'),
+        title='ФКП ПРОВЕРИТЬ ТОК НАПРЯЖЕНИЕ ПЧ',
+        fooDict={'ВКЛ': lambda: validVC_PCH('on'),
+                 'ОТКЛ': lambda: validVC_PCH('off')},
+        ret_btn=True),
+    'ФКП ФИП': lambda: windowChooser(
+        btnsText=('ВКЛ', 'ОТКЛ'),
+        title='ФКП ПРОВЕРИТЬ ТОК НАПРЯЖЕНИЕ ФИП',
+        fooDict={'ВКЛ': lambda: validVC_FIP('on'),
+                 'ОТКЛ': lambda: validVC_FIP('off')},
+        ret_btn=True),
+    'ФКП МОД': lambda: windowChooser(
+        btnsText=('ВКЛ', 'ОТКЛ'),
+        title='ФКП ПРОВЕРИТЬ ТОК НАПРЯЖЕНИЕ МОД',
+        fooDict={'ВКЛ': lambda: validVC_MOD('on'),
+                 'ОТКЛ': lambda: validVC_MOD('off')},
+        ret_btn=True),
+    'ФКП УМ': lambda: windowChooser(
+        btnsText=('ВКЛ', 'ОТКЛ'),
+        title='ФКП ПРОВЕРИТЬ ТОК НАПРЯЖЕНИЕ УИ',
+        fooDict={'ВКЛ': lambda: validVC_UM('on'),
+                 'ОТКЛ': lambda: validVC_UM('off')},
+        ret_btn=True),
     'ТЕСТ 1': lambda: TEST_1(),
     'ТЕСТ 2': lambda: TEST_2(),
     'ТЕСТ 3': lambda: TEST_3(),
@@ -525,6 +621,7 @@ btns = (('ТЕСТ 1', 'ТЕСТ 2', 'ТЕСТ 3', 'ТЕСТ 4'),       # афу
         ('ТЕСТ 11', 'ТЕСТ 12', 'ТЕСТ 13', 'ТЕСТ 14'),   # тех рлци
         'M778',
         ('РЛЦИ ЭА', 'РЛЦИ ПЧ', 'РЛЦИ ФИП', 'РЛЦИ МОД', 'РЛЦИ УМ', 'РЛЦИ РЕЖИМ', 'РЛЦИ ОТКЛ ВСЕ'),
+        ('ФКП ПЧ', 'ФКП ФИП', 'ФКП МОД', 'ФКП УМ'),
         'ОПИСАНИЕ ТЕСТОВ')
 
 
@@ -534,7 +631,7 @@ yprint('РЛЦИВ ПМ1', 2)
 while True:
     print()
     try:
-        windowChooser(btnsText=btns, fooDict=foo, labels=['АФУ-Х', 'РЛЦИ-В', 'ТЕХ АФУ-Х', 'ТЕХ РЛЦИ-В', 'M778', 'РЛЦИ-В', ''])
+        windowChooser(btnsText=btns, fooDict=foo, labels=['АФУ-Х', 'РЛЦИ-В', 'ТЕХ АФУ-Х', 'ТЕХ РЛЦИ-В', 'M778', 'РЛЦИ-В', 'ФКП', ''])
     except Exception as ex:
         rprint("ОШИБКА В ТЕСТЕ")
         rprint(traceback.format_exc())
