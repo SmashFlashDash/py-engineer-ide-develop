@@ -36,36 +36,36 @@ from PyQt5.QtCore import Qt
 
 
 ################ IMITATION ###############
-# from random import randint
-# def get(*args):
-#     randint(0, 10)
-#     calibs = ('включен', 'отключен', 'Есть', 'Нет', 0, 100, None)
-#     uncalibs = (0, 1, 100, -100, 0.01, 1000, None)
-#     if isinstance(args[1], dict):
-#         result = {}
-#         if args[2] == 'ИНТЕРВАЛ':
-#             for k, v in args[1].items():
-#                 result[k] = []
-#                 result[k].append(calibs[randint(0, len(calibs) - 1)] if v in 'КАЛИБР' else uncalibs[randint(0, len(uncalibs) - 1)])
-#                 result[k].append(calibs[randint(0, len(calibs) - 1)] if v in 'КАЛИБР' else uncalibs[randint(0, len(uncalibs) - 1)])
-#         else:
-#             for k, v in args[1].items():
-#                 result[k] = calibs[randint(0, len(calibs)-1)] if v in 'КАЛИБР' else uncalibs[randint(0, len(uncalibs)-1)]
-#         return result
-#     if args[2] == 'КАЛИБР ТЕКУЩ':
-#         return calibs[randint(0, len(calibs)-1)]    # 'Включено'   #   calibs[randint(0, len(calibs)-1)]
-#     elif args[2] == 'НЕКАЛИБР ТЕКУЩ':
-#         return uncalibs[randint(0, len(uncalibs)-1)]    # 0.1          #   uncalibs[randint(0, len(uncalibs)-1)]
-#     elif args[2] == 'КАЛИБР ИНТЕРВАЛ':
-#         return ['Включено', 'Включено']
-#     elif args[2] == 'НЕКАЛИБР ИНТЕРВАЛ':
-#         return [1, 1]
-# Ex.get = get
-# KPA = lambda *args: ' '.join([str(x) for x in args])
-# Ex.send = lambda *args: print('Отправка ' + ' '.join([str(x) for x in args]))
-# Ex.wait = lambda *args: False if randint(0, 1) == 0 else True
-# Ex.ivk_file_name = "script.ivkng"
-# Ex.ivk_file_path = "D:/VMShared/ivk-ng-myremote/engineers_src/script.ivkng"
+from random import randint
+def get(*args):
+    randint(0, 10)
+    calibs = ('включен', 'отключен', 'Есть', 'Нет', 0, 100, None)
+    uncalibs = (0, 1, 100, -100, 0.01, 1000, None)
+    if isinstance(args[1], dict):
+        result = {}
+        if args[2] == 'ИНТЕРВАЛ':
+            for k, v in args[1].items():
+                result[k] = []
+                result[k].append(calibs[randint(0, len(calibs) - 1)] if v in 'КАЛИБР' else uncalibs[randint(0, len(uncalibs) - 1)])
+                result[k].append(calibs[randint(0, len(calibs) - 1)] if v in 'КАЛИБР' else uncalibs[randint(0, len(uncalibs) - 1)])
+        else:
+            for k, v in args[1].items():
+                result[k] = calibs[randint(0, len(calibs)-1)] if v in 'КАЛИБР' else uncalibs[randint(0, len(uncalibs)-1)]
+        return result
+    if args[2] == 'КАЛИБР ТЕКУЩ':
+        return calibs[randint(0, len(calibs)-1)]    # 'Включено'   #   calibs[randint(0, len(calibs)-1)]
+    elif args[2] == 'НЕКАЛИБР ТЕКУЩ':
+        return uncalibs[randint(0, len(uncalibs)-1)]    # 0.1          #   uncalibs[randint(0, len(uncalibs)-1)]
+    elif args[2] == 'КАЛИБР ИНТЕРВАЛ':
+        return ['Включено', 'Включено']
+    elif args[2] == 'НЕКАЛИБР ИНТЕРВАЛ':
+        return [1, 1]
+Ex.get = get
+KPA = lambda *args: ' '.join([str(x) for x in args])
+Ex.send = lambda *args: print('Отправка ' + ' '.join([str(x) for x in args]))
+Ex.wait = lambda *args: False if randint(0, 1) == 0 else True
+Ex.ivk_file_name = "script.ivkng"
+Ex.ivk_file_path = "D:/VMShared/ivk-ng-myremote/engineers_src/script.ivkng"
 
 
 ################ TEXT ###################
@@ -94,37 +94,17 @@ class Text:
         print('Цвета в Colors: %s' % cls.colors)
 
     @classmethod
-    def _get_format(cls, tab, color):
-        """Получить стиль форматирования"""
-        tab = cls.cur_tab if tab is None else tab
-        color_get = cls.cur_color if color is None else cls.colors.get(color)
-        if color_get is None:
-            print(cls.colors['blue_lined'] + 'Err: Нет цевета %s в class.Text, используется default' % color)
-            return tab, cls.default
-        return tab, color_get
-
-    @classmethod
-    def text(cls, text, color=None, tab=None):
+    def text(cls, args, kwargs):
         """применить стиль к тексту цвет и смещение"""
-        tab, color = cls._get_format(tab, color)
-        text = text.replace('\n', '%s\n%s' % (Text.default, color))
-        return color + cls._tab * tab + text + cls.default
-
-    @classmethod
-    def title(cls, text, color='yellow', tab=None, ):
-        """ заголовок
-            param text:     text
-            param color:    цвет по умолчанию yellow
-            param tab:      > 0 - установить смещения
-                            <= 0 - смещение влево от текущего
-                            None - предыдущий уровень смещений
-        """
-        if tab is None:
-            tab = cls.cur_tab
-        elif tab < 0:
-            tab = cls.cur_tab - 1 if cls.cur_tab > 0 else 0
-        cls.cur_tab = tab
-        return cls.text(text, color=color, tab=tab)
+        if not isinstance(kwargs, dict):
+            raise Exception('Параметр wargs должен быть словарем')
+        color = kwargs.pop('color') if 'color' in kwargs else None
+        tab = kwargs.pop('tab') if 'tab' in kwargs else 0
+        text = (kwargs.pop('sep') if 'sep' in kwargs else ' ').join([str(x) for x in args])
+        color = cls.colors.get(color)
+        if color is None:
+            print('%sErr: Нет цевета %s в class.Text, используется default' % (cls.red, color))
+        return color + cls._tab * tab + text.replace('\n', '%s\n%s' % (Text.default, color)) + cls.default
 
     @staticmethod
     def color_bool(text, flag):
@@ -138,36 +118,40 @@ class Text:
         return colored
 
 
-def cprint(text, color=None, tab=0):
-    print(Text.text(text, color, tab))
+def cprint(*args, **kwargs):
+    print(Text.text(args, kwargs), **kwargs)
 
 
-def gprint(text, tab=0):
-    print(Text.text(text, 'green', tab))
+def gprint(*args, **kwargs):
+    kwargs['color'] = 'green'
+    print(Text.text(args, kwargs), **kwargs)
 
 
-def rprint(text, tab=0):
-    print(Text.text(text, 'red', tab))
+def rprint(*args, **kwargs):
+    kwargs['color'] = 'red'
+    print(Text.text(args, kwargs), **kwargs)
 
 
-def bprint(text, tab=0):
-    print(Text.text(text, 'blue', tab))
+def bprint(*args, **kwargs):
+    kwargs['color'] = 'blue'
+    print(Text.text(args, kwargs), **kwargs)
 
 
-def yprint(text, tab=0):
-    print(Text.text(text, 'yellow', tab))
+def yprint(*args, **kwargs):
+    kwargs['color'] = 'yellow'
+    print(Text.text(args, kwargs), **kwargs)
 
 
-def tprint(text, tab=None, color='default', ):
-    print(Text.title(text, color, tab))
+def proc_print(*args, **kwargs):
+    kwargs['color'] = 'blue'
+    kwargs['tab'] = 0
+    print(Text.default + 'Исполение: ' + Text.text(args, kwargs), **kwargs)
 
 
-def proc_print(text):
-    print(Text.default + 'Исполение: ' + Text.text(text, 'blue', 0))
-
-
-def comm_print(text, color='yellow'):
-    print(Text.default + 'Комметарий: ' + Text.text(text, 'yellow', 0))
+def comm_print(*args, **kwargs):
+    kwargs['color'] = 'yellow'
+    kwargs['tab'] = 0
+    print(Text.default + 'Комметарий: ' + Text.text(args, kwargs), **kwargs)
 
 
 ################ INPUT ###################
@@ -261,6 +245,7 @@ def inputGG(btnsList, title=None, parent=None, labels=None, ret_btn=None):
                 btn_label = QLabel()
                 btn_label.setText(text_btn)
                 btn_label.setWordWrap(True)
+                btn_label.setAlignment(Qt.AlignCenter)
                 lay = QBoxLayout(QBoxLayout.TopToBottom)
                 lay.addWidget(btn_label)
                 lay.setContentsMargins(10, 5, 10, 5)

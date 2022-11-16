@@ -11,6 +11,7 @@ Ex.ivk_file_name = "script.ivkng"
 Ex.ivk_file_path = "D:/VMShared/ivk-ng-myremote/engineers_src/script.ivkng"
 
 import traceback
+import logging
 # Импорт с другой папки
 # sys.path.insert(0, 'F:/VMShared/ivk-scripts/')  # путь к программе испытаний абсолютный
 # DIstorage = None
@@ -36,7 +37,10 @@ from engineers_src.Devices.functions import DB
 #    WHERE value->>'name' IN ('10.01.BA_FIP1', '10.01.BA_MOD1', '10.01.BA_PCH1', '10.01.BA_UM1') AND value->'value' = '0'
 #    ORDER BY tmid ASC LIMIT 100
 ##################### LOGGER ##################################
-LOGGER.handlers[0].setStream(open('engineers_src/for_RLCI_EMS2/rlci.log', 'a', encoding='UTF8'))
+file_logger = logging.StreamHandler(open('engineers_src/for_RLCI_EMS2/rlci.log', 'a', encoding='UTF8'))
+file_logger.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(bshv)s  - %(message)s'))
+LOGGER.addHandler(file_logger)
+# LOGGER.handlers[0].setStream(open('engineers_src/for_RLCI_EMS2/rlci.log', 'a', encoding='UTF8'))
 LOGGER.info('\n')
 LOGGER.info('Начало скрипта ' + sys.argv[0])
 
@@ -626,7 +630,7 @@ btns = (('ТЕСТ 1', 'ТЕСТ 2', 'ТЕСТ 3', 'ТЕСТ 4'),       # афу
 
 
 print()
-yprint('РЛЦИВ ПМ1', 2)
+yprint('РЛЦИВ ПМ1')
 # KIS._barl_run()
 while True:
     print()

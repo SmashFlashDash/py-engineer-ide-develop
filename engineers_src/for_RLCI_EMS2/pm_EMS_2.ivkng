@@ -23,6 +23,7 @@ Ex.ivk_file_path = "D:/VMShared/ivk-ng-myremote/engineers_src/script.ivkng"
 
 
 import traceback
+import logging
 # Импорт с другой папки
 # sys.path.insert(0, 'F:/VMShared/ivk-scripts/')  # путь к программе испытаний абсолютный
 # DIstorage = None
@@ -55,7 +56,10 @@ from engineers_src.Devices.functions import DB
 # TODO: в абстрактном классе сделать методы для опроса телеметрии интервалом и по одному
 #  на универсальных занчения, методы приватными и их можно юзать в классах блоков
 ##################### LOGGER ##################################
-LOGGER.handlers[0].setStream(open('engineers_src/for_RLCI_EMS2/ems.log', 'a', encoding='UTF8'))
+file_logger = logging.StreamHandler(open('engineers_src/for_RLCI_EMS2/ems.log', 'a', encoding='UTF8'))
+file_logger.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(bshv)s  - %(message)s'))
+LOGGER.addHandler(file_logger)
+# LOGGER.handlers[0].setStream(open('engineers_src/for_RLCI_EMS2/ems.log', 'a', encoding='UTF8'))
 LOGGER.info('\n')
 LOGGER.info('Начало скрипта ' + sys.argv[0])
 
@@ -279,11 +283,6 @@ while True:
     except Exception as ex:
         LOGGER.error(traceback.format_exc().strip('\n').split('\n')[-1])
         rprint(traceback.format_exc())
-
-
-
-
-
 
 # начать с АСН, включить имитатор и асн, посмотреть что он поймал от 4 спутниклов
 # выдвать команды на КИС смотреть есть ли влияние на навигацию

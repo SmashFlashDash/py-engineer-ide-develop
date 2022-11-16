@@ -15,9 +15,9 @@ logging.setLogRecordFactory(record_factory)
 
 LOGGER = logging.getLogger('DeviceLogger')
 LOGGER.setLevel(logging.DEBUG)
-file_logger = logging.StreamHandler()
-file_logger.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(bshv)s  - %(message)s'))
-LOGGER.addHandler(file_logger)
+# file_logger = logging.StreamHandler()
+# file_logger.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(bshv)s  - %(message)s'))
+# LOGGER.addHandler(file_logger)
 
 
 class Device(ABC):
