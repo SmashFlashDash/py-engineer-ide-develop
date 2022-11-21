@@ -45,11 +45,13 @@ class Device(ABC):
         raise Exception('Запрещено создавать обьект')
 
     @classmethod
-    def log(cls, msg, msg2=None):
-        if msg2 is not None:
-            cls.LOGGER.info('%s - %s %s' % (cls.__name__, msg, msg2))
+    def log(cls, *args):
+        if not LOGGER.hasHandlers():
+            return
+        if len(args) > 0:
+            cls.LOGGER.info('%s - %s' % (cls.__name__, ' '.join(str(x) for x in args)))
         else:
-            cls.LOGGER.info('%s - %s' % (cls.__name__, msg))
+            cls.LOGGER.info('%s - ...' % cls.__name__)
 
     @classmethod
     def __unrealized__(cls):

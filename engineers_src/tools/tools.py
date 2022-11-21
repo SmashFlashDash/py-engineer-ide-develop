@@ -120,34 +120,25 @@ class Text:
 
 def cprint(*args, **kwargs):
     print(Text.text(args, kwargs), **kwargs)
-
-
+def tprint(*args, **kwargs):
+    kwargs['color'] = 'default'
+    print(Text.text(args, kwargs), **kwargs)
 def gprint(*args, **kwargs):
     kwargs['color'] = 'green'
     print(Text.text(args, kwargs), **kwargs)
-
-
 def rprint(*args, **kwargs):
     kwargs['color'] = 'red'
     print(Text.text(args, kwargs), **kwargs)
-
-
 def bprint(*args, **kwargs):
     kwargs['color'] = 'blue'
     print(Text.text(args, kwargs), **kwargs)
-
-
 def yprint(*args, **kwargs):
     kwargs['color'] = 'yellow'
     print(Text.text(args, kwargs), **kwargs)
-
-
 def proc_print(*args, **kwargs):
     kwargs['color'] = 'blue'
     kwargs['tab'] = 0
     print(Text.default + 'Исполение: ' + Text.text(args, kwargs), **kwargs)
-
-
 def comm_print(*args, **kwargs):
     kwargs['color'] = 'yellow'
     kwargs['tab'] = 0
