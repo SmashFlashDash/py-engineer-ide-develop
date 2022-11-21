@@ -23,7 +23,7 @@ class BCK(Device):
 
     @classmethod
     @print_start_and_end(string='БЦК: очистить накопитель')
-    def clc_BCK(cls, pause=None):
+    def clcBCK(cls, pause=None):
         """Очистить весь накопитель БЦК"""
         if pause is None:
             return sendFromJson(SCPICMD, 0xE107, describe='Ждать %s сек' % cls.clc_pause, pause=cls.clc_pause)

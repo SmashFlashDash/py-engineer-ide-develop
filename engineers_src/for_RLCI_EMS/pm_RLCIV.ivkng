@@ -12,6 +12,7 @@ Ex.ivk_file_path = "D:/VMShared/ivk-ng-myremote/engineers_src/script.ivkng"
 
 import traceback
 import logging
+from lib.tabulate.tabulate import tabulate
 # Импорт с другой папки
 # sys.path.insert(0, 'F:/VMShared/ivk-scripts/')  # путь к программе испытаний абсолютный
 # DIstorage = None
@@ -70,56 +71,24 @@ RLCI.UM.cur = None
 # '04.01.beBAEA12'
 # '04.01.beBAEA21'
 # '04.01.beBAEA22'
-def validVC_PCH(stat):
-    cond = None
-    if stat == 'on':
-        cond = [0.1, 2.1]   # условие ток, напряжние
-    elif stat == 'off':
-        cond = [0.1, 2.1]   # условие ток, напряжние
-    else:
-        raise Exception('Недопустимый параметры stat')
-    executeTMI(
-        ' and '.join(("{05.02.VKSOA}@H<10",  # Напряжение канала коммутатора КСО Коммутатор А Ключевой элемент 1
-                      "{05.02.CKSOA}@H<4")))  # Ток коммутатора КСО Коммутатор А Ключевой элемент 2
 
-
-def validVC_FIP(stat):
-    cond = None
-    if stat == 'on':
-        cond = [0.1, 2.1]  # условие ток, напряжние
-    elif stat == 'off':
-        cond = [0.1, 2.1]  # условие ток, напряжние
-    else:
-        raise Exception('Недопустимый параметры stat')
-    executeTMI(
-        ' and '.join(("{05.02.VKSOA}@H<10",  # Напряжение канала коммутатора КСО Коммутатор А Ключевой элемент 1
-                      "{05.02.CKSOA}@H<4")))  # Ток коммутатора КСО Коммутатор А Ключевой элемент 2
-
-
-def validVC_MOD(stat):
-    cond = None
-    if stat == 'on':
-        cond = [0.1, 2.1]  # условие ток, напряжние
-    elif stat == 'off':
-        cond = [0.1, 2.1]  # условие ток, напряжние
-    else:
-        raise Exception('Недопустимый параметры stat')
-    executeTMI(
-        ' and '.join(("{05.02.VKSOA}@H<10",  # Напряжение канала коммутатора КСО Коммутатор А Ключевой элемент 1
-                      "{05.02.CKSOA}@H<4")))  # Ток коммутатора КСО Коммутатор А Ключевой элемент 2
-
-
-def validVC_UM(stat):
-    cond = None
-    if stat == 'on':
-        cond = [0.1, 2.1]  # условие ток, напряжние
-    elif stat == 'off':
-        cond = [0.1, 2.1]  # условие ток, напряжние
-    else:
-        raise Exception('Недопустимый параметры stat')
-    executeTMI(
-        ' and '.join(("{05.02.VKSOA}@H<10",  # Напряжение канала коммутатора КСО Коммутатор А Ключевой элемент 1
-                      "{05.02.CKSOA}@H<4")))  # Ток коммутатора КСО Коммутатор А Ключевой элемент 2
+# Ток и напряжние ключей
+def ACDC():
+    BCK.clcBCK()
+    BCK.downBCK()
+    # шифр навреноее не 04.01
+    res = Ex.get('ТМИ', {'04.01.VKKEA1': 'КАЛИБР',
+                         '04.01.VKKEA2': 'КАЛИБР',
+                         '04.01.VBAEA1': 'КАЛИБР',
+                         '04.01.VBAEA2': 'КАЛИБР',
+                         '04.01.CKKEA1': 'КАЛИБР',
+                         '04.01.CKKEA2': 'КАЛИБР',
+                         '04.01.CBAEA1': 'КАЛИБР',
+                         '04.01.CBAEA2': 'КАЛИБР'}, 'ТЕКУЩ')
+    strings = []
+    for key in sorted(res.keys()):
+        strings.append((key, *res[key]))
+    print(tabulate(strings, tablefmt='simple'))
 
 
 ############################### TESTS ########################################
@@ -576,30 +545,9 @@ foo = {
     # 'ON M778B2': lambda: M778.off(2),
     # 'OFF M778B': lambda: M778.off(),
     # 'ОТКЛ АП РЛЦИ-В': lambda: RLCI.off_all(),
-    'ФКП ПЧ': lambda: windowChooser(
-        btnsText=('ВКЛ', 'ОТКЛ'),
-        title='ФКП ПРОВЕРИТЬ ТОК НАПРЯЖЕНИЕ ПЧ',
-        fooDict={'ВКЛ': lambda: validVC_PCH('on'),
-                 'ОТКЛ': lambda: validVC_PCH('off')},
-        ret_btn=True),
-    'ФКП ФИП': lambda: windowChooser(
-        btnsText=('ВКЛ', 'ОТКЛ'),
-        title='ФКП ПРОВЕРИТЬ ТОК НАПРЯЖЕНИЕ ФИП',
-        fooDict={'ВКЛ': lambda: validVC_FIP('on'),
-                 'ОТКЛ': lambda: validVC_FIP('off')},
-        ret_btn=True),
-    'ФКП МОД': lambda: windowChooser(
-        btnsText=('ВКЛ', 'ОТКЛ'),
-        title='ФКП ПРОВЕРИТЬ ТОК НАПРЯЖЕНИЕ МОД',
-        fooDict={'ВКЛ': lambda: validVC_MOD('on'),
-                 'ОТКЛ': lambda: validVC_MOD('off')},
-        ret_btn=True),
-    'ФКП УМ': lambda: windowChooser(
-        btnsText=('ВКЛ', 'ОТКЛ'),
-        title='ФКП ПРОВЕРИТЬ ТОК НАПРЯЖЕНИЕ УИ',
-        fooDict={'ВКЛ': lambda: validVC_UM('on'),
-                 'ОТКЛ': lambda: validVC_UM('off')},
-        ret_btn=True),
+    'ФКП ОПРОС KV': ACDC,
+    'ФКП УСТ ДИ1с': lambda: sendFromJson(SCPICMD, 0x4258, AsciiHex('0x0100 0000')),  # уставка на опрос ДИ
+    'ФКП УСТ ДИ10с': lambda: sendFromJson(SCPICMD, 0x4258, AsciiHex('0x0A00 0000')),  # уставка на опрос ДИ
     'ТЕСТ 1': lambda: TEST_1(),
     'ТЕСТ 2': lambda: TEST_2(),
     'ТЕСТ 3': lambda: TEST_3(),
@@ -624,7 +572,7 @@ btns = (('ТЕСТ 1', 'ТЕСТ 2', 'ТЕСТ 3', 'ТЕСТ 4'),       # афу
         ('ТЕСТ 11', 'ТЕСТ 12', 'ТЕСТ 13', 'ТЕСТ 14'),   # тех рлци
         'M778',
         ('РЛЦИ ЭА', 'РЛЦИ ПЧ', 'РЛЦИ ФИП', 'РЛЦИ МОД', 'РЛЦИ УМ', 'РЛЦИ РЕЖИМ', 'РЛЦИ ОТКЛ ВСЕ'),
-        ('ФКП ПЧ', 'ФКП ФИП', 'ФКП МОД', 'ФКП УМ'),
+        'ФКП ОПРОС KV',
         'ОПИСАНИЕ ТЕСТОВ')
 
 

@@ -95,7 +95,7 @@ class ASN(Device):
             tprint("Наличие сбоев в процессе тестирования: %s" % failure_flag)
             tprint("Программное состояние АСН (СВ УС): %s" % state_ASN)
             tprint("Программное состояние АСН (СВ ПН): %s" % state_PN)
-            BCK.clc_BCK()
+            BCK.clcBCK()
             cls.__di_form(num, 2)  # Запрос ДИ2 АСН
             cls.__di_form(num, 3)  # Запрос ДИ3 АСН
             sleep(20)

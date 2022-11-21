@@ -138,7 +138,7 @@ def TEST_senseKIS():
 print()
 # словрь с функциями для кнопок
 foo = {
-    'ОЧИСТ НАКОПИТЕЛЬ': lambda: BCK.clc_BCK(),
+    'ОЧИСТ НАКОПИТЕЛЬ': lambda: BCK.clcBCK(),
     'СБРОС НАКОПИТЕЛЬ': lambda: BCK.downBCK(),
     'БАРЛ СР ДР': lambda: windowChooser(
         btnsText=('СР 1/2', 'СР 2/2', 'СР 3/4', 'СР 4/4', 'ДР'),

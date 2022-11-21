@@ -97,7 +97,7 @@ class KSO(Device):
         sendFromJson(SCPICMD, 0x006E, AsciiHex('0x8100 0000'))  # Установка режима управления ДМ
         sendFromJson(SCPICMD, 0x0071)   # Остановка всех ДМ
         sleep(10)                       # пауза на остановку ДМ
-        BCK.clc_BCK()
+        BCK.clcBCK()
         BCK.downBCK()
         bprint('Ждем остановки ДМ 60 сек')
         if not Ex.wait('{00.02.MeasuredSpeed1.НЕКАЛИБР} < 10 and {00.02.MeasuredSpeed2.НЕКАЛИБР} < 10 and '
@@ -111,7 +111,7 @@ class KSO(Device):
         cls.cur = None
         cls.clear_tmi()
 
-        BCK.clc_BCK()
+        BCK.clcBCK()
         BCK.downBCK()
         if executeTMI("{05.01.beKSOA2}@H==0")[0]:  # == 1 Состояние коммутатора КСО Коммутатор А Ключевой элемент 2
             executeTMI(
@@ -187,7 +187,7 @@ class KSO(Device):
                     rounded.append(round(value, 2))
                 tmi[key] = rounded
         else:
-            BCK.clc_BCK()
+            BCK.clcBCK()
             BCK.downBCK()
             # Опрос ММ1, 2ДС, 2БИУС
             tmi = Ex.get('ТМИ', {**cls.__di_list[0], **cls.__di_list[1]}, None)
