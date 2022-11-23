@@ -46,6 +46,8 @@ LOGGER.info('Начало скрипта ' + sys.argv[0])
 
 ##################### COMMUTATIONS ############################
 DIstorage.commute('M778B', False)
+# Кнопки опрос ДИ
+btn_ask_di = True
 # пауза на опросБД
 DB.pause = 8
 # паузы БЦК
@@ -481,8 +483,8 @@ foo = {
         btnsText=(('ВКЛ ЭА332-1', 'ВКЛ ЭА332-2', 'ОТКЛ ЭА332'), ('ВКЛ ЭА331-1', 'ВКЛ ЭА331-2', 'ОТКЛ ЭА331')),
         title='РЛЦИ ПОД ПИТАНИЕ',
         fooDict={
-            'ВКЛ ЭА332-1': lambda: RLCI.EA332.on(1, stop_shd=True, ask_TMI=True),
-            'ВКЛ ЭА332-2': lambda: RLCI.EA332.on(2, stop_shd=True, ask_TMI=True),
+            'ВКЛ ЭА332-1': lambda: RLCI.EA332.on(1, stop_shd=True, ask_TMI=btn_ask_di),
+            'ВКЛ ЭА332-2': lambda: RLCI.EA332.on(2, stop_shd=True, ask_TMI=btn_ask_di),
             'ОТКЛ ЭА332': lambda: RLCI.EA332.off(),
             'ВКЛ ЭА331-1': lambda: RLCI.EA331.on(1),
             'ВКЛ ЭА331-2': lambda: RLCI.EA332.on(2),
@@ -521,16 +523,31 @@ foo = {
             'РЕЗ': lambda: RLCI.UM.on(2),
             'ОТКЛ': lambda: RLCI.UM.off()}),
     'РЛЦИ РЕЖИМ': lambda: windowChooser(
-        btnsText=(('M1', 'M2', 'M3', 'M4'), ('VS1', 'VS2')),
-        title='РЛЦИ УМ',
-        fooDict={'M1': lambda: RLCI.mode('M1'),
-                 'M2': lambda: RLCI.mode('M2'),
-                 'M3': lambda: RLCI.mode('M3'),
-                 'M4': lambda: RLCI.mode('M4'),
-                 'VS1': lambda: RLCI.mode('VS1'),
-                 'VS2': lambda: RLCI.mode('VS2')},
+        btnsText=(('M1', 'M2', 'M3', 'M4'), ('VS1', 'VS2'), ('RS485-1', 'RS485-2'), ('ИМ-МОД ВКЛ', 'ИМ-МОД ОТКЛ'),
+                  ('ИМ-ФИП ВКЛ', 'ИМ-ФИП ОТКЛ'), ('СТОП ШД', 'ПУСК ШД')),
+        title='РЛЦИ РЕЖИМ',
+        fooDict={'M1': lambda: RLCI.mode('M1', ask_TMI=btn_ask_di),
+                 'M2': lambda: RLCI.mode('M2', ask_TMI=btn_ask_di),
+                 'M3': lambda: RLCI.mode('M3', ask_TMI=btn_ask_di),
+                 'M4': lambda: RLCI.mode('M4', ask_TMI=btn_ask_di),
+                 'VS1': lambda: RLCI.mode('VS1', ask_TMI=btn_ask_di),
+                 'VS2': lambda: RLCI.mode('VS2', ask_TMI=btn_ask_di),
+                 'RS485-1': lambda: RLCI.mode('RS485-1', ask_TMI=btn_ask_di),
+                 'RS485-2': lambda: RLCI.mode('RS485-2', ask_TMI=btn_ask_di),
+                 'ИМ-МОД ВКЛ': lambda: RLCI.mode('on imMOD', ask_TMI=btn_ask_di),
+                 'ИМ-МОД ОТКЛ': lambda: RLCI.mode('off imMOD', ask_TMI=btn_ask_di),
+                 'ИМ-ФИП ВКЛ': lambda: RLCI.mode('on imFIP', ask_TMI=btn_ask_di),
+                 'ИМ-ФИП ОТКЛ': lambda: RLCI.mode('off imFIP', ask_TMI=btn_ask_di),
+                 'СТОП ШД': lambda: RLCI.mode('stop SHD', ask_TMI=btn_ask_di),
+                 'ПУСК ШД': lambda: RLCI.mode('start SHD', ask_TMI=btn_ask_di)},
         ret_btn=True),
-    'РЛЦИ ОТКЛ ВСЕ': lambda: RLCI.off_all(),
+    'РЛЦИ ВСЕ БЛОКИ': lambda: windowChooser(
+        btnsText=('ВКЛ-1', 'ВКЛ-2', 'ОТКЛ'),
+        title='РЛЦИ ВКЛ ОТКЛ',
+        fooDict={'ВКЛ-1': lambda: RLCI.on(1),
+                 'ВКЛ-2': lambda: RLCI.on(2),
+                 'ОТКЛ': lambda: RLCI.off()},
+        ret_btn=True),
     # 'ON ЭА331-О': lambda: sendFromJson(SCPICMD, 0xE004, AsciiHex('0111010000000000')),        # 0x40D9
     # 'ON ЭА331-Р': lambda: sendFromJson(SCPICMD, 0xE004, AsciiHex('0111020000000000')),        # 0x41A1
     # 'OFF ЭА331': lambda: sendFromJson(SCPICMD, 0xE005, AsciiHex('0111000000000000')),         # 0x43F9
@@ -571,7 +588,7 @@ btns = (('ТЕСТ 1', 'ТЕСТ 2', 'ТЕСТ 3', 'ТЕСТ 4'),       # афу
         ('ТЕСТ 9', 'ТЕСТ 10'),                          # тех афу
         ('ТЕСТ 11', 'ТЕСТ 12', 'ТЕСТ 13', 'ТЕСТ 14'),   # тех рлци
         'M778',
-        ('РЛЦИ ЭА', 'РЛЦИ ПЧ', 'РЛЦИ ФИП', 'РЛЦИ МОД', 'РЛЦИ УМ', 'РЛЦИ РЕЖИМ', 'РЛЦИ ОТКЛ ВСЕ'),
+        ('РЛЦИ ЭА', 'РЛЦИ ПЧ', 'РЛЦИ ФИП', 'РЛЦИ МОД', 'РЛЦИ УМ', 'РЛЦИ РЕЖИМ', 'РЛЦИ ВСЕ БЛОКИ'),
         ('ФКП ОПРОС KV', 'ФКП УСТ ДИ1с', 'ФКП УСТ ДИ10с'),
         'ОПИСАНИЕ ТЕСТОВ')
 
