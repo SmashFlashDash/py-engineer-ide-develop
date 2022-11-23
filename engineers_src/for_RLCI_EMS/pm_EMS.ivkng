@@ -244,7 +244,8 @@ foo = {
         fooDict={
             'ОСН': lambda: RLCI.UM.on(1),
             'РЕЗ': lambda: RLCI.UM.on(2),
-            'ОТКЛ': lambda: RLCI.UM.off()}),
+            'ОТКЛ': lambda: RLCI.UM.off()},
+        ret_btn=True),
     'РЛЦИ АФУ МАССИВ': lambda: RLCI.sendArrayToAntenna(
         'КПА', CPIMD(addr=0x0,
                      data=AsciiHex(

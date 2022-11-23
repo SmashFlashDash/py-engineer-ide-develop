@@ -89,9 +89,36 @@ def ACDC():
                          '04.01.CBAEA2': 'КАЛИБР'}, 'ТЕКУЩ')
     strings = []
     for key in sorted(res.keys()):
-        strings.append((key, *res[key]))
+        row = [key]
+        val = res[key]
+        row.extend([str(x) for x in val]) if isinstance(val, list) else row.append(str(val))
+        strings.append(row)
     print(tabulate(strings, tablefmt='simple'))
 
+
+def FKP_RLCI_DR():
+    if RLCI.EA332.cur is None or RLCI.EA331.cur is None:
+        raise Exception('Нет данных о включенных блоках')
+    BCK.clcBCK()
+    BCK.downBCK()
+    di = []
+    di.append("{04.01.VBAEA%s}@K==[25,35]" % RLCI.EA332.cur)
+    di.append("{04.01.CBAEA%s}@K==[0.1, 1.24]" % RLCI.EA332.cur)
+    di.append("{04.01.VKKEA%s}@K==[25,35]" % RLCI.EA331.cur)
+    di.append("{04.01.CKKEA%s}@K==[0.1, 1.24]" % RLCI.EA331.cur)
+    executeTMI(" and ".join(di))
+
+def FKP_RLCI_SR():
+    if RLCI.EA332.cur is None or RLCI.EA331.cur is None:
+        raise Exception('Нет данных о включенных блоках')
+    BCK.clcBCK()
+    BCK.downBCK()
+    di = []
+    di.append("{04.01.VBAEA%s}@K==[25,35]" % RLCI.EA332.cur)
+    di.append("{04.01.CBAEA%s}@K==[1.0, 2.93]" % RLCI.EA332.cur)
+    di.append("{04.01.VKKEA%s}@K==[25,35]" % RLCI.EA331.cur)
+    di.append("{04.01.CKKEA%s}@K==[1.0, 3.45]" % RLCI.EA331.cur)
+    executeTMI(" and ".join(di))
 
 ############################### TESTS ########################################
 def TEST_5():
@@ -521,7 +548,8 @@ foo = {
         fooDict={
             'ОСН': lambda: RLCI.UM.on(1),
             'РЕЗ': lambda: RLCI.UM.on(2),
-            'ОТКЛ': lambda: RLCI.UM.off()}),
+            'ОТКЛ': lambda: RLCI.UM.off()},
+        ret_btn=True),
     'РЛЦИ РЕЖИМ': lambda: windowChooser(
         btnsText=(('M1', 'M2', 'M3', 'M4'), ('VS1', 'VS2'), ('RS485-1', 'RS485-2'), ('ИМ-МОД ВКЛ', 'ИМ-МОД ОТКЛ'),
                   ('ИМ-ФИП ВКЛ', 'ИМ-ФИП ОТКЛ'), ('СТОП ШД', 'ПУСК ШД')),
@@ -565,6 +593,8 @@ foo = {
     'ФКП ОПРОС KV': ACDC,
     'ФКП УСТ ДИ1с': lambda: sendFromJson(SCPICMD, 0x4258, AsciiHex('0x0100 0000')),  # уставка на опрос ДИ
     'ФКП УСТ ДИ10с': lambda: sendFromJson(SCPICMD, 0x4258, AsciiHex('0x0A00 0000')),  # уставка на опрос ДИ
+    'ФКП РЛЦИ ДР': FKP_RLCI_DR,
+    'ФКП РЛЦИ СР': FKP_RLCI_SR,
     'ТЕСТ 1': lambda: TEST_1(),
     'ТЕСТ 2': lambda: TEST_2(),
     'ТЕСТ 3': lambda: TEST_3(),
@@ -589,7 +619,7 @@ btns = (('ТЕСТ 1', 'ТЕСТ 2', 'ТЕСТ 3', 'ТЕСТ 4'),       # афу
         ('ТЕСТ 11', 'ТЕСТ 12', 'ТЕСТ 13', 'ТЕСТ 14'),   # тех рлци
         'M778',
         ('РЛЦИ ЭА', 'РЛЦИ ПЧ', 'РЛЦИ ФИП', 'РЛЦИ МОД', 'РЛЦИ УМ', 'РЛЦИ РЕЖИМ', 'РЛЦИ ВСЕ БЛОКИ'),
-        ('ФКП ОПРОС KV', 'ФКП УСТ ДИ1с', 'ФКП УСТ ДИ10с'),
+        ('ФКП ОПРОС KV', 'ФКП УСТ ДИ1с', 'ФКП УСТ ДИ10с', 'ФКП РЛЦИ ДР', 'ФКП РЛЦИ СР'),
         'ОПИСАНИЕ ТЕСТОВ')
 
 

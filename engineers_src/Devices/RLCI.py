@@ -27,7 +27,9 @@ class EA332(Device):
         if stop_shd:
             sendFromJson(SCPICMD, 0xA018)  # Остан ШД
         if ask_TMI:
-            executeTMI(doEquation('10.01.BA_FIP1', '@K', 'off') + " and "
+            executeTMI("{04.01.beBAEA%s1}@K==\'включен\'" % num + " and "
+                       + "{04.01.beBAEA%s1}@K==\'включен\'" % num + " and "
+                       + doEquation('10.01.BA_FIP1', '@K', 'off') + " and "
                        + doEquation('10.01.BA_FIP2', '@K', 'off') + " and "
                        + doEquation('10.01.BA_MOD1', '@K', 'off') + " and "
                        + doEquation('10.01.BA_MOD2', '@K', 'off') + " and "
@@ -76,6 +78,9 @@ class EA331(Device):
             sendFromJson(SCPICMD, 0xE004, AsciiHex('0111020000000000'))
         else:
             raise Exception('Неверный параметр')
+        if ask_TMI:
+            executeTMI("{04.01.beKKEA%s1}@K==\'включен\'" % num + " and "
+                       + "{04.01.beKKEA%s1}@K==\'включен\'" % num)
 
     @classmethod
     def off(cls, ask_TMI=True):
@@ -320,7 +325,6 @@ class RLCI(Device):
         MOD.on(num, ask_TMI=ask_TMI)
         sleep(1)
         UM.on(num, ask_TMI=ask_TMI)
-
 
     @classmethod
     @print_start_and_end(string='РЛЦИ: откл все блоки')
