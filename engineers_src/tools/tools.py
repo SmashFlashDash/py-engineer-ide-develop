@@ -30,42 +30,44 @@ from datetime import datetime, timedelta
 from enum import Enum
 import re
 import threading
-from PyQt5.QtWidgets import QApplication, QMessageBox, QPushButton, QDialogButtonBox, QSizePolicy, QBoxLayout, QLabel
+from PyQt5.QtWidgets import QApplication, QMessageBox, QPushButton, QDialogButtonBox, QSizePolicy, QBoxLayout, QLabel, \
+    QDialog, QVBoxLayout, QStyle, QLineEdit, QHBoxLayout, QWidget, QBoxLayout, QDialogButtonBox
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
+from collections import OrderedDict
 
 
 ################ IMITATION ###############
-# from random import randint
-# def get(*args):
-#     randint(0, 10)
-#     calibs = ('включен', 'отключен', 'Есть', 'Нет', 0, 100, None)
-#     uncalibs = (0, 1, 100, -100, 0.01, 1000, None)
-#     if isinstance(args[1], dict):
-#         result = {}
-#         if args[2] == 'ИНТЕРВАЛ':
-#             for k, v in args[1].items():
-#                 result[k] = []
-#                 result[k].append(calibs[randint(0, len(calibs) - 1)] if v in 'КАЛИБР' else uncalibs[randint(0, len(uncalibs) - 1)])
-#                 result[k].append(calibs[randint(0, len(calibs) - 1)] if v in 'КАЛИБР' else uncalibs[randint(0, len(uncalibs) - 1)])
-#         else:
-#             for k, v in args[1].items():
-#                 result[k] = calibs[randint(0, len(calibs)-1)] if v in 'КАЛИБР' else uncalibs[randint(0, len(uncalibs)-1)]
-#         return result
-#     if args[2] == 'КАЛИБР ТЕКУЩ':
-#         return calibs[randint(0, len(calibs)-1)]    # 'Включено'   #   calibs[randint(0, len(calibs)-1)]
-#     elif args[2] == 'НЕКАЛИБР ТЕКУЩ':
-#         return uncalibs[randint(0, len(uncalibs)-1)]    # 0.1          #   uncalibs[randint(0, len(uncalibs)-1)]
-#     elif args[2] == 'КАЛИБР ИНТЕРВАЛ':
-#         return ['Включено', 'Включено']
-#     elif args[2] == 'НЕКАЛИБР ИНТЕРВАЛ':
-#         return [1, 1]
-# Ex.get = get
-# KPA = lambda *args: ' '.join([str(x) for x in args])
-# Ex.send = lambda *args: print('Отправка ' + ' '.join([str(x) for x in args]))
-# Ex.wait = lambda *args: False if randint(0, 1) == 0 else True
-# Ex.ivk_file_name = "script.ivkng"
-# Ex.ivk_file_path = "D:/VMShared/ivk-ng-myremote/engineers_src/script.ivkng"
+from random import randint
+def get(*args):
+    randint(0, 10)
+    calibs = ('включен', 'отключен', 'Есть', 'Нет', 0, 100, None)
+    uncalibs = (0, 1, 100, -100, 0.01, 1000, None)
+    if isinstance(args[1], dict):
+        result = {}
+        if args[2] == 'ИНТЕРВАЛ':
+            for k, v in args[1].items():
+                result[k] = []
+                result[k].append(calibs[randint(0, len(calibs) - 1)] if v in 'КАЛИБР' else uncalibs[randint(0, len(uncalibs) - 1)])
+                result[k].append(calibs[randint(0, len(calibs) - 1)] if v in 'КАЛИБР' else uncalibs[randint(0, len(uncalibs) - 1)])
+        else:
+            for k, v in args[1].items():
+                result[k] = calibs[randint(0, len(calibs)-1)] if v in 'КАЛИБР' else uncalibs[randint(0, len(uncalibs)-1)]
+        return result
+    if args[2] == 'КАЛИБР ТЕКУЩ':
+        return calibs[randint(0, len(calibs)-1)]    # 'Включено'   #   calibs[randint(0, len(calibs)-1)]
+    elif args[2] == 'НЕКАЛИБР ТЕКУЩ':
+        return uncalibs[randint(0, len(uncalibs)-1)]    # 0.1          #   uncalibs[randint(0, len(uncalibs)-1)]
+    elif args[2] == 'КАЛИБР ИНТЕРВАЛ':
+        return ['Включено', 'Включено']
+    elif args[2] == 'НЕКАЛИБР ИНТЕРВАЛ':
+        return [1, 1]
+Ex.get = get
+KPA = lambda *args: ' '.join([str(x) for x in args])
+Ex.send = lambda *args: print('Отправка ' + ' '.join([str(x) for x in args]))
+Ex.wait = lambda *args: False if randint(0, 1) == 0 else True
+Ex.ivk_file_name = "script.ivkng"
+Ex.ivk_file_path = "D:/VMShared/ivk-ng-myremote/engineers_src/script.ivkng"
 
 
 ################ TEXT ###################
@@ -209,6 +211,98 @@ def inputG(text=None, parent=None):
         sys.exit()
 
 
+class ScriptQDialog(QDialog):
+
+    def __init__(self, parent, title, text):
+        super().__init__(parent=parent)
+        self.setWindowIcon(QIcon("./res/mainicon.png"))
+        self.setWindowTitle(title)
+        self.boxLayout = QVBoxLayout()
+        self.headerLayout = QVBoxLayout()
+        self.footerLayout = QVBoxLayout()
+        self.boxLayout.setContentsMargins(0, 0, 0, 0)
+        self.headerLayout.setContentsMargins(20, 20, 20, 20)
+        self.footerLayout.setContentsMargins(20, 0, 20, 20)
+        self.header = QWidget(self)
+        self.footer = QWidget(self)
+        self.iconLabel = QLabel()
+        self.setLayout(self.boxLayout)
+        self.header.setLayout(self.headerLayout)
+        self.footer.setLayout(self.footerLayout)
+        self.boxLayout.addWidget(self.header)
+        self.boxLayout.addWidget(self.footer)
+        self.headerLayout.addLayout(self.__rowWidgets(self.iconLabel, QLabel(text), align=Qt.AlignLeft))
+
+        self.header.setObjectName('header')
+        self.footer.setObjectName('footer')
+        self.setStyleSheet("QWidget #header {"
+                           "background-color: #ffffff;"
+                           "}"
+                           "QWidget #footer {"
+                           "background-color: #f0f0f0;"
+                           "}"
+                           "QPushButton {"
+                           "margin-right: 20px"
+                           "padding: 20px;"
+                           "background-color: #e1e1e1;"
+                           "color: #211100;"
+                           "font-family: Arial, sans-serif;"
+                           "border:  2px solid #e7e7e7;"
+                           "}"
+                           "QPushButton:hover {"
+                           "border: 1px solid red;"
+                           "color: #222FFF;"
+                           "}")
+        self.boxLayout.addStretch()
+
+    def setIcon(self, path):
+        # pixmap = self.style().standardIcon(QStyle.SP).pixmap(64, 64)
+        # pixmap = QIcon('res/.svg').pixmap(64, 64)
+        self.iconLabel.setPixmap(QIcon('res/.svg').pixmap(64, 64))
+
+    def addFooterButtons(self, btnsList):
+        btns = []
+        for id, btnText in enumerate(btnsList):
+            btn = QPushButton(btnText)
+            btn.clicked.connect(lambda: self.done(id))
+        self.footerLayout.addLayout(self.__rowWidgets(*btns, align=Qt.AlignRight))
+
+    def __rowWidgets(*args, align=Qt.AlignLeft):
+        lay = QHBoxLayout()
+        lay.setAlignment(align)
+        for w in args:
+            lay.addWidget(w)
+        return lay
+
+
+def inputG(text=None, parent=None):
+    """вариант breakM без внешней функции"""
+    if text is None:
+        text = 'Скрипт остановлен'
+    box = ScriptQDialog(None, 'Пауза', text)
+    box.addFooterButtons(['Продолжить', 'Завершить'])
+    res = box.exec()
+    if res == 0:
+        bprint(':::Продолжить')
+    else:
+        bprint(':::Завершить')
+        sys.exit()
+
+
+    box = QMessageBox(QMessageBox.Warning, 'Пауза', text, QMessageBox.NoButton, parent)
+    box.setWindowIcon(QIcon("res/mainicon.png"))
+    box.setAttribute(Qt.WA_DeleteOnClose)
+    box.addButton('Продолжить', QMessageBox.YesRole)
+    box.addButton('Завершить', QMessageBox.NoRole)
+    res = box.exec()
+    if res == 0:
+        bprint(':::Продолжить')
+        # app.quit()    # если вызвать с внешним app то бдует беск цикл с первой кнопкой
+    else:
+        bprint(':::Завершить')
+        sys.exit()
+
+
 # TODO: заменить на собственный виджет с Buttons в GridLayouy а то размер кнопоко не изменяется
 #  тогда show при включении и deleteOnClose, в кнопке вызывать window.close()
 #  сделать все в одну фому
@@ -303,6 +397,78 @@ def inputGG(btnsList, title=None, parent=None, labels=None, ret_btn=None):
     else:
         bprint(':::Завершить')
         sys.exit()
+
+
+# TODO: всплывающее окно с вводом текста для присваивания переменных
+def inputGGG(param_names):
+    def rowWidgets(*args, align=Qt.AlignLeft):
+        lay = QHBoxLayout()
+        lay.setAlignment(align)
+        for w in args:
+            lay.addWidget(w)
+        return lay
+
+    params = OrderedDict()
+    box = QDialog()
+    box.setWindowIcon(QIcon("./res/mainicon.png"))
+    box.setWindowTitle('Введите переменные')
+    boxLayout = QVBoxLayout()
+    headerLayout = QVBoxLayout()
+    footerLayout = QVBoxLayout()
+    header = QWidget(box)
+    footer = QWidget(box)
+    boxLayout.setContentsMargins(0, 0, 0, 0)
+    headerLayout.setContentsMargins(20, 20, 20, 20)
+    footerLayout.setContentsMargins(20, 0, 20, 20)
+
+    box.setLayout(boxLayout)
+    boxLayout.addWidget(header)
+    boxLayout.addWidget(footer)
+    header.setLayout(headerLayout)
+    footer.setLayout(footerLayout)
+    # Делаем заголовок с QIcon и текстом
+    pixmap = box.style().standardIcon(QStyle.SP_MessageBoxQuestion).pixmap(64, 64)
+    # pixmap = QIcon('res/.svg')
+    icon = QLabel()
+    icon.setPixmap(pixmap)
+    headerLayout.addLayout(rowWidgets(icon, QLabel('Введите переменные'), align=Qt.AlignLeft))
+    # Делаем поля ввода
+    for x in param_names:
+        lineEdit = QLineEdit()
+        params[x] = lineEdit
+        headerLayout.addLayout(rowWidgets(QLabel(x), lineEdit, align=Qt.AlignLeft))
+    # Делаем нижни лэйоут с кнопкой продолжить
+    btn = QPushButton('Продолжить')
+    footerLayout.addLayout(rowWidgets(btn, align=Qt.AlignRight))
+
+    header.setObjectName('header')
+    footer.setObjectName('footer')
+    box.setStyleSheet("QWidget #header {"
+                      "background-color: #ffffff;"
+                      "}"
+                      "QWidget #footer {"
+                      "background-color: #f0f0f0;"
+                      "}"
+                      "QPushButton {"
+                      "margin-right: 20px"
+                      "padding: 20px;"
+                      "background-color: #e1e1e1;"
+                      "color: #211100;"
+                      "font-family: Arial, sans-serif;"
+                      "border:  2px solid #e7e7e7;"
+                      "}"
+                      "QPushButton:hover {"
+                      "border: 1px solid red;"
+                      "color: #222FFF;"
+                      "}")
+    boxLayout.addStretch()
+    box.adjustSize()
+    box.setFixedHeight(box.height())
+    btn.clicked.connect(box.accept)
+    box.exec()
+    for param_name, lineEdit in params.items():
+        params[param_name] = lineEdit.text()
+    return params
 
 
 ############ THREAD LOCKS ###############
