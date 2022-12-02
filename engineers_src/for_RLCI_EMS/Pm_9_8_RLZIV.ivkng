@@ -112,6 +112,182 @@ def FKP_RLCI_SR():
     executeTMI(" and ".join(di))
 
 
+############################## ANTENNA TEST ###############################
+def TEST_1():
+    yprint('ТЕСТ 1 АФУ-Х ПРОВЕРКА ОСТАНОВКИ ШД - БА-О')
+    RLCI.EA332.on(1, stop_shd=False, ask_TMI=False)
+    sleep(10)
+    RLCI.mode('stop SHD', ask_TMI=False)
+    RLCI.waitAntennaStop(period=60, toPrint=False)  # ожидание на остановку антенны
+    RLCI.EA332.off()
+    yprint('ТЕСТ 1 ЗВЕРШЕН', 1)
+
+
+def TEST_2():
+    yprint('ТЕСТ 2 АФУ-Х ПРОВЕРКА ОСТАНОВКИ ШД - БА-Р')
+    RLCI.EA332.on(2, stop_shd=False, ask_TMI=False)
+    sleep(10)
+    RLCI.mode('stop SHD', ask_TMI=False)
+    RLCI.waitAntennaStop(period=60, toPrint=False)  # ожидание на остановку антенны
+    RLCI.EA332.off()
+    yprint('ТЕСТ 2 ЗВЕРШЕН', 1)
+
+
+def __TEST_3_4():
+    RLCI.isAntennaMoving()  # проверка что антенна движется
+    RLCI.waitAntennaStop(period=5*60, toPrint=False)  # ожидание на остановку антенны
+    executeTMI("{10.01.BA_AFU_DNP_OZ}==0" + " and " +  # првоерка параметров ДНП и имулсьсов НЗ
+               "{10.01.BA_AFU_DNP_OX}==0")
+    # Отправить массив НЗ 500
+    RLCI.sendArrayToAntenna('КПА', CPIMD(addr=0x0,
+                                         data=AsciiHex(
+                                             '0x'
+                                             '80500450F401F401640064803200C8000A002C01140084830A0000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+                                             'A0500550F40158026400C88032002C01140064001E008483140000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+                                             '000000000000000000000000000000000000000000000000000000000000000000000000'),
+                                         std=2))
+    sleep(5)
+    RLCI.waitAntennaStop(period=60 + 40, toPrint=False)  # ожидание когда антенна остановится в 0 градусной зоне
+    executeTMI("{10.01.BA_AFU_IMP_OZ}@H==500" + " and " +  # проверка координат 0 градуснйо зоны
+               "{10.01.BA_AFU_IMP_OX}@H==500" + " and " +
+               "{10.01.BA_AFU_NP_OZ}@H==0" + " and " +
+               "{10.01.BA_AFU_NP_OX}@H==0")
+    # Запустить отработку массива
+    # sendFromJson(SCPICMD, 0xA017)  # ПУСК ШД
+    RLCI.mode('start SHD')
+    # RLCI.isAntennaMoving()  # проверка что антенна движется
+    RLCI.waitAntennaStop(period=5 * 60, toPrint=False)  # ожидание когда антенна остановится, или sleep(посчитать время)
+    executeTMI("{10.01.BA_AFU_IMP_OZ}@H==@same@all" + " and " +  # Проверка НП и ДНП после остановки
+               "{10.01.BA_AFU_IMP_OX}@H==@same@all" + " and " +
+               "{10.01.BA_AFU_NP_OZ}@H==0" + " and " +
+               "{10.01.BA_AFU_NP_OX}@H==0" + " and " +
+               "{10.01.BA_AFU_DNP_OZ}@H==0" + " and " +
+               "{10.01.BA_AFU_DNP_OX}@H==0", count=2, period=8)
+
+
+def TEST_3():
+    yprint('ТЕСТ 3 АФУ-Х ПРОВЕРКА ОТРАБОТКИ МАССИВА, ДНП, НП - БА-О')
+    RLCI.EA332.on(1, stop_shd=False, ask_TMI=False)
+    __TEST_3_4()
+    RLCI.EA332.off()
+    yprint('ТЕСТ 3 ЗВЕРШЕН', 1)
+
+
+def TEST_4():
+    yprint('ТЕСТ 4 АФУ-Х ПРОВЕРКА ОТРАБОТКИ МАССИВА, ДНП, НП - БА-Р')
+    RLCI.EA332.on(2, stop_shd=False, ask_TMI=False)
+    __TEST_3_4()
+    RLCI.EA332.off()
+    yprint('ТЕСТ 4 ЗВЕРШЕН', 1)
+
+
+def __TEST_5_6(text, array):
+    RLCI.isAntennaMoving()  # проверка что антенна движется
+    yprint('Ждем остановки антены в НП')
+    RLCI.waitAntennaStop(period=5 * 60, toPrint=False)  # ожидание на остановку антенны
+    executeTMI("{10.01.BA_AFU_DNP_OZ}==0" + " and " +  # првоерка АФУ в НП
+               "{10.01.BA_AFU_DNP_OX}==0")
+    yprint('Отправка массива НЗ ' + text)
+    RLCI.sendArrayToAntenna('КПА', CPIMD(addr=0x0, data=AsciiHex(array), std=2))
+    yprint('Ждать АФУ в НЗ')
+    RLCI.waitAntennaStop(period=5 * 60, toPrint=False)  # ждем когда АФУ в 0гр зоне
+
+
+def TEST_5():
+    """4500 - ось 0x 9500 - ось 0z"""
+    yprint('ТЕСТ 5 АФУ-Х ПРОВЕРКА ДИ ДКП oZ - БА-О')
+    RLCI.EA332.on(1, stop_shd=False, ask_TMI=False)
+    __TEST_5_6('0x=4500, 0z=9500', '0x'
+                                   '805004509411E8030A00D0870A00F4011400C4890A00000000000A000000000000000000000000000000000000000000000000000000000000000000000000000000'
+                                   'A05005501C25E8030A00D0870A00F4011400C4890A000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+                                   '000000000000000000000000000000000000000000000000000000000000000000000000')
+    yprint('Проверка координат 0гр зоны, ДИ ДКП')
+    executeTMI("{10.01.BA_AFU_IMP_OZ}@H==[9200, 9800]" + " and " +  # проверка координат 0гр зоны, ДИ ДКП
+               "{10.01.BA_AFU_IMP_OX}@H==[4200, 4800]" + " and " +
+               "{10.01.BA_AFU_DKP_OZ}@H==0" + " and " +
+               "{10.01.BA_AFU_DKP_OX}@H==1", count=2, period=8)
+    RLCI.EA332.off()
+    yprint('ТЕСТ 5 ЗВЕРШЕН', 1)
+
+
+def TEST_6():
+    """9500 - ось 0x 4500 - ось 0z"""
+    yprint('ТЕСТ 6 АФУ-Х ПРОВЕРКА ДИ ДКП oX - БА-Р')
+    RLCI.EA332.on(2, stop_shd=False, ask_TMI=False)
+    __TEST_5_6('0x=9500, 0z=4500', '0x'
+                                   '805004501C25E8030A00D0870A00F4011400C4890A00000000000A000000000000000000000000000000000000000000000000000000000000000000000000000000'
+                                   'A05005509411E8030A00D0870A00F4011400C4890A000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+                                   '000000000000000000000000000000000000000000000000000000000000000000000000')
+    yprint('Проверка координат 0гр зоны, ДИ ДКП')
+    executeTMI("{10.01.BA_AFU_IMP_OX}@H==[9200, 9800]" + " and " +  # проверка координат 0гр зоны, ДИ ДКП
+               "{10.01.BA_AFU_IMP_OZ}@H==[4200, 4800]" + " and " +
+               "{10.01.BA_AFU_DKP_OX}@H==0" + " and " +
+               "{10.01.BA_AFU_DKP_OZ}@H==1", count=2, period=8)
+    RLCI.EA332.off()
+    yprint('ТЕСТ 6 ЗВЕРШЕН', 1)
+
+
+'''
+def __TEST_11_12():
+    RLCI.isAntennaMoving()  # проверка что антенна движется
+    yprint('Ждем остановки антены в НП')
+    RLCI.waitAntennaStop(period=5*60, toPrint=False)  # ожидание на остановку антенны
+    executeTMI("{10.01.BA_AFU_DNP_OZ}==0" + " and " +  # првоерка параметров ДНП и имулсьсов НЗ
+               "{10.01.BA_AFU_DNP_OX}==0")
+    yprint('Отправка массива НЗ 0x=1200, 0z=12000')
+    RLCI.sendArrayToAntenna('КПА', CPIMD(addr=0x0,
+                                         data=AsciiHex(
+                                             '0x'
+                                             '80500450E02E00000000000000000000000000000000000000000A000000000000000000000000000000000000000000000000000000000000000000000000000000'
+                                             'A0500550E02E000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+                                             '000000000000000000000000000000000000000000000000000000000000000000000000'),
+                                         std=2))
+    comm_print('Зафиксировать максимальное значение Импульсов 10.01.BA_AFU_IMP_OZ, 10.01.BA_AFU_IMP_OX')
+    comm_print('Зафиксировать срабатывание датчиков ДКП 10.01.BA_AFU_DKP_OZ, 10.01.BA_AFU_DKP_OX')
+    yprint('Ждать 90с АФУ дойдет до ДКП')
+    sleep(90)  # время когда антенна дойдет до ДКП
+    # executeTMI("{10.01.BA_AFU_IMP_OZ}@H==[8500, 9300]" + " and " +  # проверка координат и ДКП
+    #            "{10.01.BA_AFU_IMP_OX}@H==[8500, 9300]", count=2, period=8)
+    impulses = Ex.get('ТМИ', {'10.01.BA_AFU_IMP_OZ': 'НЕКАЛИБР',  # получить значения с момента последнего запроса
+                              '10.01.BA_AFU_IMP_OX': 'НЕКАЛИБР'}, 'ИНТЕРВАЛ')
+    x = max(impulses['10.01.BA_AFU_IMP_OX'])
+    z = max(impulses['10.01.BA_AFU_IMP_OZ'])
+    if 8500 < x < 9300:
+        gprint('Max 0x: %s' % x)
+    else:
+        rprint('Max 0x: %s' % x)
+        inputG()
+    if 8500 < z < 9300:
+        gprint('Max 0z: %s' % z)
+    else:
+        rprint('Max 0z: %s' % z)
+        inputG()
+    yprint('Ждать возврат АФУ в НП')
+    RLCI.waitAntennaStop(period=60 * 5, toPrint=False)              # ждем 5 минут пока антенная вернется в ДНП
+    executeTMI("{10.01.BA_AFU_IMP_OZ}@H==@same@all" + " and " +     # Проверка антенна не Движ и ДНП
+               "{10.01.BA_AFU_IMP_OX}@H==@same@all" + " and " +
+               "{10.01.BA_AFU_DNP_OZ}@H==0" + " and " +
+               "{10.01.BA_AFU_DNP_OX}@H==0", count=2, period=8)
+    # comm_print("Проверь максимальное значение Импульсов 10.01.BA_AFU_IMP_OZ, 10.01.BA_AFU_IMP_OX")
+
+
+def TEST_11():
+    yprint('ТЕСТ 11 АФУ-Х ПРОВЕРКА ОТРАБОТКИ ДКП, КОЛ_ВО ИМПУЛЬСОВ - БА-О')
+    RLCI.EA332.on(1, stop_shd=False, ask_TMI=False)
+    __TEST_11_12()
+    RLCI.EA332.off()
+    yprint('ТЕСТ 9 ЗВЕРШЕН', 1)
+
+
+def TEST_12():
+    yprint('ТЕСТ 12 АФУ-Х ПРОВЕРКА ОТРАБОТКИ ДКП, КОЛ_ВО ИМПУЛЬСОВ - БА-Р')
+    RLCI.EA332.on(2, stop_shd=False, ask_TMI=False)
+    __TEST_11_12()
+    RLCI.EA332.off()
+    yprint('ТЕСТ 10 ЗВЕРШЕН', 1)
+'''
+
+
 ############################### TESTS ########################################
 def TEST_7():
     yprint('ТЕСТ 7: БА-О(ЭА332), ПЧ-О(ЭА331), ФИП-О(ЭА330), МОД-О(ЭА331), УМ-О(ЭА331)', 1)
@@ -279,6 +455,10 @@ def TEST_11():
                doEquation('10.01.PRD_UM1_BS', '@K', 'off') + " and " +
                doEquation('10.01.PRD_UM1_P', '@K', 'off') + " and " +
                doEquation('10.01.PRD_UM1_P_Out', '@K', 'off'), count=1)
+    RLCI.PCH.cur = None
+    RLCI.FIP.cur = None
+    RLCI.MOD.cur = None
+    RLCI.UM.cur = None
     RLCI.EA331.off()
     RLCI.EA332.off()
     yprint('ТЕСТ 11 ЗВЕРШЕН', 1)
@@ -313,13 +493,17 @@ def TEST_12():
                doEquation('10.01.PRD_UM2_BS', '@K', 'off') + " and " +
                doEquation('10.01.PRD_UM2_P', '@K', 'off') + " and " +
                doEquation('10.01.PRD_UM2_P_Out', '@K', 'off'), count=1)
+    RLCI.PCH.cur = None
+    RLCI.FIP.cur = None
+    RLCI.MOD.cur = None
+    RLCI.UM.cur = None
     RLCI.EA331.off()
     RLCI.EA332.off()
     yprint('ТЕСТ 12 ЗВЕРШЕН', 1)
 
 
-def TEST_14():
-    yprint('ТЕСТ 15 аварийное отключение БА-О(ЭА332)')
+def TEST_13():
+    yprint('ТЕСТ 13 аварийное отключение БА-О(ЭА332)')
     RLCI.EA332.on(1)
     RLCI.EA331.on(1)
     RLCI.mode('RS485-1')    # RS485-0
@@ -330,12 +514,12 @@ def TEST_14():
     sleep(10)
     yprint('СНЯТЬ ПИТАНИЕ ФКП - АВАРИЙНОЕ ОТКЛЮЧЕНИE')
     inputG('Снять питание?')
-    RLCI.EA331.off()
-    RLCI.EA332.off()
     RLCI.PCH.cur = None
     RLCI.FIP.cur = None
     RLCI.MOD.cur = None
     RLCI.UM.cur = None
+    RLCI.EA331.off()
+    RLCI.EA332.off()
     sleep(10)
     yprint('ПРОВЕРКА ВКЛЮЧЕНИЯ')
     inputG('Начать проверку?')
@@ -343,8 +527,8 @@ def TEST_14():
     yprint('ТЕСТ 13 ЗВЕРШЕН', 1)
 
 
-def TEST_16():
-    yprint('ТЕСТ 16 аварийное отключение БА-Р(ЭА332)')
+def TEST_14():
+    yprint('ТЕСТ 14 аварийное отключение БА-Р(ЭА332)')
     RLCI.EA332.on(2)
     RLCI.EA331.on(2)
     RLCI.mode('RS485-1')  # RS485-0
@@ -355,191 +539,17 @@ def TEST_16():
     sleep(10)
     yprint('СНЯТЬ ПИТАНИЕ ФКП - АВАРИЙНОЕ ОТКЛЮЧЕНИE')
     inputG('Снять питание?')
-    RLCI.EA331.off()
-    RLCI.EA332.off()
     RLCI.PCH.cur = None
     RLCI.FIP.cur = None
     RLCI.MOD.cur = None
     RLCI.UM.cur = None
+    RLCI.EA331.off()
+    RLCI.EA332.off()
     sleep(10)
     yprint('ПРОВЕРКА ВКЛЮЧЕНИЯ')
     inputG('Начать проверку?')
     TEST_8(ea332=2)
-    yprint('ТЕСТ 13 ЗВЕРШЕН', 1)
-
-
-############################## ANTENNA TEST ###############################
-def TEST_1():
-    yprint('ТЕСТ 1 АФУ-Х ПРОВЕРКА ОСТАНОВКИ ШД - БА-О')
-    RLCI.EA332.on(1, stop_shd=False, ask_TMI=False)
-    sleep(10)
-    RLCI.mode('stop SHD', ask_TMI=False)
-    RLCI.waitAntennaStop(period=60, toPrint=False)  # ожидание на остановку антенны
-    RLCI.EA332.off()
-    yprint('ТЕСТ 1 ЗВЕРШЕН', 1)
-
-
-def TEST_2():
-    yprint('ТЕСТ 2 АФУ-Х ПРОВЕРКА ОСТАНОВКИ ШД - БА-Р')
-    RLCI.EA332.on(2, stop_shd=False, ask_TMI=False)
-    sleep(10)
-    RLCI.mode('stop SHD', ask_TMI=False)
-    RLCI.waitAntennaStop(period=60, toPrint=False)  # ожидание на остановку антенны
-    RLCI.EA332.off()
-    yprint('ТЕСТ 2 ЗВЕРШЕН', 1)
-
-
-def __TEST_3_4():
-    RLCI.isAntennaMoving()  # проверка что антенна движется
-    RLCI.waitAntennaStop(period=5*60, toPrint=False)  # ожидание на остановку антенны
-    executeTMI("{10.01.BA_AFU_DNP_OZ}==0" + " and " +  # првоерка параметров ДНП и имулсьсов НЗ
-               "{10.01.BA_AFU_DNP_OX}==0")
-    # Отправить массив НЗ 500
-    RLCI.sendArrayToAntenna('КПА', CPIMD(addr=0x0,
-                                         data=AsciiHex(
-                                             '0x'
-                                             '80500450F401F401640064803200C8000A002C01140084830A0000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-                                             'A0500550F40158026400C88032002C01140064001E008483140000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-                                             '000000000000000000000000000000000000000000000000000000000000000000000000'),
-                                         std=2))
-    sleep(5)
-    RLCI.waitAntennaStop(period=60 + 40, toPrint=False)  # ожидание когда антенна остановится в 0 градусной зоне
-    executeTMI("{10.01.BA_AFU_IMP_OZ}@H==500" + " and " +  # проверка координат 0 градуснйо зоны
-               "{10.01.BA_AFU_IMP_OX}@H==500" + " and " +
-               "{10.01.BA_AFU_NP_OZ}@H==0" + " and " +
-               "{10.01.BA_AFU_NP_OX}@H==0")
-    # Запустить отработку массива
-    # sendFromJson(SCPICMD, 0xA017)  # ПУСК ШД
-    RLCI.mode('start SHD')
-    # RLCI.isAntennaMoving()  # проверка что антенна движется
-    RLCI.waitAntennaStop(period=5 * 60, toPrint=False)  # ожидание когда антенна остановится, или sleep(посчитать время)
-    executeTMI("{10.01.BA_AFU_IMP_OZ}@H==@same@all" + " and " +  # Проверка НП и ДНП после остановки
-               "{10.01.BA_AFU_IMP_OX}@H==@same@all" + " and " +
-               "{10.01.BA_AFU_NP_OZ}@H==0" + " and " +
-               "{10.01.BA_AFU_NP_OX}@H==0" + " and " +
-               "{10.01.BA_AFU_DNP_OZ}@H==0" + " and " +
-               "{10.01.BA_AFU_DNP_OX}@H==0", count=2, period=8)
-
-
-def TEST_3():
-    yprint('ТЕСТ 3 АФУ-Х ПРОВЕРКА ОТРАБОТКИ МАССИВА, ДНП, НП - БА-О')
-    RLCI.EA332.on(1, stop_shd=False, ask_TMI=False)
-    __TEST_3_4()
-    RLCI.EA332.off()
-    yprint('ТЕСТ 3 ЗВЕРШЕН', 1)
-
-
-def TEST_4():
-    yprint('ТЕСТ 4 АФУ-Х ПРОВЕРКА ОТРАБОТКИ МАССИВА, ДНП, НП - БА-Р')
-    RLCI.EA332.on(2, stop_shd=False, ask_TMI=False)
-    __TEST_3_4()
-    RLCI.EA332.off()
-    yprint('ТЕСТ 4 ЗВЕРШЕН', 1)
-
-
-def __TEST_5_6(text, array):
-    RLCI.isAntennaMoving()  # проверка что антенна движется
-    yprint('Ждем остановки антены в НП')
-    RLCI.waitAntennaStop(period=5 * 60, toPrint=False)  # ожидание на остановку антенны
-    executeTMI("{10.01.BA_AFU_DNP_OZ}==0" + " and " +  # првоерка АФУ в НП
-               "{10.01.BA_AFU_DNP_OX}==0")
-    yprint('Отправка массива НЗ ' + text)
-    RLCI.sendArrayToAntenna('КПА', CPIMD(addr=0x0, data=AsciiHex(array), std=2))
-    yprint('Ждать АФУ в НЗ')
-    RLCI.waitAntennaStop(period=5 * 60, toPrint=False)  # ждем когда АФУ в 0гр зоне
-
-
-def TEST_5():
-    """4500 - ось 0x 9500 - ось 0z"""
-    yprint('ТЕСТ 5 АФУ-Х ПРОВЕРКА ДИ ДКП oZ - БА-О')
-    RLCI.EA332.on(1, stop_shd=False, ask_TMI=False)
-    __TEST_5_6('0x=4500, 0z=9500', '0x'
-                                   '805004509411E8030A00D0870A00F4011400C4890A00000000000A000000000000000000000000000000000000000000000000000000000000000000000000000000'
-                                   'A05005501C25E8030A00D0870A00F4011400C4890A000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-                                   '000000000000000000000000000000000000000000000000000000000000000000000000')
-    yprint('Проверка координат 0гр зоны, ДИ ДКП')
-    executeTMI("{10.01.BA_AFU_IMP_OZ}@H==[9200, 9800]" + " and " +  # проверка координат 0гр зоны, ДИ ДКП
-               "{10.01.BA_AFU_IMP_OX}@H==[4200, 4800]" + " and " +
-               "{10.01.BA_AFU_DKP_OZ}@H==0" + " and " +
-               "{10.01.BA_AFU_DKP_OX}@H==1", count=2, period=8)
-    RLCI.EA332.off()
-    yprint('ТЕСТ 5 ЗВЕРШЕН', 1)
-
-
-def TEST_6():
-    """9500 - ось 0x 4500 - ось 0z"""
-    yprint('ТЕСТ 6 АФУ-Х ПРОВЕРКА ДИ ДКП oX - БА-Р')
-    RLCI.EA332.on(2, stop_shd=False, ask_TMI=False)
-    __TEST_5_6('0x=9500, 0z=4500', '0x'
-                                   '805004501C25E8030A00D0870A00F4011400C4890A00000000000A000000000000000000000000000000000000000000000000000000000000000000000000000000'
-                                   'A05005509411E8030A00D0870A00F4011400C4890A000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-                                   '000000000000000000000000000000000000000000000000000000000000000000000000')
-    yprint('Проверка координат 0гр зоны, ДИ ДКП')
-    executeTMI("{10.01.BA_AFU_IMP_OX}@H==[9200, 9800]" + " and " +  # проверка координат 0гр зоны, ДИ ДКП
-               "{10.01.BA_AFU_IMP_OZ}@H==[4200, 4800]" + " and " +
-               "{10.01.BA_AFU_DKP_OX}@H==0" + " and " +
-               "{10.01.BA_AFU_DKP_OZ}@H==1", count=2, period=8)
-    RLCI.EA332.off()
-    yprint('ТЕСТ 6 ЗВЕРШЕН', 1)
-
-
-def __TEST_11_12():
-    RLCI.isAntennaMoving()  # проверка что антенна движется
-    yprint('Ждем остановки антены в НП')
-    RLCI.waitAntennaStop(period=5*60, toPrint=False)  # ожидание на остановку антенны
-    executeTMI("{10.01.BA_AFU_DNP_OZ}==0" + " and " +  # првоерка параметров ДНП и имулсьсов НЗ
-               "{10.01.BA_AFU_DNP_OX}==0")
-    yprint('Отправка массива НЗ 0x=1200, 0z=12000')
-    RLCI.sendArrayToAntenna('КПА', CPIMD(addr=0x0,
-                                         data=AsciiHex(
-                                             '0x'
-                                             '80500450E02E00000000000000000000000000000000000000000A000000000000000000000000000000000000000000000000000000000000000000000000000000'
-                                             'A0500550E02E000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-                                             '000000000000000000000000000000000000000000000000000000000000000000000000'),
-                                         std=2))
-    comm_print('Зафиксировать максимальное значение Импульсов 10.01.BA_AFU_IMP_OZ, 10.01.BA_AFU_IMP_OX')
-    comm_print('Зафиксировать срабатывание датчиков ДКП 10.01.BA_AFU_DKP_OZ, 10.01.BA_AFU_DKP_OX')
-    yprint('Ждать 90с АФУ дойдет до ДКП')
-    sleep(90)  # время когда антенна дойдет до ДКП
-    # executeTMI("{10.01.BA_AFU_IMP_OZ}@H==[8500, 9300]" + " and " +  # проверка координат и ДКП
-    #            "{10.01.BA_AFU_IMP_OX}@H==[8500, 9300]", count=2, period=8)
-    impulses = Ex.get('ТМИ', {'10.01.BA_AFU_IMP_OZ': 'НЕКАЛИБР',  # получить значения с момента последнего запроса
-                              '10.01.BA_AFU_IMP_OX': 'НЕКАЛИБР'}, 'ИНТЕРВАЛ')
-    x = max(impulses['10.01.BA_AFU_IMP_OX'])
-    z = max(impulses['10.01.BA_AFU_IMP_OZ'])
-    if 8500 < x < 9300:
-        gprint('Max 0x: %s' % x)
-    else:
-        rprint('Max 0x: %s' % x)
-        inputG()
-    if 8500 < z < 9300:
-        gprint('Max 0z: %s' % z)
-    else:
-        rprint('Max 0z: %s' % z)
-        inputG()
-    yprint('Ждать возврат АФУ в НП')
-    RLCI.waitAntennaStop(period=60 * 5, toPrint=False)              # ждем 5 минут пока антенная вернется в ДНП
-    executeTMI("{10.01.BA_AFU_IMP_OZ}@H==@same@all" + " and " +     # Проверка антенна не Движ и ДНП
-               "{10.01.BA_AFU_IMP_OX}@H==@same@all" + " and " +
-               "{10.01.BA_AFU_DNP_OZ}@H==0" + " and " +
-               "{10.01.BA_AFU_DNP_OX}@H==0", count=2, period=8)
-    # comm_print("Проверь максимальное значение Импульсов 10.01.BA_AFU_IMP_OZ, 10.01.BA_AFU_IMP_OX")
-
-
-def TEST_11():
-    yprint('ТЕСТ 11 АФУ-Х ПРОВЕРКА ОТРАБОТКИ ДКП, КОЛ_ВО ИМПУЛЬСОВ - БА-О')
-    RLCI.EA332.on(1, stop_shd=False, ask_TMI=False)
-    __TEST_11_12()
-    RLCI.EA332.off()
-    yprint('ТЕСТ 9 ЗВЕРШЕН', 1)
-
-
-def TEST_12():
-    yprint('ТЕСТ 12 АФУ-Х ПРОВЕРКА ОТРАБОТКИ ДКП, КОЛ_ВО ИМПУЛЬСОВ - БА-Р')
-    RLCI.EA332.on(2, stop_shd=False, ask_TMI=False)
-    __TEST_11_12()
-    RLCI.EA332.off()
-    yprint('ТЕСТ 10 ЗВЕРШЕН', 1)
+    yprint('ТЕСТ 14 ЗВЕРШЕН', 1)
 
 
 ############################## DESCRIPTION ###############################
@@ -556,10 +566,10 @@ def TEST_DESCRIPTION():
     print(Text.yellow + "ТЕСТ 8" + Text.default + ": БА-О, все -Р блоки, VS2;;")
     print(Text.yellow + "ТЕСТ 9" + Text.default + ": БА-Р, ПЧ_ФИП-О, МОД_УМ-Р, VS1;")
     print(Text.yellow + "ТЕСТ 10" + Text.default + ": БА-Р, ПЧ_ФИП-Р, МОД_УМ-О, VS2;")
-    print(Text.yellow + "ТЕСТ 13" + Text.default + ": РЛЦИ - ОСНОВНОЙ отключение по 12 минут отключение;")
-    print(Text.yellow + "ТЕСТ 14" + Text.default + ": РЛЦИ - РЕЗЕРВНЫЙ отключение по 12 минут отключение;")
-    print(Text.yellow + "ТЕСТ 15" + Text.default + ": РЛЦИ - ОСНОВНОЙ АВАРИЙНОЕ ОТКЛЮЧЕНИЕ;")
-    print(Text.yellow + "ТЕСТ 16" + Text.default + ": РЛЦИ - РЕЗЕРВНЫЙ АВАРИЙНОЕ ОТКЛЮЧЕНИЕ;")
+    print(Text.yellow + "ТЕСТ 11" + Text.default + ": РЛЦИ - ОСНОВНОЙ отключение по 12 минут отключение;")
+    print(Text.yellow + "ТЕСТ 12" + Text.default + ": РЛЦИ - РЕЗЕРВНЫЙ отключение по 12 минут отключение;")
+    print(Text.yellow + "ТЕСТ 13" + Text.default + ": РЛЦИ - ОСНОВНОЙ АВАРИЙНОЕ ОТКЛЮЧЕНИЕ;")
+    print(Text.yellow + "ТЕСТ 14" + Text.default + ": РЛЦИ - РЕЗЕРВНЫЙ АВАРИЙНОЕ ОТКЛЮЧЕНИЕ;")
     # ТЕХ
     # print(Text.yellow + "ТЕСТ 11" + Text.default + ": тех - АФУ-Х ПРОВЕРКА ОТРАБОТКИ ДКП, КОЛ_ВО ИМПУЛЬСОВ - БА-О;")
     # print(Text.yellow + "ТЕСТ 12" + Text.default + ": тех - АФУ-Х ПРОВЕРКА ОТРАБОТКИ ДКП, КОЛ_ВО ИМПУЛЬСОВ - БА-Р;")
@@ -663,20 +673,19 @@ foo = {
     'ТЕСТ 10': lambda: TEST_10(),
     'ТЕСТ 11': lambda: TEST_11(),
     'ТЕСТ 12': lambda: TEST_12(),
-    'ТЕСТ 13': lambda: TEST_11(),
-    'ТЕСТ 14': lambda: TEST_12(),
-    'ТЕСТ 15': lambda: TEST_14(),
-    'ТЕСТ 16': lambda: TEST_16(),
-    #'ПОТОК SOTC': lambda: KIS._barl_run(),
+    'ТЕСТ 13': lambda: TEST_13(),
+    'ТЕСТ 14': lambda: TEST_14(),
+    # 'ТЕСТ 15': lambda: TEST_15(),
+    # 'ТЕСТ 16': lambda: TEST_16(),
+    # 'ПОТОК SOTC': lambda: KIS._barl_run(),
     'ОПИСАНИЕ ТЕСТОВ': lambda: TEST_DESCRIPTION()
 }
 # кнопки
 btns = (('ТЕСТ 1', 'ТЕСТ 2', 'ТЕСТ 3', 'ТЕСТ 4', 'ТЕСТ 5', 'ТЕСТ 6'),       # афу
         ('ТЕСТ 7', 'ТЕСТ 8', 'ТЕСТ 9', 'ТЕСТ 10'),       # рлци
-        ('ТЕСТ 13', 'ТЕСТ 14', 'ТЕСТ 15', 'ТЕСТ 16'),
+        ('ТЕСТ 11', 'ТЕСТ 12', 'ТЕСТ 13', 'ТЕСТ 14'),
         # ('ТЕСТ 11', 'ТЕСТ 12'),                          # тех афу
-        # ('ТЕСТ 13', 'ТЕСТ 14', 'ТЕСТ 15', 'ТЕСТ 16'),    # тех рлци
-        'M778',
+        # 'M778',
         ('РЛЦИ ЭА', 'РЛЦИ ПЧ', 'РЛЦИ ФИП', 'РЛЦИ МОД', 'РЛЦИ УМ', 'РЛЦИ РЕЖИМ', 'РЛЦИ ВСЕ БЛОКИ'),
         ('ФКП ОПРОС KV', 'ФКП УСТ ДИ1с', 'ФКП УСТ ДИ10с', 'ФКП РЛЦИ ДР', 'ФКП РЛЦИ СР'),
         'ОПИСАНИЕ ТЕСТОВ')
@@ -688,7 +697,7 @@ yprint('РЛЦИВ ПМ1')
 while True:
     print()
     try:
-        windowChooser(btnsText=btns, fooDict=foo, labels=['АФУ-Х', 'РЛЦИ-В', '', 'M778', 'РЛЦИ-В', 'ФКП', ''])
+        windowChooser(btnsText=btns, fooDict=foo, labels=['АФУ-Х', 'РЛЦИ-В', '', 'РЛЦИ-В', 'ФКП', ''])
     except Exception as ex:
         rprint("ОШИБКА В ТЕСТЕ")
         rprint(traceback.format_exc())
