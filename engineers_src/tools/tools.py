@@ -32,7 +32,7 @@ import re
 import threading
 from PyQt5.QtWidgets import QApplication, QMessageBox, QPushButton, QDialogButtonBox, QSizePolicy, QBoxLayout, QLabel, \
     QDialog, QVBoxLayout, QStyle, QLineEdit, QHBoxLayout, QWidget, QBoxLayout, QDialogButtonBox, QGridLayout
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QFontMetrics
 from PyQt5.QtCore import Qt
 from collections import OrderedDict
 
@@ -192,124 +192,152 @@ app = QApplication(sys.argv)
 
 
 class ScriptQDialog(QDialog):
+    """Виджет диалога в скрипте"""
     def __init__(self, title, text, parent=None):
         super().__init__(parent=parent)
         self.setWindowIcon(QIcon("./res/mainicon.png"))
         self.setWindowTitle(title)
+        self.setWindowFlags(Qt.WindowStaysOnTopHint)
         self.header = QWidget(self)
         self.footer = QWidget(self)
         self.boxLayout = QVBoxLayout(self)
-        self.headerLayout = QVBoxLayout()
-        self.footerLayout = QVBoxLayout()
+        self.headerLayout = QVBoxLayout(self.header)
+        self.footerLayout = QHBoxLayout(self.footer)
         self.boxLayout.setContentsMargins(0, 0, 0, 0)
         self.headerLayout.setContentsMargins(20, 20, 20, 20)
         self.footerLayout.setContentsMargins(20, 0, 20, 20)
+        self.footerLayout.addStretch()
         self.iconLabel = QLabel()
-        self.setLayout(self.boxLayout)
-        self.header.setLayout(self.headerLayout)
-        self.footer.setLayout(self.footerLayout)
-        self.boxLayout.addStretch()
         self.boxLayout.addWidget(self.header)
-        self.boxLayout.addStretch()
         self.boxLayout.addWidget(self.footer)
         self.boxLayout.addStretch()
-        self.footer_btns = []
+        self.footer_btns = {'Отмена': None, 'Продолжить': None, 'Завершить': None}
         self.inputFields = OrderedDict()
         self.gridLayout = None
         self.nameGridButtonClicked = None
-
+        # TODO: сделать не топТуБоттом а Боттом ту Топ, чтобы при ресайзе footer был fixSize
+        self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         # заголовок
-        # TODO: стиль текста шрифт можно через стили
         self.headerLayout.addLayout(self.__makeHLayout([self.iconLabel, QLabel(text)], align=Qt.AlignLeft))
         # стили
         self.header.setObjectName('header')
         self.footer.setObjectName('footer')
-        self.setStyleSheet("QWidget #header {"
+        self.setStyleSheet("QWidget#header {"
                            "background-color: #ffffff;"
                            "}"
-                           "QWidget #footer {"
+                           "QWidget#footer {"
+                           "margin: 20, 0, 20, 20;"
+                           "padding: 20px;"
                            "background-color: #f0f0f0;"
                            "}"
-                           "QWidget#footer QPushButton {"
-                           "margin-right: 20px"
-                           "padding: 20px;"
+                           "QWidget#header QPushButton {"
                            "background-color: #e1e1e1;"
-                           "color: #211100;"
-                           "font-family: Arial, sans-serif;"
-                           "border:  2px solid #e7e7e7;"
                            "}"
-                           "QPushButton:hover {"
-                           "border: 1px solid red;"
-                           "color: #222FFF;"
-                           "}")
-        self.boxLayout.addStretch()
-        # self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+                           # "QWidget#footer QPushButton {"
+                           # "padding: 10px;"
+                           # "background-color: #e1e1e1;"
+                           # "color: #211100;"
+                           # "font-family: Arial, sans-serif;"
+                           # "border: 5px solid #e7e7e7;"
+                           # "border-radius: 20px;"
+                           # "}"
+                           # "QWidget#footer QPushButton:checked{"
+                           # "color: #e2e2e2;"
+                           # "background-color: #1885f2;"
+                           # "border-radius: 20px;"
+                           # "}"
+                           # "QWidget#footer QPushButton:hover {"
+                           # "color: #e2e2e2;"
+                           # "background-color: #1885f2;"
+                           # "border-radius: 20px;"
+                           # "}"
+                           )
 
     def keyPressEvent(self, e):
-        if e.key() == Qt.Key_Escape:
-            self.footer_btns[-1].click()
+        if e.key() == Qt.Key_Escape and self.footer_btns.get('Завершить') is not None:
+            self.done(0)
+        elif e.key() == Qt.Key_Enter or e.key == Qt.Key and self.footer_btns.get('Продолжить') is not None:
+            self.done(2)
+        else:
+            pass
 
     def setIcon(self, path):
         self.iconLabel.setPixmap(QIcon(path).pixmap(64, 64))
 
-    def addFooterButtons(self, btnsList):
-        for id, btnText in enumerate(btnsList):
-            btn = QPushButton(btnText)
-            btn.clicked.connect(lambda state, id=id: self.done(id))
-            self.footer_btns.append(btn)
-        self.footerLayout.addLayout(self.__makeHLayout(self.footer_btns, align=Qt.AlignRight))
+    def addResetButton(self):
+        btn = QPushButton("Завершить")
+        self.footerLayout.addWidget(btn)
+        btn.clicked.connect(lambda state: self.done(0))
+        self.footer_btns["Завершить"] = btn
+
+    def addRejectButton(self):
+        btn = QPushButton("Отмена")
+        self.footerLayout.addWidget(btn)
+        btn.clicked.connect(lambda state: self.done(1))
+        self.footer_btns["Отмена"] = btn
+
+    def addAcceptButton(self):
+        btn = QPushButton("Продолжить")
+        btn.setAutoDefault(True)
+        self.footerLayout.addWidget(btn)
+        btn.clicked.connect(lambda state: self.done(2))
+        self.footer_btns["Продолжить"] = btn
 
     def gridButtonClicked(self):
         self.nameGridButtonClicked = self.sender().accessibleName()
-        self.setResult(-1)
-        self.close()
+        self.done(-1)
 
     def addGridButtons(self, btnsList, labelsList):
         def newButton(text_btn):
             btn = QPushButton()
             btn.setAccessibleName(text_btn)
             btn.setMinimumWidth(100)
-            btn_label = QLabel()
+            btn.setMaximumHeight(1000)
+            btn_label = QLabel(btn)
             btn_label.setText(text_btn)
             btn_label.setWordWrap(True)
             btn_label.setAlignment(Qt.AlignCenter)
-            lay = QBoxLayout(QBoxLayout.TopToBottom)
-            lay.addWidget(btn_label)
+            lay = QVBoxLayout(btn)
+            lay.addWidget(btn_label, 1, Qt.AlignCenter)
             lay.setContentsMargins(10, 10, 10, 10)
-            btn.setLayout(lay)
             btn.clicked.connect(self.gridButtonClicked)
-
-            # btn_label.adjustSize()
-            # btn.adjustSize()
-            # btn.setMinimumHeight(200)
-            # btn.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
-            # btn_label.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
-            # lay.setSizeConstraint(QSizePolicy.Maximum)
             return btn
+
+        def word_length(text_btn, max_word_len, btn):
+            fm = QFontMetrics(btn.font())
+            words_width = [fm.width(x) for x in text_btn.split()]
+            tmp_max_word_len = max(words_width) + 20 if len(words_width) > 0 else 0 + 20
+            return tmp_max_word_len if tmp_max_word_len > max_word_len else max_word_len
 
         def newLabel(textLabel):
             label = QLabel()
             label.setText(textLabel)
             label.setWordWrap(True)
-            # label.setMinimumWidth(80)
-            # label.setMaximumWidth(200)
             label.setStyleSheet('font: bold large "Arial"')
             return label
 
         btns_layout = QGridLayout()
-        for idx_row, item in enumerate(btnsList):
-            idx_column = 0
-            if isinstance(item, (tuple, list)):
-                btns_layout.addWidget(newLabel(labelsList[idx_row]), idx_row, idx_column)
-                idx_column += 1
-                for btn_text in item:
-                    btns_layout.addWidget(newButton(btn_text), idx_row, idx_column)
-                    idx_column += 1
+        items_rows = []
+        # делаем лейблы
+        for text in labelsList:
+            items_rows.append([newLabel(text)])
+        # делаем кнопки
+        max_word_len = 0
+        for idx_row, text in enumerate(btnsList):
+            if isinstance(text, (tuple, list)):
+                for x in text:
+                    items_rows[idx_row].append(newButton(x))
+                    max_word_len = word_length(x, max_word_len, items_rows[idx_row][-1])
             else:
-                btns_layout.addWidget(newLabel(labelsList[idx_row]), idx_row, idx_column)
-                idx_column += 1
-                btn = newButton(item)
-                btns_layout.addWidget(btn, idx_row, idx_column)
+                items_rows[idx_row].append(newButton(text))
+                max_word_len = word_length(text, max_word_len, items_rows[idx_row][-1])
+        # вставляем в лэйоут
+        for idx_row, row in enumerate(items_rows):
+            btns_layout.setRowStretch(idx_row, 1)
+            for idx_column, item in enumerate(row):
+                btns_layout.setColumnStretch(idx_column, 0) if idx_column == 0 else btns_layout.setColumnStretch(idx_column, 1)
+                item.setMinimumWidth(max_word_len)
+                btns_layout.addWidget(item, idx_row, idx_column)
         self.gridLayout = btns_layout
         self.headerLayout.addLayout(btns_layout)
 
@@ -338,13 +366,14 @@ def inputG(text=None):
         text = 'Скрипт остановлен'
     box = ScriptQDialog('Пауза', text)
     box.setIcon('res/spcehship-down.png')
-    box.addFooterButtons(['Продолжить', 'Завершить'])
+    box.addAcceptButton()
+    box.addResetButton()
     box.fixHeight()
     res = box.exec()
     # box.deleteLater(
-    if res == 0:
+    if res == 2:
         bprint(':::Продолжить')
-    else:
+    elif res == 0:
         bprint(':::Завершить')
         sys.exit()
 
@@ -356,38 +385,40 @@ def inputGG(btnsList, title=None, labels=None, ret_btn=None):
     elif labels is None:
         labels = ['']*len(btnsList)
     if title is None:
-        title = 'Выбор Действия'
-        text = 'Выберите действие'
-    else:
-        text = title
-    box = ScriptQDialog(title, text)
+        title = 'Выберите действие'
+    box = ScriptQDialog('Выбор Действия', title)
     box.setIcon('res/survey-icon.png')
-    box.addFooterButtons(['Завершить']) if ret_btn is None else box.addFooterButtons(['Отмена', 'Завершить'])
+    if ret_btn is not None:
+        box.addRejectButton()
+    box.addResetButton()
     box.addGridButtons(btnsList, labels)
     box.fixHeight()
     res = box.exec()
     # box.deleteLater()
-    if box.nameGridButtonClicked is not None:
+    if res == -1 and box.nameGridButtonClicked is not None:
         return box.nameGridButtonClicked
-    elif ret_btn is not None and res == 0:
+    elif res == 1:
         bprint(':::Отмена')
         return None
-    else:
+    elif res == 0:
         bprint(':::Завершить')
         sys.exit()
 
 
 # TODO: всплывающее окно с вводом текста для присваивания переменных
-def inputGGG(param_names):
+def inputGGG(param_names, title=None):
     """виджет ввода аргументов"""
-    box = ScriptQDialog('Ввод переменных', 'Ввод переменных')
+    if title is None:
+        title = 'Ввод переменных'
+    box = ScriptQDialog('Ввод переменных', title)
     box.setIcon('res/input-keyboard.svg')
-    box.addFooterButtons(['Продолжить', 'Завершить'])
+    box.addAcceptButton()
+    box.addResetButton()
     box.addInputFields(tuple(param_names)) if isinstance(param_names, str) else box.addInputFields(param_names)
     box.fixHeight()
     res = box.exec()
     # box.deleteLater(
-    if res == 0:
+    if res == 2:
         bprint(':::Продолжить')
         params = OrderedDict()
         if isinstance(param_names, str) == 1:
@@ -395,10 +426,10 @@ def inputGGG(param_names):
         else:
             for param, lineEdit in box.inputFields.items():
                 params[param] = lineEdit.text()
-    else:
+        return params
+    elif res == 0:
         bprint(':::Завершить')
         sys.exit()
-    return params
 
 
 ############ THREAD LOCKS ###############
