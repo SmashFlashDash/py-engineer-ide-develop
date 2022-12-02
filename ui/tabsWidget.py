@@ -43,21 +43,17 @@ class TabsWidget(QTabWidget):
         self.setTabsClosable(True) 
         self.currentChanged.connect(self.__currentChanged)
         self.tabCloseRequested.connect(self.closeTab)
-    
-
 
     def newTab(self, file='', text='', breakpoints=None, search_options=None):
         w = TabWidget(self, file, text, breakpoints, search_options, self.needToUpdateSearchIndicators, self.updateSearchIndicators)
         w.index = self.addTab(w, '')
         w.modifiedStateChanged.connect(self.__updateTabTitle)
         w.checkModified()
-        
         self.tabBar().setTabButton(w.index, QTabBar.LeftSide, w.loading_widget)
         if text:
             w.lintText()
         else:
             w.loading_widget.setVisible(False)
-        
         for x in self.findChildren(QAbstractButton):
             if 'Close' in x.toolTip():
                 x.setToolTip('Закрыть')
@@ -109,7 +105,7 @@ class TabsWidget(QTabWidget):
         return True
 
     def openTab(self):
-        filename = QFileDialog.getOpenFileName(self, 'Открыть файл', self.main_window.open_dir, 'Файлы программ испытаний (*.ivkng)')[0]  # @UndefinedVariable
+        filename = QFileDialog.getOpenFileName(self, 'Открыть файл', self.main_window.open_dir, 'Файлы программ испытаний (*.ivkng);; файлы Python (*.py)')[0]  # @UndefinedVariable
         if filename != '':
             self.newTab(filename, open(filename, mode='r', encoding='utf-8').read())
             self.main_window.open_dir = os.path.dirname(filename)
@@ -169,7 +165,7 @@ class TabsWidget(QTabWidget):
     ###################################################################################################################
 
     def tabDraggedOut(self, w, create_tab_if_empty):
-        w.modifiedStateChanged.disconnect() 
+        w.modifiedStateChanged.disconnect()
         self.removeTab(w.index)
         if self.count() > 0:
             for i in range(w.index, self.count()):
@@ -178,7 +174,12 @@ class TabsWidget(QTabWidget):
             self.newTab()
     
     def tabDraggedIn(self, w):
+        from ui.components.labels import GifLabelSaveSpace
+        w.loading_widget = GifLabelSaveSpace('res/loading_orange_16.gif', visible=False, fix_w=16, fix_h=16)
+        w.setParent(self)
         w.index = self.addTab(w, '')
+        self.tabBar().setTabButton(w.index, QTabBar.LeftSide, w.loading_widget)
+        w.loading_widget.setVisible(False)
         w.modifiedStateChanged.connect(self.__updateTabTitle)
         w.checkModified()
         for x in self.findChildren(QAbstractButton):
