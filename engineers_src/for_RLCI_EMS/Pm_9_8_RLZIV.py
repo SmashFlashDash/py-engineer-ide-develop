@@ -1,48 +1,20 @@
-# DEBUG
-from time import sleep as sleep2
-import time
-time.sleep = lambda *args: sleep2(0)
-sleep = lambda *args: sleep2(0)
-# Импорт зависимостей
-import sys
-sys.path.insert(0, 'lib/')
-from engineers_src.tools.tools import *
-Ex.ivk_file_name = "script.ivkng"
-Ex.ivk_file_path = "D:/VMShared/ivk-ng-myremote/engineers_src/script.ivkng"
-
 import traceback
 import logging
 from lib.tabulate.tabulate import tabulate
-# Импорт с другой папки
-# sys.path.insert(0, 'F:/VMShared/ivk-scripts/')  # путь к программе испытаний абсолютный
-# DIstorage = None
-# windowChooser = None
-# sendFromJson = None
-# doEquation = None
-# executeTMI = None
-# exec('from Dictionaries_UVDI import DIstorage')
-# exec('from EMSRLCI_foos import windowChooser, sendFromJson, doEquation, executeTMI')
-# Импорт с рабочей директории скрипта
-from engineers_src.Devices.functions import windowChooser, sendFromJson, doEquation, executeTMI, print_start_and_end
+from engineers_src.Devices.functions import windowChooser, sendFromJson, doEquation, executeTMI
 from engineers_src.Devices.dictionariesUVDI import DIstorage
-from engineers_src.Devices import BCK, M778, KIS, RLCI, ASN, Imitators, BSK_BSPA, BSK_P, BSK_KU, KSO
+from engineers_src.Devices import BCK, M778, RLCI
 from engineers_src.Devices.Device import LOGGER
 from engineers_src.Devices.functions import DB
 
-# TODO:
-#  - поток на продление сеанса при запуске проги, должен не вседа продлевать
-#    а предлагать переключить комплект
-#  - переделать команды ВКЛ ЭА331 ЭА332 на команды БЦК
-#  - сеансы в БД с тестом РЛЦИ 6182, 6223, 6181
-#    SELECT * FROM dbo.tm
-#    WHERE value->>'name' IN ('10.01.BA_FIP1', '10.01.BA_MOD1', '10.01.BA_PCH1', '10.01.BA_UM1') AND value->'value' = '0'
-#    ORDER BY tmid ASC LIMIT 100
 ##################### LOGGER ##################################
+"""
 file_logger = logging.StreamHandler(open('engineers_src/for_RLCI_EMS/rlci.log', 'a', encoding='UTF8'))
 file_logger.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(bshv)s  - %(message)s'))
 LOGGER.addHandler(file_logger)
 LOGGER.info('\n')
 LOGGER.info('Начало скрипта ' + sys.argv[0])
+"""
 
 ##################### COMMUTATIONS ############################
 DIstorage.commute('M778B', False)
@@ -54,7 +26,6 @@ DB.pause = 8
 BCK.clc_pause = 10
 BCK.down_pause = 20
 # Включенные блоки
-KIS.cur = None
 M778.cur = None
 RLCI.EA332.cur = None
 RLCI.EA331.cur = None
@@ -677,7 +648,6 @@ foo = {
     'ТЕСТ 14': lambda: TEST_14(),
     # 'ТЕСТ 15': lambda: TEST_15(),
     # 'ТЕСТ 16': lambda: TEST_16(),
-    # 'ПОТОК SOTC': lambda: KIS._barl_run(),
     'ОПИСАНИЕ ТЕСТОВ': lambda: TEST_DESCRIPTION()
 }
 # кнопки
@@ -693,7 +663,6 @@ btns = (('ТЕСТ 1', 'ТЕСТ 2', 'ТЕСТ 3', 'ТЕСТ 4', 'ТЕСТ 5', '
 
 print()
 yprint('РЛЦИВ ПМ1')
-# KIS._barl_run()
 while True:
     print()
     try:

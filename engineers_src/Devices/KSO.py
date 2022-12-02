@@ -203,7 +203,7 @@ class KSO(Device):
             if not Ex.wait('ТМИ', '{00.01.mode.НЕКАЛИБР} == 3 and {00.01.submode.НЕКАЛИБР} == 31', 10):
                 sendFromJson(SCPICMD, 0x0065, AsciiHex('0x1F00 0000'))  # задать штатный режим ориентации
                 if not Ex.wait('ТМИ', '{00.01.mode.НЕКАЛИБР} == 3 and {00.01.submode.НЕКАЛИБР} == 31', 10):
-                    inputG('Выставить 2ЗКТ')
+                    inputG('Не выставлен режим 2ЗКТ, не опросить ЗД.\nПопробуй вручную')
             zd = Ex.get('ТМИ', cls.__di_list[2], None)
             for item in zd.items():
                 if item[1] is None or isinstance(item[1], str):
