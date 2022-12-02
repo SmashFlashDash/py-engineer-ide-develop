@@ -345,7 +345,9 @@ class ScriptQDialog(QDialog):
         for param_name in params:
             lineEdit = QLineEdit()
             self.inputFields[param_name] = lineEdit
-            self.headerLayout.addLayout(self.__makeHLayout((QLabel(param_name), lineEdit), align=Qt.AlignLeft))
+            label = QLabel(param_name)
+            label.setStyleSheet("font: 10pt Consolas, DejaVu Sans Mono;")
+            self.headerLayout.addLayout(self.__makeHLayout((label, lineEdit), align=Qt.AlignLeft))
 
     def fixHeight(self):
         self.adjustSize()
