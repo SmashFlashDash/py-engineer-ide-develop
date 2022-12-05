@@ -196,7 +196,7 @@ def __TEST_5_6(text, array):
 
 
 def TEST_5():
-    """4500 - ось 0x 9500 - ось 0z"""
+    """4500 - ось 0x; 9500 - ось 0z"""
     yprint('ТЕСТ 5 АФУ-Х ПРОВЕРКА ДИ ДКП oZ - БА-О')
     RLCI.EA332.on(1, stop_shd=False, ask_TMI=False)
     __TEST_5_6('0x=4500, 0z=9500', '0x'
@@ -213,7 +213,7 @@ def TEST_5():
 
 
 def TEST_6():
-    """9500 - ось 0x 4500 - ось 0z"""
+    """9500 - ось 0x; 4500 - ось 0z"""
     yprint('ТЕСТ 6 АФУ-Х ПРОВЕРКА ДИ ДКП oX - БА-Р')
     RLCI.EA332.on(2, stop_shd=False, ask_TMI=False)
     __TEST_5_6('0x=9500, 0z=4500', '0x'
@@ -561,8 +561,8 @@ def TEST_DESCRIPTION():
     print(Text.yellow + "ТЕСТ 2" + Text.default + ": АФУ-Х ПРОВЕРКА ОСТАНОВКИ ШД - БА-Р;")
     print(Text.yellow + "ТЕСТ 3" + Text.default + ": АФУ-Х ПРОВЕРКА ОТРАБОТКИ МАССИВА, ДНП, НП - БА-О;")
     print(Text.yellow + "ТЕСТ 4" + Text.default + ": АФУ-Х ПРОВЕРКА ОТРАБОТКИ МАССИВА, ДНП, НП - БА-Р;")
-    print(Text.yellow + "ТЕСТ 5" + Text.default + ": АФУ-Х ПРОВЕРКА ДИ ДКП oX - БА-О;")
-    print(Text.yellow + "ТЕСТ 6" + Text.default + ": АФУ-Х ПРОВЕРКА ДИ ДКП oZ - БА-Р;")
+    print(Text.yellow + "ТЕСТ 5" + Text.default + ": АФУ-Х ПРОВЕРКА ДИ ДКП oZ - БА-О;")
+    print(Text.yellow + "ТЕСТ 6" + Text.default + ": АФУ-Х ПРОВЕРКА ДИ ДКП oX - БА-Р;")
     # РЛЦИ
     print(Text.yellow + "ТЕСТ 7" + Text.default + ": БА-О, все -О блоки, VS1;")
     print(Text.yellow + "ТЕСТ 8" + Text.default + ": БА-О, все -Р блоки, VS2;;")

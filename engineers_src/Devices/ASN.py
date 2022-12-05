@@ -12,9 +12,6 @@ forma = "%-20s --> %s"  # вывод шифр --> значение
 class ASN(Device):
     cur = None
 
-    # TODO: надо ли переключать приоритет на АСН1
-    #  опрашивать ток
-    #  и делать ли что нельзя отключить любой АСН
     @classmethod
     @print_start_and_end(string='АСН: включить')
     def on(cls, num):
@@ -25,12 +22,14 @@ class ASN(Device):
             # sendFromJson(SCPICMD, 0x4005, pause=1)   # Вкл АСН1 через канал 5
             # sendFromJson(SCPICMD, 0xE219, pause=1)   # Вкл обмен АСН1
             sendFromJson(SCPICMD, 0xE004, AsciiHex('0106010000000000'), pause=1)  # Включить АСН1
+            # sendFromJson(SCPICMD, 0xE22D, pause=1)  # Выключить приоритет АСН2
+            # sendFromJson(SCPICMD, 0xE22C, pause=1)  # Включить приоритет АСН1  # или 0xE242 ПРОВЕРИТЬ
         elif num == 2:
             # sendFromJson(SCPICMD, 0x4195, pause=1)  # Вкл АСН2 через канал 6
             # sendFromJson(SCPICMD, 0xE230, pause=1)  # Вкл обмен АСН2
             sendFromJson(SCPICMD, 0xE004, AsciiHex('0109000000000000'), pause=1)  # Включить АСН2
-            sendFromJson(SCPICMD, 0xE22D, pause=1)  # Выключить приоритет АСН1
-            sendFromJson(SCPICMD, 0xE243, pause=1)  # Включить приоритет АСН2
+            # sendFromJson(SCPICMD, 0xE22D, pause=1)  # Выключить приоритет АСН1
+            # sendFromJson(SCPICMD, 0xE243, pause=1)  # Включить приоритет АСН2
         else:
             raise Exception('Номер блока только 1 и 2')
         cls.cur = num

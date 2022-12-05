@@ -183,5 +183,3 @@ class KIS(Device):
                 sleep(cmd)
             elif isinstance(cmd, tuple):
                 sendFromJson(*cmd)
-
-
