@@ -102,6 +102,7 @@ def executeTMI(*args, pause=None, stopFalse=True, **kwargs):
     sleep(pause)
     result, dict_cpyphers = controlGetEQ(*args, **kwargs)
     if stopFalse and not result:
+        rprint('НЕ НОРМА: проверь ДИ')
         inputG('Проверь ТМИ')
     return result, dict_cpyphers
 

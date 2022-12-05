@@ -1,11 +1,42 @@
+# DEBUG
+from time import sleep as sleep2
+import time
+time.sleep = lambda *args: sleep2(0)
+sleep = lambda *args: sleep2(0)
+# Импорт зависимостей
+import sys
+sys.path.insert(0, 'lib/')
+from engineers_src.tools.tools import *
+Ex.ivk_file_name = "script.ivkng"
+Ex.ivk_file_path = "D:/VMShared/ivk-ng-myremote/engineers_src/script.ivkng"
+
 import traceback
 import logging
 from lib.tabulate.tabulate import tabulate
+# Импорт с другой папки
+# sys.path.insert(0, 'F:/VMShared/ivk-scripts/')  # путь к программе испытаний абсолютный
+# DIstorage = None
+# windowChooser = None
+# sendFromJson = None
+# doEquation = None
+# executeTMI = None
+# exec('from Dictionaries_UVDI import DIstorage')
+# exec('from EMSRLCI_foos import windowChooser, sendFromJson, doEquation, executeTMI')
+# Импорт с рабочей директории скрипта
 from engineers_src.Devices.functions import windowChooser, sendFromJson, doEquation, executeTMI
 from engineers_src.Devices.dictionariesUVDI import DIstorage
 from engineers_src.Devices import BCK, M778, RLCI
 from engineers_src.Devices.Device import LOGGER
 from engineers_src.Devices.functions import DB
+
+# TODO:
+#  - поток на продление сеанса при запуске проги, должен не вседа продлевать
+#    а предлагать переключить комплект
+#  - переделать команды ВКЛ ЭА331 ЭА332 на команды БЦК
+#  - сеансы в БД с тестом РЛЦИ 6182, 6223, 6181
+#    SELECT * FROM dbo.tm
+#    WHERE value->>'name' IN ('10.01.BA_FIP1', '10.01.BA_MOD1', '10.01.BA_PCH1', '10.01.BA_UM1') AND value->'value' = '0'
+#    ORDER BY tmid ASC LIMIT 100
 
 ##################### LOGGER ##################################
 """
@@ -21,7 +52,7 @@ DIstorage.commute('M778B', False)
 # Кнопки опрос ДИ
 btn_ask_di = True
 # пауза на опросБД
-DB.pause = 8
+DB.pause = 10
 # паузы БЦК
 BCK.clc_pause = 10
 BCK.down_pause = 20
@@ -91,7 +122,7 @@ def TEST_1():
     RLCI.mode('stop SHD', ask_TMI=False)
     RLCI.waitAntennaStop(period=60, toPrint=False)  # ожидание на остановку антенны
     RLCI.EA332.off()
-    yprint('ТЕСТ 1 ЗВЕРШЕН', 1)
+    yprint('ТЕСТ 1 ЗВЕРШЕН')
 
 
 def TEST_2():
@@ -101,7 +132,7 @@ def TEST_2():
     RLCI.mode('stop SHD', ask_TMI=False)
     RLCI.waitAntennaStop(period=60, toPrint=False)  # ожидание на остановку антенны
     RLCI.EA332.off()
-    yprint('ТЕСТ 2 ЗВЕРШЕН', 1)
+    yprint('ТЕСТ 2 ЗВЕРШЕН')
 
 
 def __TEST_3_4():
@@ -141,7 +172,7 @@ def TEST_3():
     RLCI.EA332.on(1, stop_shd=False, ask_TMI=False)
     __TEST_3_4()
     RLCI.EA332.off()
-    yprint('ТЕСТ 3 ЗВЕРШЕН', 1)
+    yprint('ТЕСТ 3 ЗВЕРШЕН', tab=1)
 
 
 def TEST_4():
@@ -149,7 +180,7 @@ def TEST_4():
     RLCI.EA332.on(2, stop_shd=False, ask_TMI=False)
     __TEST_3_4()
     RLCI.EA332.off()
-    yprint('ТЕСТ 4 ЗВЕРШЕН', 1)
+    yprint('ТЕСТ 4 ЗВЕРШЕН')
 
 
 def __TEST_5_6(text, array):
@@ -173,12 +204,12 @@ def TEST_5():
                                    'A05005501C25E8030A00D0870A00F4011400C4890A000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
                                    '000000000000000000000000000000000000000000000000000000000000000000000000')
     yprint('Проверка координат 0гр зоны, ДИ ДКП')
-    executeTMI("{10.01.BA_AFU_IMP_OZ}@H==[9200, 9800]" + " and " +  # проверка координат 0гр зоны, ДИ ДКП
-               "{10.01.BA_AFU_IMP_OX}@H==[4200, 4800]" + " and " +
-               "{10.01.BA_AFU_DKP_OZ}@H==0" + " and " +
-               "{10.01.BA_AFU_DKP_OX}@H==1", count=2, period=8)
+    executeTMI("{10.01.BA_AFU_IMP_OX}@H==[4200, 4800]" + " and " +
+               "{10.01.BA_AFU_IMP_OZ}@H==[9200, 9800]" + " and " +  # проверка координат 0гр зоны, ДИ ДКП
+               "{10.01.BA_AFU_DKP_OX}@H==1" + " and " +
+               "{10.01.BA_AFU_DKP_OZ}@H==0", count=2, period=8)
     RLCI.EA332.off()
-    yprint('ТЕСТ 5 ЗВЕРШЕН', 1)
+    yprint('ТЕСТ 5 ЗВЕРШЕН')
 
 
 def TEST_6():
@@ -195,7 +226,7 @@ def TEST_6():
                "{10.01.BA_AFU_DKP_OX}@H==0" + " and " +
                "{10.01.BA_AFU_DKP_OZ}@H==1", count=2, period=8)
     RLCI.EA332.off()
-    yprint('ТЕСТ 6 ЗВЕРШЕН', 1)
+    yprint('ТЕСТ 6 ЗВЕРШЕН')
 
 
 '''
@@ -243,25 +274,25 @@ def __TEST_11_12():
 
 
 def TEST_11():
-    yprint('ТЕСТ 11 АФУ-Х ПРОВЕРКА ОТРАБОТКИ ДКП, КОЛ_ВО ИМПУЛЬСОВ - БА-О')
+    yprint('ТЕСТ 11 АФУ-Х ПРОВЕРКА ОТРАБОТКИ ДКП, КОЛ_ВО ИМПУЛЬСОВ - БА-О', tab=1)
     RLCI.EA332.on(1, stop_shd=False, ask_TMI=False)
     __TEST_11_12()
     RLCI.EA332.off()
-    yprint('ТЕСТ 9 ЗВЕРШЕН', 1)
+    yprint('ТЕСТ 9 ЗВЕРШЕН', tab=1)
 
 
 def TEST_12():
-    yprint('ТЕСТ 12 АФУ-Х ПРОВЕРКА ОТРАБОТКИ ДКП, КОЛ_ВО ИМПУЛЬСОВ - БА-Р')
+    yprint('ТЕСТ 12 АФУ-Х ПРОВЕРКА ОТРАБОТКИ ДКП, КОЛ_ВО ИМПУЛЬСОВ - БА-Р', tab=1)
     RLCI.EA332.on(2, stop_shd=False, ask_TMI=False)
     __TEST_11_12()
     RLCI.EA332.off()
-    yprint('ТЕСТ 10 ЗВЕРШЕН', 1)
+    yprint('ТЕСТ 10 ЗВЕРШЕН', tab=1)
 '''
 
 
 ############################### TESTS ########################################
 def TEST_7():
-    yprint('ТЕСТ 7: БА-О(ЭА332), ПЧ-О(ЭА331), ФИП-О(ЭА330), МОД-О(ЭА331), УМ-О(ЭА331)', 1)
+    yprint('ТЕСТ 7: БА-О(ЭА332), ПЧ-О(ЭА331), ФИП-О(ЭА330), МОД-О(ЭА331), УМ-О(ЭА331)')
     RLCI.EA332.on(1)
     RLCI.EA331.on(1)
     RLCI.mode('RS485-1')    # RS485-0
@@ -294,11 +325,11 @@ def TEST_7():
     RLCI.PCH.off()          # Откл Пч
     RLCI.EA331.off()
     RLCI.EA332.off()
-    yprint('ТЕСТ 7 ЗВЕРШЕН', 1)
+    yprint('ТЕСТ 7 ЗВЕРШЕН')
 
 
 def TEST_8(ea332=1):
-    yprint('ТЕСТ 8: БА-О(ЭА332), ПЧ-Р(ЭА331), ФИП-Р(ЭА330), МОД-Р(ЭА331), УМ-Р(ЭА331)', 1)
+    yprint('ТЕСТ 8: БА-О(ЭА332), ПЧ-Р(ЭА331), ФИП-Р(ЭА330), МОД-Р(ЭА331), УМ-Р(ЭА331)')
     RLCI.EA332.on(ea332)
     RLCI.EA331.on(2)
     RLCI.mode('RS485-1')    # RS485-0
@@ -331,11 +362,11 @@ def TEST_8(ea332=1):
     RLCI.PCH.off()          # Откл Пч
     RLCI.EA331.off()
     RLCI.EA332.off()
-    yprint('ТЕСТ 8 ЗВЕРШЕН', 1)
+    yprint('ТЕСТ 8 ЗВЕРШЕН')
 
 
 def TEST_9():
-    yprint('ТЕСТ 9: БА-Р(ЭА332), ПЧ-О(ЭА331), ФИП-О(ЭА330), МОД-Р(ЭА331), УМ-Р(ЭА331)', 1)
+    yprint('ТЕСТ 9: БА-Р(ЭА332), ПЧ-О(ЭА331), ФИП-О(ЭА330), МОД-Р(ЭА331), УМ-Р(ЭА331)')
     RLCI.EA332.on(2)
     RLCI.EA331.on(2)
     RLCI.mode('RS485-1')        # RS485-0
@@ -363,11 +394,11 @@ def TEST_9():
     RLCI.PCH.off()              # Откл Пч
     RLCI.EA331.off()
     RLCI.EA332.off()
-    yprint('ТЕСТ 9 ЗВЕРШЕН', 1)
+    yprint('ТЕСТ 9 ЗВЕРШЕН')
 
 
 def TEST_10():
-    yprint('ТЕСТ 10: БА-Р(ЭА332), ПЧ-Р(ЭА331), ФИП-Р(ЭА330), МОД-О(ЭА331), УМ-О(ЭА331)', 1)
+    yprint('ТЕСТ 10: БА-Р(ЭА332), ПЧ-Р(ЭА331), ФИП-Р(ЭА330), МОД-О(ЭА331), УМ-О(ЭА331)')
     RLCI.EA332.on(2)
     RLCI.EA331.on(2)
     RLCI.mode('RS485-1')    # RS485-0
@@ -395,11 +426,11 @@ def TEST_10():
     RLCI.PCH.off()          # Откл Пч
     RLCI.EA331.off()
     RLCI.EA332.off()
-    yprint('ТЕСТ 10 ЗВЕРШЕН', 1)
+    yprint('ТЕСТ 10 ЗВЕРШЕН')
 
 
 def TEST_11():
-    yprint('ТЕСТ 11: Отключение 12мин БА-О(ЭА332), ПЧ-О(ЭА331), ФИП-О(ЭА330), МОД-О(ЭА331), УМ-О(ЭА331)', 1)
+    yprint('ТЕСТ 11: Отключение 12мин БА-О(ЭА332), ПЧ-О(ЭА331), ФИП-О(ЭА330), МОД-О(ЭА331), УМ-О(ЭА331)')
     RLCI.EA332.on(1)
     RLCI.EA331.on(1)
     RLCI.PCH.on(1)      # Вкл ПЧ-О
@@ -432,12 +463,12 @@ def TEST_11():
     RLCI.UM.cur = None
     RLCI.EA331.off()
     RLCI.EA332.off()
-    yprint('ТЕСТ 11 ЗВЕРШЕН', 1)
+    yprint('ТЕСТ 11 ЗВЕРШЕН')
 
 
 def TEST_12():
     """"""
-    yprint('ТЕСТ 12: Отключение 12мин БА-Р(ЭА332), ПЧ-Р(ЭА331), ФИП-Р(ЭА330), МОД-Р(ЭА331), УМ-Р(ЭА331)', 1)
+    yprint('ТЕСТ 12: Отключение 12мин БА-Р(ЭА332), ПЧ-Р(ЭА331), ФИП-Р(ЭА330), МОД-Р(ЭА331), УМ-Р(ЭА331)')
     RLCI.EA332.on(2)
     RLCI.EA331.on(2)
     RLCI.PCH.on(2)      # Вкл ПЧ-Р
@@ -470,7 +501,7 @@ def TEST_12():
     RLCI.UM.cur = None
     RLCI.EA331.off()
     RLCI.EA332.off()
-    yprint('ТЕСТ 12 ЗВЕРШЕН', 1)
+    yprint('ТЕСТ 12 ЗВЕРШЕН')
 
 
 def TEST_13():
@@ -495,7 +526,7 @@ def TEST_13():
     yprint('ПРОВЕРКА ВКЛЮЧЕНИЯ')
     inputG('Начать проверку?')
     TEST_7()
-    yprint('ТЕСТ 13 ЗВЕРШЕН', 1)
+    yprint('ТЕСТ 13 ЗВЕРШЕН')
 
 
 def TEST_14():
@@ -520,7 +551,7 @@ def TEST_14():
     yprint('ПРОВЕРКА ВКЛЮЧЕНИЯ')
     inputG('Начать проверку?')
     TEST_8(ea332=2)
-    yprint('ТЕСТ 14 ЗВЕРШЕН', 1)
+    yprint('ТЕСТ 14 ЗВЕРШЕН')
 
 
 ############################## DESCRIPTION ###############################

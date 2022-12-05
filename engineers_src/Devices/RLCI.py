@@ -206,7 +206,7 @@ class MOD(Device):
                        doEquation('10.01.PRD_MOD_TEMP_PLIS', '@K') + " and " +
                        doEquation('10.01.PRD_PCH%s_P' % FIP.cur, '@K', 'on'), count=1)
             executeTMI(doEquation('10.01.PRD_MOD_FIP_INF', '@K', 'on') + " and " +
-                       doEquation('10.01.FIP_M778B_INF', '@K', 'on'), count=5, period=5)
+                       doEquation('10.01.FIP_M778B_INF', '@K', 'on'), count=10, period=5)
 
     @classmethod
     def off(cls, ask_TMI=True):
