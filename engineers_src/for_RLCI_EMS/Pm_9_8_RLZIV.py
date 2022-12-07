@@ -189,8 +189,8 @@ def __TEST_5_6(text, array):
                "{10.01.BA_AFU_DNP_OX}==0")
     yprint('Отправка массива НЗ ' + text)
     RLCI.sendArrayToAntenna('КПА', CPIMD(addr=0x0, data=AsciiHex(array), std=2))
-    sleep(5)
     yprint('Ждать АФУ в НЗ')
+    sleep(5)
     RLCI.waitAntennaStop(period=5 * 60, toPrint=False)  # ждем когда АФУ в 0гр зоне
 
 
@@ -559,52 +559,52 @@ def TEST_15(num=1):
     BCK.clcBCK()
     BCK.downBCK()
     di = ["{04.02.VBAEA%s}@K==[25,35]" % RLCI.EA332.cur,
-          "{04.02.CBAEA%s}@K==[0.05, 0.45]" % RLCI.EA332.cur]
+          "{04.02.CBAEA%s}@K==[0.05, 0.5]" % RLCI.EA332.cur]
     executeTMI(" and ".join(di))
 
     RLCI.EA331.on(num)
     BCK.clcBCK()
     BCK.downBCK()
     di = ["{04.02.VBAEA%s}@K==[25,35]" % RLCI.EA332.cur,
-          "{04.02.CBAEA%s}@K==[0.05, 0.45]" % RLCI.EA332.cur,
+          "{04.02.CBAEA%s}@K==[0.05, 0.5]" % RLCI.EA332.cur,
           "{04.02.VKKEA%s}@K==[25,35]" % RLCI.EA331.cur,
-          "{04.02.CKKEA%s}@K==[0.01, 0.1]" % RLCI.EA331.cur]
+          "{04.02.CKKEA%s}@K==[0.01, 0.5]" % RLCI.EA331.cur]
     executeTMI(" and ".join(di))
 
     RLCI.PCH.on(num)
     BCK.clcBCK()
     BCK.downBCK()
     di = ["{04.02.VBAEA%s}@K==[25,35]" % RLCI.EA332.cur,
-          "{04.02.CBAEA%s}@K==[0.1, 1.24]" % RLCI.EA332.cur,
+          "{04.02.CBAEA%s}@K==[0.1, 0.9]" % RLCI.EA332.cur,
           "{04.02.VKKEA%s}@K==[25,35]" % RLCI.EA331.cur,
-          "{04.02.CKKEA%s}@K==[0.01, 0.6]" % RLCI.EA331.cur]
+          "{04.02.CKKEA%s}@K==[0.01, 1.5]" % RLCI.EA331.cur]
     executeTMI(" and ".join(di))
 
     RLCI.FIP.on(num)
     BCK.clcBCK()
     BCK.downBCK()
     di = ["{04.02.VBAEA%s}@K==[25,35]" % RLCI.EA332.cur,
-          "{04.02.CBAEA%s}@K==[0.1, 0.5]" % RLCI.EA332.cur,
+          "{04.02.CBAEA%s}@K==[0.1, 1.7]" % RLCI.EA332.cur,
           "{04.02.VKKEA%s}@K==[25,35]" % RLCI.EA331.cur,
-          "{04.02.CKKEA%s}@K==[0.01, 0.6]" % RLCI.EA331.cur]
+          "{04.02.CKKEA%s}@K==[0.01, 1.5]" % RLCI.EA331.cur]
     executeTMI(" and ".join(di))
 
     RLCI.MOD.on(num)
     BCK.clcBCK()
     BCK.downBCK()
     di = ["{04.02.VBAEA%s}@K==[25,35]" % RLCI.EA332.cur,
-          "{04.02.CBAEA%s}@K==[0.1, 1.3]" % RLCI.EA332.cur,
+          "{04.02.CBAEA%s}@K==[0.1, 2.0]" % RLCI.EA332.cur,
           "{04.02.VKKEA%s}@K==[25,35]" % RLCI.EA331.cur,
-          "{04.02.CKKEA%s}@K==[0.01, 0.6]" % RLCI.EA331.cur]
+          "{04.02.CKKEA%s}@K==[0.01, 2.0]" % RLCI.EA331.cur]
     executeTMI(" and ".join(di))
 
     RLCI.UM.on(num)
     BCK.clcBCK()
     BCK.downBCK()
     di = ["{04.02.VBAEA%s}@K==[25,35]" % RLCI.EA332.cur,
-          "{04.02.CBAEA%s}@K==[0.1, 1.3]" % RLCI.EA332.cur,
+          "{04.02.CBAEA%s}@K==[0.1, 2.0]" % RLCI.EA332.cur,
           "{04.02.VKKEA%s}@K==[25,35]" % RLCI.EA331.cur,
-          "{04.02.CKKEA%s}@K==[0.01, 4.0]" % RLCI.EA331.cur]
+          "{04.02.CKKEA%s}@K==[0.01, 3.0]" % RLCI.EA331.cur]
     executeTMI(" and ".join(di))
 
     RLCI.off()
