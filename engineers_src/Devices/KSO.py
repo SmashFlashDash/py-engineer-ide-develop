@@ -4,21 +4,23 @@ from engineers_src.Devices.functions import print_start_and_end, sendFromJson, e
 from engineers_src.tools.ivk_script_tools import *
 from engineers_src.tools.tools import SCPICMD, config, AsciiHex, KPA, SOTC, SKPA, Ex, sleep
 from lib.tabulate.tabulate import tabulate
+from copy import deepcopy
 
 
 class KSO(Device):
     cur = None
+    di_range = config.odict()
     di = config.odict(('00.01.PPS1', []), ('00.01.PPS2', []),
-                        ('00.02.Sat_Bx', []), ('00.02.Sat_By', []), ('00.02.Sat_Bz', []),
-                        ('00.02.Sat_Bx_2', []), ('00.02.Sat_By_2', []), ('00.02.Sat_Bz_2', []),
-                        ('00.01.FT1_FD1', []), ('00.01.FT1_FD2', []), ('00.01.FT1_FD3', []), ('00.01.FT1_FD4', []),
-                        ('00.01.FT2_FD1', []), ('00.01.FT2_FD2', []), ('00.01.FT2_FD3', []), ('00.01.FT2_FD4', []),
-                        ('00.05.BIUS1MeasX', []), ('00.05.BIUS1MeasY', []), ('00.05.BIUS1MeasZ', []),
-                        ('00.05.BIUS2MeasX', []), ('00.05.BIUS2MeasY', []), ('00.05.BIUS2MeasZ', []),
-                        ("00.08.Q_ST1_0", [],), ("00.08.Q_ST1_1", [],), ("00.08.Q_ST1_2", [],), ("00.08.Q_ST1_3", [],),
-                        ("00.08.Q_ST2_0", [],), ("00.08.Q_ST2_1", [],), ("00.08.Q_ST2_2", [],), ("00.08.Q_ST2_3", [],),
-                        ("00.08.Q_ST3_0", [],), ("00.08.Q_ST3_1", [],), ("00.08.Q_ST3_2", [],), ("00.08.Q_ST3_3", [],),
-                        ("00.08.Q_ST4_0", [],), ("00.08.Q_ST4_1", [],), ("00.08.Q_ST4_2", [],), ("00.08.Q_ST4_3", [],))
+                      ('00.02.Sat_Bx', []), ('00.02.Sat_By', []), ('00.02.Sat_Bz', []),
+                      ('00.02.Sat_Bx_2', []), ('00.02.Sat_By_2', []), ('00.02.Sat_Bz_2', []),
+                      ('00.01.FT1_FD1', []), ('00.01.FT1_FD2', []), ('00.01.FT1_FD3', []), ('00.01.FT1_FD4', []),
+                      ('00.01.FT2_FD1', []), ('00.01.FT2_FD2', []), ('00.01.FT2_FD3', []), ('00.01.FT2_FD4', []),
+                      ('00.05.BIUS1MeasX', []), ('00.05.BIUS1MeasY', []), ('00.05.BIUS1MeasZ', []),
+                      ('00.05.BIUS2MeasX', []), ('00.05.BIUS2MeasY', []), ('00.05.BIUS2MeasZ', []),
+                      ("00.08.Q_ST1_0", [],), ("00.08.Q_ST1_1", [],), ("00.08.Q_ST1_2", [],), ("00.08.Q_ST1_3", [],),
+                      ("00.08.Q_ST2_0", [],), ("00.08.Q_ST2_1", [],), ("00.08.Q_ST2_2", [],), ("00.08.Q_ST2_3", [],),
+                      ("00.08.Q_ST3_0", [],), ("00.08.Q_ST3_1", [],), ("00.08.Q_ST3_2", [],), ("00.08.Q_ST3_3", [],),
+                      ("00.08.Q_ST4_0", [],), ("00.08.Q_ST4_1", [],), ("00.08.Q_ST4_2", [],), ("00.08.Q_ST4_3", [],))
     __di_list = [
         {"00.01.FT1_FD1": 'НЕКАЛИБР',
          "00.01.FT1_FD2": 'НЕКАЛИБР',
@@ -148,9 +150,57 @@ class KSO(Device):
             cls._get_tmi()  # опросить ТМИ
         else:
             cls._get_tmi(isInterval='ИНТЕРВАЛ')
+            # записать в di_range min max числа
+            for x in cls.di.items():
+                vals = [z for z in x[1] if z is not None]   # убрать None из значения
+                if len(vals) == 0:
+                    cls.di_range[x[0]] = None
+                else:
+                    cls.di_range[x[0]] = [min(vals), max(vals)]
         if prevLength != len(cls.di):
             raise Exception("Ошибка KSO._tmi")
         cls._printTmi(cls.di)
+
+    # TODO: сделать чтобы сравнивал полученную ДИ с диапазонами и выводил
+    @classmethod
+    def get_tmi_and_compare(cls):
+        """переделать diRange в список и кинуть в табулет"""
+        to_tabulate = []
+        for key, vals in cls.di_range.items():
+            row = []
+            to_tabulate.append(row)
+            row.append(key)
+            if vals is None:
+                row.append(str(None))
+            else:
+                vals = [str(x) for x in vals]
+                row.extend(vals)
+        string = tabulate(to_tabulate, tablefmt='simple')
+        print(string.strip('- \n'))
+
+
+    # @classmethod
+    # @print_start_and_end(string='КСО: опросить ТМИ и сравнить')
+    # def get_tmi_and_compare(cls):
+    #     cls._get_tmi()  # опросить ТМИ
+    #     text = []
+    #     bools = []
+    #     for key, vals in cls.di.items():
+    #         # берем значеие в di если нет то кидаем None и закинем None в основной res
+    #         rowText = [cls.di_range[key][0] + ' <= {' + key + '} <= ' + cls.di_range[key][1] + ':']
+    #         rowBools = []
+    #         text.append(rowText)
+    #         bools.append(rowBools)
+    #         for index, x in enumerate(vals):
+    #             rowBools.append(eval('%s <= %s <= %s' % (cls.di_range[key][0], x, cls.di_range[key][1])))
+    #             rowText.append(x)
+    #         if len(rowBools) == 0:
+    #             rowBools.append(None)
+    #         else:
+    #             rowBools.insert(all(True), 0)
+        # string = tabulate(ar, tablefmt='simple')
+        # print(string.strip('- \n'))
+        print('')
 
     @classmethod
     def _get_tmi(cls, isInterval=None):
@@ -223,6 +273,7 @@ class KSO(Device):
     @classmethod
     def _printTmi(cls, tmi, twoVals=False):
         """Вывод словаря тми, или сопоставить два одинаковых словаря"""
+        tmi = deepcopy(tmi)
         ar = []
         for item in tmi.items():
             if twoVals is True:

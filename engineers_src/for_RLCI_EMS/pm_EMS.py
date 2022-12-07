@@ -146,6 +146,72 @@ def TEST_senseKIS():
     KIS.print_BARL_levels()
 
 
+def change_kis():
+    res = windowChooser(btnsText=('1', '2', '3', '4', 'Продлить сеанс'),
+                        title='Сменить БАРЛ',
+                        fooDict={'1': lambda: [x() for x in KIS.on(1)],
+                                 '2': lambda: RLCI.on(2),
+                                 '3': lambda: RLCI.on(2),
+                                 '4': lambda: RLCI.on(2),
+                                 'Продлить сеанс': lambda: RLCI.off()})
+    if res == 'Продлить сеанс':
+        KIS.__run_cmd('continue')
+    else:
+        KIS.off()
+        KIS.on(int(res))
+
+
+# TODO: надо ли включать M778Б для приема информаци
+def Test_ASN_BARL(kis, asn,):
+    KIS.on(kis)
+    KIS.set_KPA_level()
+    inputG('Включи АСН К2')
+    yprint('Включи АСН К2')
+    ASN.on(asn)
+    ASN.res_control()
+    inputG('Проверить КИС АСН')
+    KIS.get_tmi_conn_test()
+    ASN.check_sm_output()
+
+    # включить КСО и проинитить обстановку опросив тми при выключенном всем
+    change_kis()
+    Imitators.on_imitators_DS()
+    Imitators.on_imitators_ZD()
+    KSO.on()
+    KSO.get_tmi()
+    KSO.clear_tmi()
+    KIS.off()
+    sleep(60)
+    KIS.on(kis)
+    KIS.set_KPA_level()
+    KSO.get_tmi(isInterval=True)    # получим телеметрию когда КИС был выключен
+
+    inputG('Проверить КИС АСН КСО')
+    KSO.get_tmi()  # берем тут среднее значение
+    KIS.get_tmi_conn_test()
+    ASN.check_sm_output()
+
+    change_kis()
+    RLCI.on(1, stop_shd=True)       # Вкл все блоки РЛЦИ
+    inputG('Проверить КИС АСН КСО РЛЦИ')
+    inputG('Проверь информацию КПА РЛЦИ-В VS2 M4')
+    KIS.get_tmi_conn_test()
+    ASN.check_sm_output()
+    KSO.clear_tmi()
+    KSO.get_tmi()
+
+    # KIS.off()
+    # ASN.off(asn)
+    # Imitators.off_imitators_DS()
+    # Imitators.off_imitators_ZD()
+    # KSO.off()
+    # RLCI.off()
+
+
+def Test_ASN_BARL_KSO_RLCI_BSK_P_BSK_Ku():
+    pass
+
+
 #####################     MAIN      ###########################
 print()
 # словрь с функциями для кнопок
@@ -192,7 +258,8 @@ foo = {
         ret_btn=True),
     'КСО ТМИ ТЕКУЩ': lambda: KSO.get_tmi(),
     'КСО ТМИ ИНТРЕВАЛ': lambda: KSO.get_tmi(isInterval=True),
-    'КСО СБРОС НАКОП ДИ': lambda: KSO.clear_tmi(),
+    'КСО ОТЧ ДИ': lambda: KSO.clear_tmi(),
+    'КСО ДИ ДИАП': KSO.get_tmi_and_compare,
     '!!!КСО ПРОВ ТМИ': KSO.__unrealized__,
     '!!!КСО ТОК': KSO.__unrealized__,
     'M778': lambda: windowChooser(
@@ -249,10 +316,10 @@ foo = {
     'РЛЦИ АФУ МАССИВ': lambda: RLCI.sendArrayToAntenna(
         'КПА', CPIMD(addr=0x0,
                      data=AsciiHex(
-                         '0x805004509411E8030A00D0870A00F4011400C4890A00000000000A0000000000000000000000000000000000000'
-                         '000000000000000000000000000000000000000000000A05005509411E8030A00D0870A00F4011400C4890A000000'
-                         '000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-                         '000000000000000000000000000000000000000000000000000000000000000'),
+                         '0x'
+                         '805004509411E8030A00D0870A00F4011400C4890A00000000000A0000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+                         'A05005509411E8030A00D0870A00F4011400C4890A0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+                         '00000000000000000000000000000000000000000000000000000000000000000000'),
                      std=2)),
     'РЛЦИ РЕЖИМ': lambda: windowChooser(
         btnsText=(('M1', 'M2', 'M3', 'M4'), ('VS1', 'VS2'), ('RS485-1', 'RS485-2'), ('ИМ-МОД ВКЛ', 'ИМ-МОД ОТКЛ'),
@@ -291,9 +358,11 @@ foo = {
     'БСКСП ДИ': lambda: BSK_BSPA.get_tmi(),
     'ОПИСАНИЕ ТЕСТОВ': lambda: TEST_DESCRIPTION(),
     'АВТОМАТИЗ ТЕСТЫ': lambda: windowChooser(
-        btnsText=('ИЗМ БАРЛ',),
+        btnsText=('ИЗМ БАРЛ',
+                  ('АСН КИС', '')),
         title='АВТОМАТИЗ ТЕСТЫ',
-        fooDict={'ИЗМ БАРЛ': lambda: TEST_senseKIS()},
+        fooDict={'ИЗМ БАРЛ': TEST_senseKIS,
+                 'ВЕСЬ ЭМС НЕ ВКЛЮЧАТЬ': Test_ASN_BARL},
         ret_btn=True)
 }
 # кнопки
@@ -301,7 +370,7 @@ btns = (('ОЧИСТ НАКОПИТЕЛЬ', 'СБРОС НАКОПИТЕЛЬ'),
         ('БАРЛ СР ДР', 'БАРЛ КПА УСТ МОЩ', 'БАРЛ КПА ИЗМ МОЩ БИН', 'БАРЛ КПА ИЗМ МОЩ', 'БАРЛ ТЕСТ ПРИЕМА', 'БАРЛ КПА ВЫВОД МОЩ'),
         ('АСН ВКЛ ОТКЛ', 'АСН ПРОВ СИГНАЛ', 'АСН КОНТРОЛЬ РАБОТЫ'),
         ('ИМ ДС ВКЛ', 'ИМ ДС ОТКЛ', 'ИМ ЗД ВКЛ', 'ИМ ЗД ОТКЛ',),
-        ('КСО ВКЛ ОТКЛ', 'КСО ТМИ ТЕКУЩ', 'КСО ТМИ ИНТРЕВАЛ', 'КСО СБРОС НАКОП ДИ', '!!!КСО ПРОВ ТМИ', '!!!КСО ТОК'),
+        ('КСО ВКЛ ОТКЛ', 'КСО ТМИ ТЕКУЩ', 'КСО ТМИ ИНТРЕВАЛ', 'КСО ОТЧ ДИ', 'КСО ДИ ДИАП', '!!!КСО ПРОВ ТМИ', '!!!КСО ТОК'),
         'M778',
         ('РЛЦИ ЭА', 'РЛЦИ АФУ МАССИВ', 'РЛЦИ ПЧ', 'РЛЦИ ФИП', 'РЛЦИ МОД', 'РЛЦИ УМ', 'РЛЦИ РЕЖИМ', 'РЛЦИ ВСЕ БЛОКИ'),
         ('БСКР ВКЛ', 'БСКР ОТКЛ', 'БСКР ДИ'),

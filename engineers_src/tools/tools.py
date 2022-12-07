@@ -19,6 +19,9 @@ from ivk.scOMKA.simplifications import SKPA
 from ivk.scOMKA.controll_iccell import ICCELL
 from ivk.scOMKA.simplifications import SICCELL
 from ivk.scOMKA.controll_scpi import SCPI
+from ivk.cpi_framework_connections import b2h
+from ivk.cpi_framework_connections import s2h
+from ivk.cpi_framework_connections import i2h
 Ex = config.get_exchange()
 redis_dp_get = config.getData     # вторая бд redis
 redis_dp_set = config.updData     # вторая бд redis
@@ -42,6 +45,7 @@ from collections import OrderedDict
 # def get(*args):
 #     randint(0, 10)
 #     calibs = ('включен', 'отключен', 'Есть', 'Нет', 0, 100, None)
+#     calibs = (0, 100)
 #     uncalibs = (0, 1, 100, -100, 0.01, 1000, None)
 #     if isinstance(args[1], dict):
 #         result = {}
