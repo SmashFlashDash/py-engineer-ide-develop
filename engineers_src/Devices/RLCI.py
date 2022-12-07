@@ -312,9 +312,9 @@ class RLCI(Device):
 
     @classmethod
     @print_start_and_end(string='РЛЦИ: вкл все блоки')
-    def on(cls, num, ask_TMI=True):
+    def on(cls, num, stop_shd=True, ask_TMI=True):
         cls.log('Включить все')
-        EA332.on(num, stop_shd=True, ask_TMI=ask_TMI)
+        EA332.on(num, stop_shd=stop_shd, ask_TMI=ask_TMI)
         sleep(1)
         EA331.on(num, ask_TMI=ask_TMI)
         sleep(1)

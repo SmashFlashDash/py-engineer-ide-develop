@@ -50,6 +50,7 @@ class ASN(Device):
             # sendFromJson(SCPICMD, 0xE231, pause=1)  # Отключить обмены с АСН1 0xE21A EXCH_OFF_ASN1
             sendFromJson(SCPICMD, 0xE005, AsciiHex('0109000000000000'), pause=1)  # Отключить АСН2
         # sendFromJson(SCPICMD, 0x43ED, pause=1)   # Отключить АСН  (Каналы 5 и 6)
+        inputG('Проверь что АСН отключен')
         cls.cur = None
 
     @classmethod

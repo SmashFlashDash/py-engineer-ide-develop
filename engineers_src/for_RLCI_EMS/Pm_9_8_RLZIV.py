@@ -155,9 +155,7 @@ def __TEST_3_4():
                "{10.01.BA_AFU_NP_OZ}@H==0" + " and " +
                "{10.01.BA_AFU_NP_OX}@H==0")
     # Запустить отработку массива
-    # sendFromJson(SCPICMD, 0xA017)  # ПУСК ШД
     RLCI.mode('start SHD')
-    # RLCI.isAntennaMoving()  # проверка что антенна движется
     RLCI.waitAntennaStop(period=5 * 60, toPrint=False)  # ожидание когда антенна остановится, или sleep(посчитать время)
     executeTMI("{10.01.BA_AFU_IMP_OZ}@H==@same@all" + " and " +  # Проверка НП и ДНП после остановки
                "{10.01.BA_AFU_IMP_OX}@H==@same@all" + " and " +
@@ -191,6 +189,7 @@ def __TEST_5_6(text, array):
                "{10.01.BA_AFU_DNP_OX}==0")
     yprint('Отправка массива НЗ ' + text)
     RLCI.sendArrayToAntenna('КПА', CPIMD(addr=0x0, data=AsciiHex(array), std=2))
+    sleep(5)
     yprint('Ждать АФУ в НЗ')
     RLCI.waitAntennaStop(period=5 * 60, toPrint=False)  # ждем когда АФУ в 0гр зоне
 
@@ -554,6 +553,68 @@ def TEST_14():
     yprint('ТЕСТ 14 ЗВЕРШЕН')
 
 
+def TEST_15(num=1):
+    yprint('ТЕСТ %s Проверка потребления %s' % (14+num, 'БА-О(ЭА332)' if num == 1 else 'БА-Р(ЭА332)'), tab=1)
+    RLCI.EA332.on(num, stop_shd=True)
+    BCK.clcBCK()
+    BCK.downBCK()
+    di = ["{04.02.VBAEA%s}@K==[25,35]" % RLCI.EA332.cur,
+          "{04.02.CBAEA%s}@K==[0.05, 0.45]" % RLCI.EA332.cur]
+    executeTMI(" and ".join(di))
+
+    RLCI.EA331.on(num)
+    BCK.clcBCK()
+    BCK.downBCK()
+    di = ["{04.02.VBAEA%s}@K==[25,35]" % RLCI.EA332.cur,
+          "{04.02.CBAEA%s}@K==[0.05, 0.45]" % RLCI.EA332.cur,
+          "{04.02.VKKEA%s}@K==[25,35]" % RLCI.EA331.cur,
+          "{04.02.CKKEA%s}@K==[0.01, 0.1]" % RLCI.EA331.cur]
+    executeTMI(" and ".join(di))
+
+    RLCI.PCH.on(num)
+    BCK.clcBCK()
+    BCK.downBCK()
+    di = ["{04.02.VBAEA%s}@K==[25,35]" % RLCI.EA332.cur,
+          "{04.02.CBAEA%s}@K==[0.1, 1.24]" % RLCI.EA332.cur,
+          "{04.02.VKKEA%s}@K==[25,35]" % RLCI.EA331.cur,
+          "{04.02.CKKEA%s}@K==[0.01, 0.6]" % RLCI.EA331.cur]
+    executeTMI(" and ".join(di))
+
+    RLCI.FIP.on(num)
+    BCK.clcBCK()
+    BCK.downBCK()
+    di = ["{04.02.VBAEA%s}@K==[25,35]" % RLCI.EA332.cur,
+          "{04.02.CBAEA%s}@K==[0.1, 0.5]" % RLCI.EA332.cur,
+          "{04.02.VKKEA%s}@K==[25,35]" % RLCI.EA331.cur,
+          "{04.02.CKKEA%s}@K==[0.01, 0.6]" % RLCI.EA331.cur]
+    executeTMI(" and ".join(di))
+
+    RLCI.MOD.on(num)
+    BCK.clcBCK()
+    BCK.downBCK()
+    di = ["{04.02.VBAEA%s}@K==[25,35]" % RLCI.EA332.cur,
+          "{04.02.CBAEA%s}@K==[0.1, 1.3]" % RLCI.EA332.cur,
+          "{04.02.VKKEA%s}@K==[25,35]" % RLCI.EA331.cur,
+          "{04.02.CKKEA%s}@K==[0.01, 0.6]" % RLCI.EA331.cur]
+    executeTMI(" and ".join(di))
+
+    RLCI.UM.on(num)
+    BCK.clcBCK()
+    BCK.downBCK()
+    di = ["{04.02.VBAEA%s}@K==[25,35]" % RLCI.EA332.cur,
+          "{04.02.CBAEA%s}@K==[0.1, 1.3]" % RLCI.EA332.cur,
+          "{04.02.VKKEA%s}@K==[25,35]" % RLCI.EA331.cur,
+          "{04.02.CKKEA%s}@K==[0.01, 4.0]" % RLCI.EA331.cur]
+    executeTMI(" and ".join(di))
+
+    RLCI.off()
+    yprint('ТЕСТ %s ЗВЕРШЕН' % (14+num), tab=1)
+
+
+def TEST_16():
+    TEST_15(2)
+
+
 ############################## DESCRIPTION ###############################
 def TEST_DESCRIPTION():
     # АФУ
@@ -572,6 +633,8 @@ def TEST_DESCRIPTION():
     print(Text.yellow + "ТЕСТ 12" + Text.default + ": РЛЦИ - РЕЗЕРВНЫЙ отключение по 12 минут отключение;")
     print(Text.yellow + "ТЕСТ 13" + Text.default + ": РЛЦИ - ОСНОВНОЙ АВАРИЙНОЕ ОТКЛЮЧЕНИЕ;")
     print(Text.yellow + "ТЕСТ 14" + Text.default + ": РЛЦИ - РЕЗЕРВНЫЙ АВАРИЙНОЕ ОТКЛЮЧЕНИЕ;")
+    print(Text.yellow + "ТЕСТ 15" + Text.default + ": РЛЦИ - ОСНОВНОЙ ВКЛЮЧЕНИЕ ПРОВЕРКА ПОТРЕБЛЕНИЯ;")
+    print(Text.yellow + "ТЕСТ 15" + Text.default + ": РЛЦИ - РЕЗЕРВНЫЙ ВКЛЮЧЕНИЕ ПРОВЕРКА ПОТРЕБЛЕНИЯ;")
     # ТЕХ
     # print(Text.yellow + "ТЕСТ 11" + Text.default + ": тех - АФУ-Х ПРОВЕРКА ОТРАБОТКИ ДКП, КОЛ_ВО ИМПУЛЬСОВ - БА-О;")
     # print(Text.yellow + "ТЕСТ 12" + Text.default + ": тех - АФУ-Х ПРОВЕРКА ОТРАБОТКИ ДКП, КОЛ_ВО ИМПУЛЬСОВ - БА-Р;")
@@ -677,14 +740,15 @@ foo = {
     'ТЕСТ 12': lambda: TEST_12(),
     'ТЕСТ 13': lambda: TEST_13(),
     'ТЕСТ 14': lambda: TEST_14(),
-    # 'ТЕСТ 15': lambda: TEST_15(),
-    # 'ТЕСТ 16': lambda: TEST_16(),
+    'ТЕСТ 15': lambda: TEST_15(),
+    'ТЕСТ 16': lambda: TEST_16(),
     'ОПИСАНИЕ ТЕСТОВ': lambda: TEST_DESCRIPTION()
 }
 # кнопки
 btns = (('ТЕСТ 1', 'ТЕСТ 2', 'ТЕСТ 3', 'ТЕСТ 4', 'ТЕСТ 5', 'ТЕСТ 6'),       # афу
         ('ТЕСТ 7', 'ТЕСТ 8', 'ТЕСТ 9', 'ТЕСТ 10'),       # рлци
         ('ТЕСТ 11', 'ТЕСТ 12', 'ТЕСТ 13', 'ТЕСТ 14'),
+        ('ТЕСТ 15', 'ТЕСТ 16'),
         # ('ТЕСТ 11', 'ТЕСТ 12'),                          # тех афу
         # 'M778',
         ('РЛЦИ ЭА', 'РЛЦИ ПЧ', 'РЛЦИ ФИП', 'РЛЦИ МОД', 'РЛЦИ УМ', 'РЛЦИ РЕЖИМ', 'РЛЦИ ВСЕ БЛОКИ'),
@@ -697,7 +761,7 @@ yprint('РЛЦИВ ПМ1')
 while True:
     print()
     try:
-        windowChooser(btnsText=btns, fooDict=foo, labels=['АФУ-Х', 'РЛЦИ-В', '', 'РЛЦИ-В', 'ФКП', ''])
+        windowChooser(btnsText=btns, fooDict=foo, labels=['АФУ-Х', 'РЛЦИ-В', '', '', 'РЛЦИ-В', 'ФКП', ''])
     except Exception as ex:
         rprint("ОШИБКА В ТЕСТЕ")
         rprint(traceback.format_exc())
