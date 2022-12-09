@@ -10,68 +10,75 @@ forma = "%-20s --> %s"  # вывод шифр --> значение
 
 
 class ASN(Device):
-    cur = None
+    cur = []
+    # sendFromJson(SCPICMD, 0x4005, pause=1)   # Вкл АСН1 через канал 5
+    # sendFromJson(SCPICMD, 0x4195, pause=1)  # Вкл АСН2 через канал 6
+    # sendFromJson(SCPICMD, 0x43ED, pause=1)   # Отключить АСН  (Каналы 5 и 6)
 
     @classmethod
     @print_start_and_end(string='АСН: включить')
-    def on(cls, num):
-        if cls.cur is not None:
-            raise Exception('АСН-%s уже включен!' % cls.cur)
+    def on(cls, num, ask_TMI=True):
+        """Включение АСН"""
         cls.log('Включить', num)
         if num == 1:
-            # sendFromJson(SCPICMD, 0x4005, pause=1)   # Вкл АСН1 через канал 5
-            # sendFromJson(SCPICMD, 0xE219, pause=1)   # Вкл обмен АСН1
-            sendFromJson(SCPICMD, 0xE004, AsciiHex('0106010000000000'), pause=1)  # Включить АСН1
-            # sendFromJson(SCPICMD, 0xE22D, pause=1)  # Выключить приоритет АСН2
-            # sendFromJson(SCPICMD, 0xE22C, pause=1)  # Включить приоритет АСН1  # или 0xE242 ПРОВЕРИТЬ
+            sendFromJson(SCPICMD, 0xE004, AsciiHex('0105010000000000'), pause=1)  # Включить АСН1
         elif num == 2:
-            # sendFromJson(SCPICMD, 0x4195, pause=1)  # Вкл АСН2 через канал 6
-            # sendFromJson(SCPICMD, 0xE230, pause=1)  # Вкл обмен АСН2
-            sendFromJson(SCPICMD, 0xE004, AsciiHex('0109000000000000'), pause=1)  # Включить АСН2
-            # sendFromJson(SCPICMD, 0xE22D, pause=1)  # Выключить приоритет АСН1
-            # sendFromJson(SCPICMD, 0xE243, pause=1)  # Включить приоритет АСН2
+            sendFromJson(SCPICMD, 0xE004, AsciiHex('0106010000000000'), pause=1)  # Включить АСН2
         else:
             raise Exception('Номер блока только 1 и 2')
-        cls.cur = num
-        # cls.res_control()
+        cls.cur.append(num)
+        # if ask_TMI:
+        #     cls.res_control()
 
     @classmethod
     @print_start_and_end(string='АСН: отключить')
-    def off(cls, num):
+    def off(cls, num, ask_TMI=True):
         """Отключение АСН"""
         cls.log('Отключить', num)
-        syst_num = cls.__get_syst_num(num)
         if num == 1:
             print("УВ: Отключить обмены с АСН1")
-            # sendFromJson(SCPICMD, 0xE21A, pause=1)  # Отключить обмены с АСН1 0xE21A EXCH_OFF_ASN1
-            sendFromJson(SCPICMD, 0xE005, AsciiHex('0106000000000000'), pause=1)  # Отключить АСН1
+            sendFromJson(SCPICMD, 0xE005, AsciiHex('0105000000000000'), pause=1)  # Отключить АСН1
         else:
             print("УВ: Отключить обмены с АСН2")
-            # sendFromJson(SCPICMD, 0xE231, pause=1)  # Отключить обмены с АСН1 0xE21A EXCH_OFF_ASN1
-            sendFromJson(SCPICMD, 0xE005, AsciiHex('0109000000000000'), pause=1)  # Отключить АСН2
-        # sendFromJson(SCPICMD, 0x43ED, pause=1)   # Отключить АСН  (Каналы 5 и 6)
-        inputG('Проверь что АСН отключен')
-        cls.cur = None
+            sendFromJson(SCPICMD, 0xE005, AsciiHex('0106000000000000'), pause=1)  # Отключить АСН2
+        cls.cur.clear()
+        # inputG('Проверь что АСН отключен')
+        # if ask_TMI:
+        #     cls.res_control()
+
+    # TODO: здесь ошибка вылетала
+    @classmethod
+    @print_start_and_end(string='АСН: проверка выдачи см в бцк и КСВЧ')
+    def get_tmi(cls, num):
+        """Функция проверки корректной выдачи СМ из АСН"""
+        if num not in cls.cur:
+            raise Exception('АСН %s отключен!' % num)
+        print('Скидываем накопитель БЦК не затирая, ждем 20 сек, потом опросить из Базы ДИ7')
+        BCK.downBCK(pause=20)
+        syst_num = cls.__get_syst_num(num)
+        cls.__KSVCH_check(syst_num)
+        DI_7 = ad_dict_DI_7(syst_num)
+        confirm_MV = Ex.get('ТМИ', DI_7["ConfirmMV"], 'КАЛИБР ТЕКУЩ')
+        bprint('Подтверждение выдачи импульса МВ: %s' % confirm_MV)
+        controlGet(confirm_MV, 'импульс МВ выведен',
+                   text=('', 'Проверьте, что на Имитаторе К2-100 запущен сценарий имитации!'))
 
     @classmethod
-    def get_tmi(cls):
-        cls.__unrealized__()
-
-    @staticmethod
-    def __get_syst_num(num):
-        syst_num = {1: 11, 2: 12}.get(num)
-        if syst_num is None:
-            raise Exception('Неверный параметр')
-        return syst_num
+    @print_start_and_end(string='АСН: сброс всех ДИ')
+    def get_all_di(cls, num):
+        if num not in cls.cur:
+            raise Exception('АСН %s отключен!' % num)
+        for di_num in range(2, 14):
+            cls.__di_form(num, di_num)
+        BCK.downBCK()
 
     @classmethod
     @print_start_and_end(string='АСН: проверка результатов самоконтроля асн')
-    def res_control(cls):
+    def res_control(cls, num):
         """Проверка результатов самоконтроля АСН"""
-        if cls.cur is None:
-            raise Exception('Необходимо включить АСН для контроля')
-        num = cls.cur
-        syst_num = cls.__get_syst_num(cls.cur)
+        if num not in cls.cur:
+            raise Exception('АСН %s отключен!' % num)
+        syst_num = cls.__get_syst_num(num)
         SS = ad_dict_SS(syst_num)
         DI_2 = ad_dict_DI_2(syst_num)
         DI_3 = ad_dict_DI_3(syst_num)
@@ -83,8 +90,8 @@ class ASN(Device):
         state_PN = Ex.get('ТМИ', SS["PrgStateSvPN"], 'КАЛИБР ТЕКУЩ')
         if control_result == 'АСН исправна' and failure_flag == "сбои не зафиксированы":
             # Достаточно считать 5 основных параметров самоконтроля и режимов работы УС и ПН
-            tprint(forma % (
-            'Суммарный результат контроля АСН', Text.green + 'АСН исправна, сбои не зафиксированы') + Text.default)
+            tprint(forma % ('Суммарный результат контроля АСН', Text.green + 'АСН исправна, сбои не зафиксированы') +
+                   Text.default)
             keys = list(SS.keys())  # список шифров
             for cypher in keys[0:5]:
                 tprint(forma % (cypher, Ex.get('ТМИ', SS[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
@@ -95,11 +102,10 @@ class ASN(Device):
             tprint("Наличие сбоев в процессе тестирования: %s" % failure_flag)
             tprint("Программное состояние АСН (СВ УС): %s" % state_ASN)
             tprint("Программное состояние АСН (СВ ПН): %s" % state_PN)
-            BCK.clcBCK()
+            # BCK.clcBCK()
             cls.__di_form(num, 2)  # Запрос ДИ2 АСН
             cls.__di_form(num, 3)  # Запрос ДИ3 АСН
-            sleep(20)
-            BCK.downBCK()
+            BCK.downBCK(pause=20)
             for cypher in tuple(DI_2.keys())[0:-20]:  # Вывод расширенных результатов самоконтроля АСН (96 параметров)
                 tprint(forma % (cypher, Ex.get('ТМИ', DI_2[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
             for cypher in tuple(DI_3.keys())[0:-3]:  # Описание сбоев АСН (43 параметра)
@@ -108,8 +114,7 @@ class ASN(Device):
                 tprint(forma % (cypher, Ex.get('ТМИ', DI_4[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
         elif control_result == 'отказ-ПН':
             bprint('Произошел отказ ПН. АСН может использоваться только как источник МВ, управляемой по УВ')
-            for cypher in tuple(DI_2.keys())[5:9] + tuple(DI_2.keys())[31:-20]:
-                # Вывод расширенных результатов самоконтроля АСН (96 параметров)
+            for cypher in tuple(DI_2.keys())[5:9] + tuple(DI_2.keys())[31:-20]:  # Вывод самоконтроля АСН (96 параметров)
                 tprint(forma % (cypher, Ex.get('ТМИ', DI_2[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
             for cypher in tuple(DI_3.keys())[0:-3]:  # Описание сбоев АСН (43 параметра)
                 tprint(forma % (cypher, Ex.get('ТМИ', DI_3[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
@@ -128,13 +133,29 @@ class ASN(Device):
                 tprint(forma % (cypher, Ex.get('ТМИ', DI_4[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
 
     @staticmethod
+    def __get_syst_num(num):
+        syst_num = {1: 11, 2: 12}.get(num)
+        if syst_num is None:
+            raise Exception('Неверный параметр')
+        return syst_num
+
+    @classmethod
+    def __KSVCH_check(cls, syst_num):
+        """Функция проверки достоверности КСВЧ-решения"""
+        DI_7 = ad_dict_DI_7(syst_num)
+        DI_13 = ad_dict_DI_13(syst_num)
+        Valid_KSVCh = Ex.get('ТМИ', DI_13["ValidKSVCh"], 'КАЛИБР ТЕКУЩ')
+        bprint('Достоверность координатно-скоростного решения: %s' % Valid_KSVCh)
+        for cypher in tuple(DI_7.keys())[15:19]:
+            tprint(forma % (cypher, Ex.get('ТМИ', DI_7[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
+        controlGet(Valid_KSVCh, 'решение достоверно')
+
+    @staticmethod
     def __di_form(block_num, di_num):
         """Функция формирования (заполнения) ИОКов АСН из запрашиваемых ПА и их запрос"""
-
         def out_single_asn(asciihex):
             for i in range(0, 2):
                 sendFromJson(SCPICMD, UV["OUT_SINGLE_ASN" + str(block_num)], AsciiHex(asciihex))
-
         if di_num == 2:
             bprint('Запрос ДИ-2: ПА1 "РезКонтроль" и ПА2 "ГотВывод" --- АСН' + str(block_num))
             out_single_asn('0x0100 0000 0000 0000')  # Запрос одноразовой выдачи ПА1
@@ -214,33 +235,5 @@ class ASN(Device):
             sendFromJson(SCPICMD, UV["TLM13_ASN" + str(block_num)])  # Запрос ДИ12 АСН
         else:
             raise Exception('Некорректный номер ДИ')
+        sleep(1)
         return
-
-    @classmethod
-    @print_start_and_end(string='АСН: проверка выдачи см в бцк %s')
-    def check_sm_output(cls):
-        """Функция проверки корректной выдачи СМ из АСН"""
-        if ASN.cur is None:
-            raise Exception('Для провеки необходимо включить АСН!')
-        num = cls.cur
-        syst_num = cls.__get_syst_num(num)
-        cls.__KSVCH_check(syst_num)
-        DI_7 = ad_dict_DI_7(syst_num)
-        confirm_MV = Ex.get('ТМИ', DI_7["ConfirmMV"], 'КАЛИБР ТЕКУЩ')
-        bprint('Подтверждение выдачи импульса МВ: %s' % confirm_MV)
-        controlGet(confirm_MV, 'импульс МВ выведен',
-                   text=('', 'Проверьте, что на Имитаторе К2-100 запущен сценарий имитации!'))
-
-    @classmethod
-    def __KSVCH_check(cls, syst_num):
-        """Функция проверки достоверности КСВЧ-решения"""
-        DI_7 = ad_dict_DI_7(syst_num)
-        DI_13 = ad_dict_DI_13(syst_num)
-        Valid_KSVCh = Ex.get('ТМИ', DI_13["ValidKSVCh"], 'КАЛИБР ТЕКУЩ')
-        bprint('Достоверность координатно-скоростного решения: %s' % Valid_KSVCh)
-        for cypher in tuple(DI_7.keys())[15:19]:
-            tprint(forma % (cypher, Ex.get('ТМИ', DI_7[cypher], 'КАЛИБР ТЕКУЩ')), tab=1)
-        controlGet(Valid_KSVCh, 'решение достоверно')
-
-
-

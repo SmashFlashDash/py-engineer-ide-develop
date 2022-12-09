@@ -51,7 +51,7 @@ class EA332(Device):
                        + doEquation('10.01.BA_AFU_IMP_OZ', '@K'), count=2)
 
     @classmethod
-    def off(cls):
+    def off(cls, ask_TMI=True):
         cls.log('Отключить')
         sendFromJson(SCPICMD, 0xE005, AsciiHex('0113000000000000'), pause=1)  # Снять питание ЭА332
         cls.cur = None

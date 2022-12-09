@@ -4,7 +4,6 @@ from engineers_src.tools.ivk_script_tools import *
 from engineers_src.tools.tools import SCPICMD, AsciiHex, KPA, SOTC, SKPA, Ex, sleep
 
 
-# TODO: если будет ошибка, то можно использовать мощн -- ++ и брать ДИ на уст ур КПА
 class KIS(Device):
     cur = None
     cyphs = {1: '1/2', 2: '2/2', 3: '3/4', 4: '4/4'}
@@ -23,9 +22,10 @@ class KIS(Device):
 
     @classmethod
     @print_start_and_end(string='КИС: включить')
-    def on(cls, num):
+    def on(cls, num, ask_TMI=True):
         """перевод БАРЛ в СР
         :param num: номер БАРЛ
+        :param ask_TMI: проверить ДИ
         :return: None"""
         cls.log('Включить', num)
         if cls.cur is not None:
@@ -33,16 +33,20 @@ class KIS(Device):
         elif not 0 < num < 5:
             raise Exception('КИС имеет комплекты 1 2 3 4!')
         cls.cur = num
-        cls.__run_cmd('DR ' + cls.cyphs[num])   # команды включения
+        cls.__run_cmd('DR ' + cls.cyphs[num])
+        if ask_TMI:
+            pass
 
     @classmethod
     @print_start_and_end(string='КИС: отключить')
-    def off(cls):
+    def off(cls, ask_TMI=True):
         """ перевод БАРЛ в ДР
         :return: None"""
         cls.log('Отключить')
         cls.__run_cmd('standby')
         cls.cur = None
+        if ask_TMI:
+            pass
 
     @classmethod
     def get_tmi(cls):
@@ -51,19 +55,18 @@ class KIS(Device):
             raise Exception("Для провеки СР нужно включить БАРЛ")
         bprint('Проверка: обмена по мкпд, номера активного БАРЛ, уровня сигнала БАРЛ')
         cypher = cls.cyphs[cls.cur]
-        # executeTMI(' and '.join((doEquation('15.00.MKPD%s' % cypher, '@H', ref_val=1),
-        #                          doEquation('15.00.NBARL', '@H', ref_val=cls.cur - 1),
-        #                          doEquation('15.00.UPRM%s' % cypher, '@H', ref_val='[80,255]'))), count=1)
         executeTMI('{15.00.MKPD%s}@H==1 and ' % cypher +
                    '{15.00.NBARL}@H==%s and' % (cls.cur - 1) +
                    '{15.00.UPRM%s}@H==[80,255]' % cypher, count=1)
 
     @classmethod
-    def get_tmi_conn_test(cls):
+    @print_start_and_end(string='КИС: тест соединения')
+    def get_tmi_conn_test(cls, num):
         cls.get_tmi()
-        cls.conn_test(5)
+        cls.__conn_test(num)
 
     @classmethod
+    @print_start_and_end(string='КИС: настроенные уровни КПА КИС')
     def print_BARL_levels(cls):
         yprint('УРОВНИ БАРЛ:')
         yprint('\n'.join(['\tБАРЛ %s: %s' % (cls.cyphs[num], cls.levels_kpa[num]) for num in range(1, 5)]))
@@ -80,8 +83,8 @@ class KIS(Device):
         yprint('КИС замер чувствительности БАРЛ %s' % cypher, tab=1)
         powers_tx = cls.kpa_powers  # -60 -62 ... -84 -85 -87 ... -109 значения мощности КПА
         for index, power in enumerate(powers_tx):
-            cls.__valid_KPA_power(power)
-            cls.conn_test(n_cmd)
+            cls.__set_KPA_power(power)
+            cls.__conn_test(n_cmd)
             # решение оператор установить уровень, предыдущий или продолжить настройку
             btn_name = inputGG(title='Настройка мощности КПА КИС',
                                btnsList=([('Продолжить', 'ЗАВ НАСТ ИСП ПРЕД УРОВЕНЬ')]))
@@ -107,8 +110,8 @@ class KIS(Device):
         value = None
         while low <= high:
             values.append(powers_tx[mid])
-            cls.__valid_KPA_power(powers_tx[mid])
-            errors = cls.conn_test(n_cmd)
+            cls.__set_KPA_power(powers_tx[mid])
+            errors = cls.__conn_test(n_cmd)
             # errors = 1 if powers_tx[mid] < -109.0 else 0
             if errors == 0:
                 value = powers_tx[mid]
@@ -126,39 +129,38 @@ class KIS(Device):
         gprint('Уровень определен')
         bprint('Настроенный уровень сигнала КПА: %s dbm' % cls.levels_kpa[cls.cur])
 
-    @classmethod
-    def conn_test(cls, n_cmd):
-        """Проверка прохождения команд
-        :param n_cmd: кол-во раз сколько будет выданы комманды"""
-        bprint('Проверка прохождения %s комманд...' % n_cmd * 2)
-        result = []
-        for cmd_count in range(0, n_cmd):
-            cls.__run_cmd('uncog')
-            result.append(executeTMI('{15.00.NRK%s}@H == %s' % (cls.cyphs[cls.cur], cls.cmds['uncog'][0][1]),
-                                     count=1, stopFalse=False)[0])
-            cls.__run_cmd('fx')
-            result.append(executeTMI('{15.00.NRK%s}@H == %s' % (cls.cyphs[cls.cur], cls.cmds['fx'][0][1]),
-                                     count=1, stopFalse=False)[0])
-        errors_count = result.count(False)
-        comm_print('Ошибок приема %s из %s' % (errors_count, 2 * n_cmd))
-        return errors_count
-
     # TODO: как использовать
     @classmethod
     @print_start_and_end(string='КИС: установить измеренный урвоень мощности КПА')
     def set_KPA_level(cls):
         """Установить найденный ранее уровень мощности КПА КИС для текущего БАРЛ"""
-        if cls.cur is None:
-            raise Exception("Чобы установить уровень КПА необходимо включить БАРЛ")
-        power = cls.levels_kpa[cls.cur]
+        power = cls.levels_kpa.get(cls.cur)
         if power is None:
-            rprint('Не измерен уровень передатчика КПА для текущего БАРЛ')
-            return
-        cls.__valid_KPA_power(power)        # установить заданую мощность КПА
+            raise Exception('Не измерен уровень передатчика КПА для текущего БАРЛ')
+        cls.__set_KPA_power(power)        # установить заданую мощность КПА
 
-    # TODO: проверить
+    # TODO: сделать прин приятней
     @classmethod
-    def __valid_KPA_power(cls, ref_power):
+    def __conn_test(cls, n_cmd):
+        """Проверка прохождения команд
+        :param n_cmd: кол-во раз сколько будет выданы комманды"""
+        yprint('Тест прохождения %s комманд' % n_cmd)
+        result = []
+        for cmd_count in range(0, n_cmd // 2):
+            for x in ('uncog', 'fx'):
+                cls.__run_cmd(x)
+                out = '{15.00.NRK%s.НЕКАЛИБР} == %s' % (cls.cyphs[cls.cur], cls.cmds[x][0][1])
+                result.append(Ex.wait('ТМИ', out, 10))
+                gprint(out) if result[-1] is True else rprint(out)
+                # result.append(executeTMI('{15.00.NRK%s}@H == %s' % (cls.cyphs[cls.cur], cls.cmds[x][0][1]),
+                #                          count=1, stopFalse=False)[0])
+            print('Команд: %s/%s' % (cmd_count * 2, n_cmd))
+        errors_count = result.count(False)
+        comm_print('Ошибок приема %s из %s' % (errors_count, n_cmd))
+        return errors_count
+
+    @classmethod
+    def __set_KPA_power(cls, ref_power):
         bprint("Устаовить уровень мощности прд КПА...")
         Ex.send('КПА', KPA('Мощность-уст', ref_power))  # установить заданую мощность КПА
         if not Ex.wait('КПА', '%s < {ДИ_КПА.мощн_ПРД} < %s' % (ref_power-0.1, ref_power+0.1), 10):
@@ -166,15 +168,6 @@ class KIS(Device):
             inputG("Не удалось установить Мощность КПА %s" % ref_power)
         else:
             gprint("Мощность КПА устаовлена")
-        # sleep(1)
-        # PowKpa = Ex.get('КПА', 'ДИ_КПА', 'мощн_ПРД')
-        # if PowKpa is not None and ref_power - 0.1 <= PowKpa <= ref_power + 0.1:
-        #     gprint('Мощность КПА: %s' % PowKpa)
-        #     return True
-        # else:
-        #     rprint('Мощность КПА: %s' % PowKpa)
-        #     inputG("Проверь Мощность КПА")
-        #     return False
 
     @classmethod
     def __run_cmd(cls, key):

@@ -411,7 +411,6 @@ def inputGG(btnsList, title=None, labels=None, ret_btn=None):
         sys.exit()
 
 
-# TODO: всплывающее окно с вводом текста для присваивания переменных
 def inputGGG(param_names, title=None):
     """виджет ввода аргументов"""
     if title is None:
@@ -420,7 +419,7 @@ def inputGGG(param_names, title=None):
     box.setIcon('res/input-keyboard.svg')
     box.addAcceptButton()
     box.addResetButton()
-    box.addInputFields(tuple(param_names)) if isinstance(param_names, str) else box.addInputFields(param_names)
+    box.addInputFields((param_names,)) if isinstance(param_names, str) else box.addInputFields(param_names)
     box.fixHeight()
     res = box.exec()
     # box.deleteLater(
