@@ -555,6 +555,9 @@ def controlGet(value_get, value_ref, cypher=None, text=None, toPrint=True):
     return res
 
 
+# TODO: вернуть число ошибок
+#  переделать на tabulate вывод параметров, функция которая делает eval и возвращает bool
+#  если выполнять eval на общий результат получится Ex.wait с принтом в терминал
 def controlGetEQ(equation, count=1, period=0, toPrint=True, downBCK=False):
     """
     Опрос выражения ТМИ сетом через потоки, автоматом определяет КАЛИБР запрашиваемого значения
@@ -592,6 +595,7 @@ def controlGetEQ(equation, count=1, period=0, toPrint=True, downBCK=False):
             self.eq_title = None
             self.eq_eval = None
             self._open_backw = None
+            self._operator = None
             self._operat_not = None
             self._cypher = None
             self._value = None
@@ -856,6 +860,5 @@ def controlGetEQ(equation, count=1, period=0, toPrint=True, downBCK=False):
             out += ''.join(x)
             out += '\n'
         print(out[:-1])
-    # TODO: вернуть число ошибок
     errors = sum([1 for x in rows_bools if not x[0]])
     return main_eq_result, equations_dict
