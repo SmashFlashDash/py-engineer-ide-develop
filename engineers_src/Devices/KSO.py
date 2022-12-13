@@ -13,24 +13,25 @@ class KSO(Device):
     di = config.odict(('00.01.PPS1', []), ('00.01.PPS2', []),
                       ('00.02.Sat_Bx', []), ('00.02.Sat_By', []), ('00.02.Sat_Bz', []),
                       ('00.02.Sat_Bx_2', []), ('00.02.Sat_By_2', []), ('00.02.Sat_Bz_2', []),
-                      ('00.01.FT1_FD1', []), ('00.01.FT1_FD2', []), ('00.01.FT1_FD3', []), ('00.01.FT1_FD4', []),
-                      ('00.01.FT2_FD1', []), ('00.01.FT2_FD2', []), ('00.01.FT2_FD3', []), ('00.01.FT2_FD4', []),
+                      # ('00.01.FT1_FD1', []), ('00.01.FT1_FD2', []), ('00.01.FT1_FD3', []), ('00.01.FT1_FD4', []),
+                      # ('00.01.FT2_FD1', []), ('00.01.FT2_FD2', []), ('00.01.FT2_FD3', []), ('00.01.FT2_FD4', []),
                       ('00.05.BIUS1MeasX', []), ('00.05.BIUS1MeasY', []), ('00.05.BIUS1MeasZ', []),
                       ('00.05.BIUS2MeasX', []), ('00.05.BIUS2MeasY', []), ('00.05.BIUS2MeasZ', []),
-                      ("00.08.Q_ST1_0", [],), ("00.08.Q_ST1_1", [],), ("00.08.Q_ST1_2", [],), ("00.08.Q_ST1_3", [],),
-                      ("00.08.Q_ST2_0", [],), ("00.08.Q_ST2_1", [],), ("00.08.Q_ST2_2", [],), ("00.08.Q_ST2_3", [],),
-                      ("00.08.Q_ST3_0", [],), ("00.08.Q_ST3_1", [],), ("00.08.Q_ST3_2", [],), ("00.08.Q_ST3_3", [],),
-                      ("00.08.Q_ST4_0", [],), ("00.08.Q_ST4_1", [],), ("00.08.Q_ST4_2", [],), ("00.08.Q_ST4_3", [],))
+                      # ("00.08.Q_ST1_0", [],), ("00.08.Q_ST1_1", [],), ("00.08.Q_ST1_2", [],), ("00.08.Q_ST1_3", [],),
+                      # ("00.08.Q_ST2_0", [],), ("00.08.Q_ST2_1", [],), ("00.08.Q_ST2_2", [],), ("00.08.Q_ST2_3", [],),
+                      # ("00.08.Q_ST3_0", [],), ("00.08.Q_ST3_1", [],), ("00.08.Q_ST3_2", [],), ("00.08.Q_ST3_3", [],),
+                      # ("00.08.Q_ST4_0", [],), ("00.08.Q_ST4_1", [],), ("00.08.Q_ST4_2", [],), ("00.08.Q_ST4_3", [],)
+                      )
     __di_list = [
-        {"00.01.FT1_FD1": 'НЕКАЛИБР',
-         "00.01.FT1_FD2": 'НЕКАЛИБР',
-         "00.01.FT1_FD3": 'НЕКАЛИБР',
-         "00.01.FT1_FD4": 'НЕКАЛИБР',
-         "00.01.FT2_FD1": 'НЕКАЛИБР',
-         "00.01.FT2_FD2": 'НЕКАЛИБР',
-         "00.01.FT2_FD3": 'НЕКАЛИБР',
-         "00.01.FT2_FD4": 'НЕКАЛИБР',
-         "00.05.BIUS1MeasX": 'КАЛИБР',
+        # {"00.01.FT1_FD1": 'НЕКАЛИБР',
+        # "00.01.FT1_FD2": 'НЕКАЛИБР',
+        # "00.01.FT1_FD3": 'НЕКАЛИБР',
+        # "00.01.FT1_FD4": 'НЕКАЛИБР',
+        # "00.01.FT2_FD1": 'НЕКАЛИБР',
+        # "00.01.FT2_FD2": 'НЕКАЛИБР',
+        # "00.01.FT2_FD3": 'НЕКАЛИБР',
+        # "00.01.FT2_FD4": 'НЕКАЛИБР'},
+        {"00.05.BIUS1MeasX": 'КАЛИБР',
          "00.05.BIUS1MeasY": 'КАЛИБР',
          "00.05.BIUS1MeasZ": 'КАЛИБР',
          "00.05.BIUS2MeasX": 'КАЛИБР',
@@ -39,22 +40,22 @@ class KSO(Device):
         {"00.02.Sat_Bx": 'КАЛИБР',
          "00.02.Sat_By": 'КАЛИБР',
          "00.02.Sat_Bz": 'КАЛИБР'},
-        {'00.08.Q_ST1_0': 'КАЛИБР',
-         '00.08.Q_ST1_1': 'КАЛИБР',
-         '00.08.Q_ST1_2': 'КАЛИБР',
-         '00.08.Q_ST1_3': 'КАЛИБР',
-         '00.08.Q_ST2_0': 'КАЛИБР',
-         '00.08.Q_ST2_1': 'КАЛИБР',
-         '00.08.Q_ST2_2': 'КАЛИБР',
-         '00.08.Q_ST2_3': 'КАЛИБР',
-         '00.08.Q_ST3_0': 'КАЛИБР',
-         '00.08.Q_ST3_1': 'КАЛИБР',
-         '00.08.Q_ST3_2': 'КАЛИБР',
-         '00.08.Q_ST3_3': 'КАЛИБР',
-         '00.08.Q_ST4_0': 'КАЛИБР',
-         '00.08.Q_ST4_1': 'КАЛИБР',
-         '00.08.Q_ST4_2': 'КАЛИБР',
-         '00.08.Q_ST4_3': 'КАЛИБР'}
+        # {'00.08.Q_ST1_0': 'КАЛИБР',
+        #  '00.08.Q_ST1_1': 'КАЛИБР',
+        #  '00.08.Q_ST1_2': 'КАЛИБР',
+        #  '00.08.Q_ST1_3': 'КАЛИБР',
+        #  '00.08.Q_ST2_0': 'КАЛИБР',
+        #  '00.08.Q_ST2_1': 'КАЛИБР',
+        #  '00.08.Q_ST2_2': 'КАЛИБР',
+        #  '00.08.Q_ST2_3': 'КАЛИБР',
+        #  '00.08.Q_ST3_0': 'КАЛИБР',
+        #  '00.08.Q_ST3_1': 'КАЛИБР',
+        #  '00.08.Q_ST3_2': 'КАЛИБР',
+        #  '00.08.Q_ST3_3': 'КАЛИБР',
+        #  '00.08.Q_ST4_0': 'КАЛИБР',
+        #  '00.08.Q_ST4_1': 'КАЛИБР',
+        #  '00.08.Q_ST4_2': 'КАЛИБР',
+        #  '00.08.Q_ST4_3': 'КАЛИБР'}
     ]
     quaternions = {
         1: (round(0.497978, 2), round(-0.599586, 2), round(-0.419021, 2), round(-0.465764, 2)),
@@ -63,14 +64,15 @@ class KSO(Device):
         4: (round(0.666464, 2), round(-0.722384, 2), round(-0.072327, 2), round(-0.169576, 2)),
     }
 
+    # TODO: сменить на Ex.wait
     @classmethod
     @print_start_and_end(string='КСО: включить')
-    def on(cls):
+    def on(cls, ask_TMI=True):
         if cls.cur is not None:
             raise Exception('КСО уже включен!')
         cls.log('Включить')
         cls.cur = True  # или определить какой включится
-        sendFromJson(SCPICMD, 0xE114, AsciiHex('0x4400 0000 0000 0000'), describe='Отключить ЦНФ')  # Отключить ЦНФ
+        # sendFromJson(SCPICMD, 0xE114, AsciiHex('0x4400 0000 0000 0000'), describe='Отключить ЦНФ')  # Отключить ЦНФ
         sendFromJson(SCPICMD, 0xE004, AsciiHex('0x0209 0000 0000 0000'))  # Включить КСО + обмен
         bprint(':::Ждем 60 сек 00.01.ARO == 15200 ')
         if not Ex.wait('ТМИ', '{00.01.ARO.НЕКАЛИБР} == 15200', 60):  # ждем КСО включился
@@ -81,18 +83,18 @@ class KSO(Device):
         sendFromJson(SCPICMD, 0x0082, AsciiHex('0x0100 0000'), describe='Фейк мод', pause=10)  # Фейк мод
         executeTMI("{00.01.fakeAocsMode}@H == 1")  # Ex.wait('ТМИ', '{00.01.fakeAocsMode} == 1', 10)
         sendFromJson(SCPICMD, 0x0064, AsciiHex('0x0300 0000'), describe='Перейти 2ЗКТ', pause=10)  # перейти в 2ЗКТ для ЗД
-        executeTMI("{00.01.mode}@H == 1 and {00.01.submode}@H == 31")  # Ex.wait('ТМИ', '{00.01.mode.НЕКАЛИБР} == 3 and {00.01.submode.НЕКАЛИБР} == 31', 10)
-
+        executeTMI("{00.01.mode}@H == 3 and {00.01.submode}@H == 31")  # Ex.wait('ТМИ', '{00.01.mode.НЕКАЛИБР} == 3 and {00.01.submode.НЕКАЛИБР} == 31', 10)
         # первичный опрос ТМИ
-        # prevLength = len(cls.di)
-        # cls._get_tmi()  # опросить ТМИ
-        # if prevLength != len(cls.di):
-        #     raise Exception("Ошибка KSO._tmi")
-        # cls._printTmi(cls.di)
+        # if ask_TMI:
+        #     prevLength = len(cls.di)
+        #     cls._get_tmi()  # опросить ТМИ
+        #     if prevLength != len(cls.di):
+        #         raise Exception("Ошибка KSO._tmi")
+        #     cls._printTmi(cls.di)
 
     @classmethod
     @print_start_and_end(string='КСО: отключить')
-    def off(cls):
+    def off(cls, ask_TMI=True):
         cls.log('Отключить')
         sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0001 0000'))  # Установка статусов отказа для устройств БИУС1
         sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0101 0000'))  # БИУС2
@@ -112,9 +114,7 @@ class KSO(Device):
 
         cls.cur = None
         cls.clear_tmi()
-
-        BCK.clcBCK()
-        BCK.downBCK()
+        BCK.downBCK(pause=20)
         if executeTMI("{05.01.beKSOA2}@H==0")[0]:  # == 1 Состояние коммутатора КСО Коммутатор А Ключевой элемент 2
             executeTMI(
                 ' and '.join(("{05.02.VKSOA}@H<10",  # Напряжение канала коммутатора КСО Коммутатор А Ключевой элемент 1
@@ -133,6 +133,8 @@ class KSO(Device):
         else:
             rprint("КСО КСО ЗАМКНУТ")
             inputG()
+        # if ask_TMI:
+        #     pass
 
     @classmethod
     @print_start_and_end(string='КСО: очистить словарь ДИ')
@@ -142,9 +144,32 @@ class KSO(Device):
             cls.di[key] = []
 
     @classmethod
+    @print_start_and_end(string='КСО: сменить ММ')
+    def set_MM(cls, num, ask_TMI=True):
+        if num == 1:
+            sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0201 0000'), pause=10)  # Отказ ММ1
+            sleep(10)  # пауза на переключение
+        elif num == 2:
+            sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0301 0000'), pause=1)  # отказ ММ2
+            sleep(10)
+            sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0200 0000'), pause=1)  # Сброс отказ ММ1
+            sendFromJson(SCPICMD, 0x0084, AsciiHex('0x0602 0000'), pause=1)  # ММ пнуть
+        else:
+            raise Exception('Номер ММ1 или ММ2')
+        if ask_TMI:
+            pass
+
+    @classmethod
+    def init_di(cls):
+        """обновить id di из postgre в redis чтобы запрашивать Ex.get ИНТРЕВАЛ"""
+        values = {}
+        for x in cls.__di_list:
+            values.update(**x)
+        Ex.get('ТМИ', values, 'КАЛИБР ТЕКУЩ')
+
+    @classmethod
     @print_start_and_end(string='КСО: опросить ТМИ')
     def get_tmi(cls, isInterval=None):
-        """Получить тми и вывод"""
         prevLength = len(cls.di)
         if isInterval is None:
             cls._get_tmi()  # опросить ТМИ
@@ -161,22 +186,24 @@ class KSO(Device):
             raise Exception("Ошибка KSO._tmi")
         cls._printTmi(cls.di)
 
-    # TODO: сделать чтобы сравнивал полученную ДИ с диапазонами и выводил
     @classmethod
     def get_tmi_and_compare(cls):
-        """переделать diRange в список и кинуть в табулет"""
-        to_tabulate = []
-        for key, vals in cls.di_range.items():
-            row = []
-            to_tabulate.append(row)
-            row.append(key)
-            if vals is None:
-                row.append(str(None))
-            else:
-                vals = [str(x) for x in vals]
-                row.extend(vals)
-        string = tabulate(to_tabulate, tablefmt='simple')
-        print(string.strip('- \n'))
+        cls.__unrealized__()
+        # """Получить ди и сравнить с диапазоном cls.di если там не пустые диапазон
+        # переделать diRange в список и кинуть в табулет"""
+        # # TODO: можно сделать функцию для расчетам массивов труе фалс и цвета, и кидать это в tabulate
+        # to_tabulate = []
+        # for key, vals in cls.di_range.items():
+        #     row = []
+        #     to_tabulate.append(row)
+        #     row.append(key)
+        #     if vals is None:
+        #         row.append(str(None))
+        #     else:
+        #         vals = [str(x) for x in vals]
+        #         row.extend(vals)
+        # string = tabulate(to_tabulate, tablefmt='simple')
+        # print(string.strip('- \n'))
 
 
     # @classmethod
@@ -200,7 +227,8 @@ class KSO(Device):
     #             rowBools.insert(all(True), 0)
         # string = tabulate(ar, tablefmt='simple')
         # print(string.strip('- \n'))
-        print('')
+        # print('')
+
 
     @classmethod
     def _get_tmi(cls, isInterval=None):
@@ -216,17 +244,18 @@ class KSO(Device):
             res = inputGG(btnsList=["Продолжить", "Отменить"], title='Не изменяется секундная метка от АСН')
             if res == 'Отменить':
                 return
-
         # Сброс БЦК чтобы опросить занчения БИУС
+        BCK.downBCK(pause=20)
         if isInterval:
             values = {}
             for x in cls.__di_list:
                 values.update(**x)
             tmi = Ex.get('ТМИ', values, isInterval)
-            mm2 = Ex.get('ТМИ', cls.__di_list[1], isInterval)
-            length = len(mm2["00.02.Sat_Bx"])
-            for item in mm2.items():
-                tmi[item[0] + '_2'] = [None] * length
+            # TODO: узать текущий ММ нужен шифр
+            length = len(tmi["00.02.Sat_Bx"])
+            for x in cls.__di_list[1].keys():
+                tmi[x + '_2'] = [None] * length
+            ''''# опрос ЗД
             for key in cls.__di_list[2].keys():
                 rounded = []
                 for value in tmi[key]:
@@ -235,21 +264,25 @@ class KSO(Device):
                         rounded.append('Err')
                         continue
                     rounded.append(round(value, 2))
-                tmi[key] = rounded
+                tmi[key] = rounded'''
         else:
-            BCK.clcBCK()
-            BCK.downBCK()
-            # Опрос ММ1, 2ДС, 2БИУС
-            tmi = Ex.get('ТМИ', {**cls.__di_list[0], **cls.__di_list[1]}, None)
-            # переключить ММ, опросить, добавить доп значения в словарь
-            sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0201 0000'), pause=10)  # Отказ ММ1
-            sleep(10)  # пауза на переключение
+            tmi = Ex.get('ТМИ', {**cls.__di_list[0], **cls.__di_list[1]}, None)     # Опрос ММ1, 2ДС, 2БИУС
+            # ММ2
+            cls.set_MM(2, ask_TMI=False)
             mm2 = Ex.get('ТМИ', cls.__di_list[1], None)
             for item in mm2.items():
                 tmi[item[0] + '_2'] = item[1]
-            sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0200 0000'), pause=1)  # Сброс отказ ММ1
-            sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0301 0000'), pause=1)  # отказ ММ2
-            # Звездники работают только в режиме 0x0065(0x1F00 0000)- подрежим ориентации (штатая ориентация)
+            cls.set_MM(1, ask_TMI=False)
+            # sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0201 0000'), pause=10)  # Отказ ММ1
+            # sleep(10)  # пауза на переключение
+            # mm2 = Ex.get('ТМИ', cls.__di_list[1], None)
+            # for item in mm2.items():
+            #     tmi[item[0] + '_2'] = item[1]
+            # sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0301 0000'), pause=1)  # отказ ММ2
+            # sleep(10)
+            # sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0200 0000'), pause=1)  # Сброс отказ ММ1
+            # sendFromJson(SCPICMD, 0x0084, AsciiHex('0x0602 0000'), pause=1)  # ММ2 пнуть
+            '''# Звездники работают только в режиме 0x0065(0x1F00 0000)- подрежим ориентации (штатая ориентация)
             if not Ex.wait('ТМИ', '{00.01.mode.НЕКАЛИБР} == 3 and {00.01.submode.НЕКАЛИБР} == 31', 10):
                 sendFromJson(SCPICMD, 0x0065, AsciiHex('0x1F00 0000'))  # задать штатный режим ориентации
                 if not Ex.wait('ТМИ', '{00.01.mode.НЕКАЛИБР} == 3 and {00.01.submode.НЕКАЛИБР} == 31', 10):
@@ -260,10 +293,9 @@ class KSO(Device):
                     rprint('%s - %s Значение нельзя округлить' % (item[0], item[1]))
                     tmi[item[0]] = 'Err'
                     continue
-                tmi[item[0]] = round(item[1], 2)
+                tmi[item[0]] = round(item[1], 2)'''
 
-        # Здесь можно посчитать по массивам среднне нафиг их сейвить в строку
-        # заменяем значения
+        # полученное записать в cls.di
         for item in tmi.items():
             if isinstance(item[1], (list, tuple)):
                 cls.di[item[0]].extend(item[1])
