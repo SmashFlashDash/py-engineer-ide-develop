@@ -1,8 +1,8 @@
 from engineers_src.Devices.Device import Device
 from engineers_src.Devices.M778 import M778
-from engineers_src.Devices.functions import print_start_and_end, sendFromJson, executeTMI, doEquation
+from engineers_src.Devices.functions import print_start_and_end, sendFromJson, executeTMI, executeWaitTMI, doEquation
 from engineers_src.tools.ivk_script_tools import *
-from engineers_src.tools.tools import SCPICMD, AsciiHex, KPA, SOTC, SKPA, Ex, sleep
+from engineers_src.tools.tools import SCPICMD, AsciiHex, Ex, sleep
 from datetime import datetime
 
 
@@ -27,7 +27,7 @@ class EA332(Device):
         if stop_shd:
             sendFromJson(SCPICMD, 0xA018)  # Остан ШД
         if ask_TMI:
-            executeTMI("{04.01.beBAEA%s1}@K==\'включен\'" % num + " and "
+            executeWaitTMI("{04.01.beBAEA%s1}@K==\'включен\'" % num + " and "
                        + "{04.01.beBAEA%s1}@K==\'включен\'" % num + " and "
                        + doEquation('10.01.BA_FIP1', '@K', 'off') + " and "
                        + doEquation('10.01.BA_FIP2', '@K', 'off') + " and "
@@ -48,7 +48,7 @@ class EA332(Device):
                        + doEquation('10.01.PRD_MOD2_U_SIT5_Temp', '@K') + " and "
                        + doEquation('10.01.PRD_KONV_U_SIT6_Temp', '@K') + " and "
                        + doEquation('10.01.BA_AFU_IMP_OX', '@K') + " and "
-                       + doEquation('10.01.BA_AFU_IMP_OZ', '@K'), count=2)
+                       + doEquation('10.01.BA_AFU_IMP_OZ', '@K'), 10)
 
     @classmethod
     def off(cls, ask_TMI=True):
@@ -79,8 +79,8 @@ class EA331(Device):
         else:
             raise Exception('Неверный параметр')
         if ask_TMI:
-            executeTMI("{04.01.beKKEA%s1}@K==\'включен\'" % num + " and "
-                       + "{04.01.beKKEA%s1}@K==\'включен\'" % num)
+            executeWaitTMI("{04.01.beKKEA%s1}@K==\'включен\'" % num + " and "
+                       + "{04.01.beKKEA%s1}@K==\'включен\'" % num, 20, period=0)
 
     @classmethod
     def off(cls, ask_TMI=True):
@@ -110,21 +110,21 @@ class PCH(Device):
         else:
             raise Exception('Неверный параметр')
         if ask_TMI:
-            executeTMI(doEquation('10.01.BA_PCH%s' % num, '@K', 'on') + " and " +
+            executeWaitTMI(doEquation('10.01.BA_PCH%s' % num, '@K', 'on') + " and " +
                        doEquation('10.01.PRD_PCH%s_BS' % num, '@K', 'on') + " and " +
                        doEquation('10.01.PRD_PCH%s_P_SYNT' % num, '@K', 'on') + " and " +
-                       doEquation('10.01.PRD_PCH%s_F_SYNT' % num, '@K', 'on'), count=1)  # Добавить 10.01.PRD_PCH1_F как в ТЕСТ 3
+                       doEquation('10.01.PRD_PCH%s_F_SYNT' % num, '@K', 'on'), 20, period=0)  # Добавить 10.01.PRD_PCH1_F как в ТЕСТ 3
 
     @classmethod
     def off(cls, ask_TMI=True):
         cls.log('Отключить')
         sendFromJson(SCPICMD, 0xA002)  # Откл Пч
         if ask_TMI:
-            executeTMI(doEquation('10.01.BA_PCH%s' % cls.cur, '@K', 'off') + " and " +
+            executeWaitTMI(doEquation('10.01.BA_PCH%s' % cls.cur, '@K', 'off') + " and " +
                        doEquation('10.01.PRD_PCH%s_BS' % cls.cur, '@K', 'off') + " and " +
                        doEquation('10.01.PRD_PCH%s_P_SYNT' % cls.cur, '@K', 'off') + " and " +
                        doEquation('10.01.PRD_PCH%s_F_SYNT' % cls.cur, '@K', 'off') + " and " +
-                       doEquation('10.01.PRD_PCH%s_F' % cls.cur, '@K', 'off'), count=1)
+                       doEquation('10.01.PRD_PCH%s_F' % cls.cur, '@K', 'off'), 20, period=0)
         cls.cur = None
 
     @classmethod
@@ -148,7 +148,7 @@ class FIP(Device):
             raise Exception('Неверный параметр')
         cls.cur = num
         if ask_TMI:
-            executeTMI(doEquation('10.01.BA_FIP%s' % num, '@K', 'on') + " and " +
+            executeWaitTMI(doEquation('10.01.BA_FIP%s' % num, '@K', 'on') + " and " +
                        doEquation('10.01.FIP%s_BS' % num, '@K', 'on') + " and " +
                        doEquation('10.01.FIP%s_U' % num, '@K', 'on') + " and " +
                        doEquation('10.01.FIP_INFO', '@K', 'cele') + " and " +
@@ -157,20 +157,20 @@ class FIP(Device):
                        + " and " + doEquation('10.01.FIP_PLL1', '@K', 'on') + " and " +
                        doEquation('10.01.FIP_PLL2', '@K', 'on') + " and " +
                        doEquation('10.01.FIP_TEMP_IP', '@K') + " and " +
-                       doEquation('10.01.FIP_TEMP_PLIS', '@K'), count=1)
+                       doEquation('10.01.FIP_TEMP_PLIS', '@K'), 20, period=0)
 
     @classmethod
     def off(cls, ask_TMI=True):
         cls.log('Отключить')
         sendFromJson(SCPICMD, 0xA005)  # Откл Фип
         if ask_TMI:
-            executeTMI(doEquation('10.01.BA_FIP%s' % cls.cur, '@K', 'off') + " and " +
+            executeWaitTMI(doEquation('10.01.BA_FIP%s' % cls.cur, '@K', 'off') + " and " +
                        doEquation('10.01.FIP%s_BS' % cls.cur, '@K', 'off') + " and " +
                        doEquation('10.01.FIP%s_U' % cls.cur, '@K', 'off') + " and " +
                        # doEquation('10.01.FIP_M778B%s_CONNECT' % MB.cur, '@K', 'off') + " and " +  # не должен приходить?
                        # doEquation('10.01.FIP_M778B_INF', '@K', 'off') + " and " +  # не должен приходить?
                        doEquation('10.01.FIP_PLL1', '@K', 'off') + " and " +
-                       doEquation('10.01.FIP_PLL2', '@K', 'off'), count=1)
+                       doEquation('10.01.FIP_PLL2', '@K', 'off'), 20, period=0)
         cls.cur = None
 
     @classmethod
@@ -194,7 +194,7 @@ class MOD(Device):
             raise Exception('Неверный параметр')
         cls.cur = num
         if ask_TMI:
-            executeTMI(doEquation('10.01.BA_MOD%s' % num, '@K', 'on') + " and " +
+            executeWaitTMI(doEquation('10.01.BA_MOD%s' % num, '@K', 'on') + " and " +
                        doEquation('10.01.FIP_MOD%s_CONNECT' % num, '@K', 'on') + " and " +
                        doEquation('10.01.PRD_MOD%s_BS' % num, '@K', 'on') + " and " +
                        doEquation('10.01.PRD_MOD%s_U' % num, '@K', 'on') + " and " +
@@ -204,21 +204,21 @@ class MOD(Device):
                        doEquation('10.01.PRD_MOD_STAT_FREQ_PLL', '@K', 'on') + " and " +
                        doEquation('10.01.PRD_MOD_TEMP_CARD', '@K') + " and " +
                        doEquation('10.01.PRD_MOD_TEMP_PLIS', '@K') + " and " +
-                       doEquation('10.01.PRD_PCH%s_P' % FIP.cur, '@K', 'on'), count=1)
-            executeTMI(doEquation('10.01.PRD_MOD_FIP_INF', '@K', 'on') + " and " +
-                       doEquation('10.01.FIP_M778B_INF', '@K', 'on'), count=10, period=5)
+                       doEquation('10.01.PRD_PCH%s_P' % FIP.cur, '@K', 'on'), 20, period=0)
+            executeWaitTMI(doEquation('10.01.PRD_MOD_FIP_INF', '@K', 'on') + " and " +
+                       doEquation('10.01.FIP_M778B_INF', '@K', 'on'), 20, period=0)
 
     @classmethod
     def off(cls, ask_TMI=True):
         cls.log('Отключить')
         sendFromJson(SCPICMD, 0xA008)  # Откл Мод
         if ask_TMI:
-            executeTMI(doEquation('10.01.BA_MOD%s' % cls.cur, '@K', 'off') + " and " +
+            executeWaitTMI(doEquation('10.01.BA_MOD%s' % cls.cur, '@K', 'off') + " and " +
                        doEquation('10.01.FIP_MOD%s_CONNECT' % cls.cur, '@K', 'off') + " and " +
                        doEquation('10.01.PRD_MOD%s_BS' % cls.cur, '@K', 'off') + " and " +
                        doEquation('10.01.PRD_MOD%s_U' % cls.cur, '@K', 'off') + " and " +
                        doEquation('10.01.PRD_MOD_STAT_FREQ_PLL', '@K', 'off') + " and " +
-                       doEquation('10.01.PRD_PCH%s_P' % PCH.cur, '@K', 'off'), count=1)
+                       doEquation('10.01.PRD_PCH%s_P' % PCH.cur, '@K', 'off'), 20, period=0)
         cls.cur = None
 
     @classmethod
@@ -242,19 +242,19 @@ class UM(Device):
             raise Exception('Неверный параметр')
         cls.cur = num
         if ask_TMI:
-            executeTMI(doEquation('10.01.BA_UM%s' % num, '@K', 'on') + " and " +
+            executeWaitTMI(doEquation('10.01.BA_UM%s' % num, '@K', 'on') + " and " +
                        doEquation('10.01.PRD_UM%s_BS' % num, '@K', 'on') + " and " +
                        doEquation('10.01.PRD_UM%s_P' % num, '@K', 'on') + " and " +
-                       doEquation('10.01.PRD_UM%s_P_Out' % num, '@K', 'on'), count=1)
+                       doEquation('10.01.PRD_UM%s_P_Out' % num, '@K', 'on'), 20, period=0)
 
     @classmethod
     def off(cls, ask_TMI=True):
         cls.log('Отключить')
         sendFromJson(SCPICMD, 0xA00B)  # Откл УМ
         if ask_TMI:
-            executeTMI(doEquation('10.01.BA_UM%s' % cls.cur, '@K', 'off') + " and " +
+            executeWaitTMI(doEquation('10.01.BA_UM%s' % cls.cur, '@K', 'off') + " and " +
                        doEquation('10.01.PRD_UM%s_BS' % cls.cur, '@K', 'off') + " and " +
-                       doEquation('10.01.PRD_UM%s_P' % cls.cur, '@K', 'off'), count=1)
+                       doEquation('10.01.PRD_UM%s_P' % cls.cur, '@K', 'off'), 20, period=0)
         cls.cur = None
 
     @classmethod
@@ -286,26 +286,26 @@ class RLCI(Device):
         'start SHD': lambda: sendFromJson(SCPICMD, 0xA017)
     }
     uv_di = {
-        'M1': lambda: executeTMI(doEquation('10.01.PRD_MOD_M', '@K', 'M1'), count=1),
-        'M2': lambda: executeTMI(doEquation('10.01.PRD_MOD_M', '@K', 'M2'), count=1),
-        'M3': lambda: executeTMI(doEquation('10.01.PRD_MOD_M', '@K', 'M3'), count=1),
-        'M4': lambda: executeTMI(doEquation('10.01.PRD_MOD_M', '@K', 'M4'), count=1),
-        'VS1': lambda: executeTMI(doEquation('10.01.MOD_VS', '@K', 'VS1'), count=1),
-        'VS2': lambda: executeTMI(doEquation('10.01.MOD_VS', '@K', 'VS2'), count=1),
+        'M1': lambda: executeWaitTMI(doEquation('10.01.PRD_MOD_M', '@K', 'M1'), 20, period=0),
+        'M2': lambda: executeWaitTMI(doEquation('10.01.PRD_MOD_M', '@K', 'M2'), 20, period=0),
+        'M3': lambda: executeWaitTMI(doEquation('10.01.PRD_MOD_M', '@K', 'M3'), 20, period=0),
+        'M4': lambda: executeWaitTMI(doEquation('10.01.PRD_MOD_M', '@K', 'M4'), 20, period=0),
+        'VS1': lambda: executeWaitTMI(doEquation('10.01.MOD_VS', '@K', 'VS1'), 20, period=0),
+        'VS2': lambda: executeWaitTMI(doEquation('10.01.MOD_VS', '@K', 'VS2'), 20, period=0),
         'RS485-1': lambda: '',
         'RS485-2': lambda: '',
-        'on imFIP': lambda: executeTMI(doEquation('10.01.FIP_INFO', '@K', 'imit') + " and " +
-                                       doEquation('10.01.FIP_M778B_INF', '@K', 'on'), count=5, period=5),
-        'off imFIP': lambda: executeTMI(doEquation('10.01.FIP_INFO', '@K', 'cele') + " and " +
-                                        doEquation('10.01.FIP_M778B_INF', '@K', 'on'), count=5, period=5),
-        'on imMOD': lambda: executeTMI(doEquation('10.01.FIP_INFO', '@K', 'cele') + " and " +
+        'on imFIP': lambda: executeWaitTMI(doEquation('10.01.FIP_INFO', '@K', 'imit') + " and " +
+                                       doEquation('10.01.FIP_M778B_INF', '@K', 'on'), 20, period=0),
+        'off imFIP': lambda: executeWaitTMI(doEquation('10.01.FIP_INFO', '@K', 'cele') + " and " +
+                                        doEquation('10.01.FIP_M778B_INF', '@K', 'on'), 20, period=0),
+        'on imMOD': lambda: executeWaitTMI(doEquation('10.01.FIP_INFO', '@K', 'cele') + " and " +
                                        doEquation('10.01.PRD_MOD_INFO', '@K', 'imit') + " and " +
                                        doEquation('10.01.PRD_MOD_FIP_INF', '@K', 'off') + " and " +
-                                       doEquation('10.01.FIP_M778B_INF', '@K', 'off'), count=5, period=5),
-        'off imMOD': lambda: executeTMI(doEquation('10.01.FIP_INFO', '@K', 'cele') + " and " +
+                                       doEquation('10.01.FIP_M778B_INF', '@K', 'off'), 20, period=0),
+        'off imMOD': lambda: executeWaitTMI(doEquation('10.01.FIP_INFO', '@K', 'cele') + " and " +
                                         doEquation('10.01.PRD_MOD_INFO', '@K', 'cele') + " and " +
                                         doEquation('10.01.PRD_MOD_FIP_INF', '@K', 'on') + " and " +
-                                        doEquation('10.01.FIP_M778B_INF', '@K', 'on'), count=5, period=5),
+                                        doEquation('10.01.FIP_M778B_INF', '@K', 'on'), 20, period=0),
         'stop SHD': lambda: RLCI.waitAntennaStop(period=60, toPrint=False),
         'start SHD': lambda: RLCI.isAntennaMoving()
     }
@@ -350,7 +350,7 @@ class RLCI(Device):
     @classmethod
     def isAntennaMoving(cls):
         bprint('Проверка что антенна движется...')
-        executeTMI("{10.01.BA_AFU_IMP_OZ}@H==@unsame@all" + " and " +
+        executeWaitTMI("{10.01.BA_AFU_IMP_OZ}@H==@unsame@all" + " and " +
                    "{10.01.BA_AFU_IMP_OX}@H==@unsame@all", count=2, toPrint=True)
 
     @classmethod
@@ -362,16 +362,22 @@ class RLCI(Device):
         """
         bprint('Ожидание остановки антенны')
         start = datetime.now()
-        while True:
-            res, values = controlGetEQ("{10.01.BA_AFU_IMP_OZ}@H==@same@all" + " and " +
-                                       "{10.01.BA_AFU_IMP_OX}@H==@same@all", count=2, period=query_period,
-                                       toPrint=toPrint)
-            if res:
-                bprint('Антенна остановлена')
-                break
-            elif (datetime.now() - start).total_seconds() >= period:
-                inputG('Антенна не остановилась')
-                break
+        res, values = executeWaitTMI("{10.01.BA_AFU_IMP_OZ}@H==@unsame@all" + " and " +
+                       "{10.01.BA_AFU_IMP_OX}@H==@unsame@all", period, period=query_period, toPrint=True)
+        if res:
+            bprint('Антенна остановлена')
+        elif (datetime.now() - start).total_seconds() >= period:
+            inputG('Антенна не остановилась')
+        # while True:
+        #     res, values = controlGetEQ("{10.01.BA_AFU_IMP_OZ}@H==@same@all" + " and " +
+        #                                "{10.01.BA_AFU_IMP_OX}@H==@same@all", count=2, period=query_period,
+        #                                toPrint=toPrint)
+        #     if res:
+        #         bprint('Антенна остановлена')
+        #         break
+        #     elif (datetime.now() - start).total_seconds() >= period:
+        #         inputG('Антенна не остановилась')
+        #         break
 
     @classmethod
     def sendArrayToAntenna(cls, *sendArgs):
