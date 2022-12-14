@@ -1,6 +1,6 @@
 import re
 from datetime import datetime
-from PyQt5.QtWidgets import QTextEdit, QLineEdit, QDockWidget, QSplitter, QWidget, QLabel, QBoxLayout, QListWidget, QListWidgetItem,QPushButton
+from PyQt5.QtWidgets import QTextEdit, QLineEdit, QDockWidget, QSplitter, QWidget, QMenu, QAction, QLabel, QBoxLayout, QListWidget, QListWidgetItem,QPushButton
 from PyQt5.QtGui import QColor, QTextCursor, QIcon, QFontMetrics, QFont, QBrush
 from PyQt5.QtCore import Qt, QEventLoop, QObject, pyqtSignal
 
@@ -60,6 +60,8 @@ class IvkConsole(QWidget):
         self.console.setReadOnly(True)
         self.console.setLineWrapMode(QTextEdit.NoWrap)
         self.console.setObjectName('console')
+        self.console.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.console.customContextMenuRequested.connect(self.__showContextMenu)
 
         self.pdb_console = QTextEdit(self)
         self.pdb_console.setReadOnly(True)
@@ -95,6 +97,13 @@ class IvkConsole(QWidget):
         self.removeSubThreadSignal.connect(self.__removeSubThread)
         self.subThreadSuspendSignal.connect(self.__subThreadSuspended)
         self.sub_thread_list.currentItemChanged.connect(self.__subThreadCurrentChanged)
+
+    def __showContextMenu(self, pos):
+        context_menu = QMenu(self)
+        console_clear_action = QAction('Очистить консоль', self)
+        console_clear_action.triggered.connect(self.console.clear)
+        context_menu.addAction(console_clear_action)
+        context_menu.exec(self.mapToGlobal(pos))
 
     def writeNormal(self, stream):
         self.colorWriteSignal.emit(stream, IvkConsole.WRITE_NORMAL)
