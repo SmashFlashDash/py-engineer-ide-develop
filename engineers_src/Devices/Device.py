@@ -12,7 +12,6 @@ def record_factory(*args, **kwargs):
     record.bshv = 'БШВ: ' + str(Ex.get('ТМИ', '00.00.BSHV', 'КАЛИБР ТЕКУЩ'))
     return record
 logging.setLogRecordFactory(record_factory)
-
 LOGGER = logging.getLogger('DeviceLogger')
 LOGGER.setLevel(logging.DEBUG)
 # file_logger = logging.StreamHandler()
@@ -23,23 +22,6 @@ LOGGER.setLevel(logging.DEBUG)
 class Device(ABC):
     LOGGER = LOGGER
 
-    # def __init__(self):
-    #     self.__cur = None
-    #
-    # @property
-    # def cur(self):
-    #     """геттер номера запущенного блока устройства"""
-    #     print('getter')
-    #     return self.__cur
-    #
-    # @cur.setter
-    # def cur(self, value):
-    #     """сеттер номера запущенного блока устройства"""
-    #     print('setter')
-    #     self.__cur = value
-
-    # TODO: сделать синглтон, создавать экземпляр в __init__ и перезаписать на те же имена
-    #  тогда будет работать @property
     def __init__(self):
         """Наследущии классы работают без создания обьектов"""
         raise Exception('Запрещено создавать обьект')
@@ -74,21 +56,3 @@ class Device(ABC):
     def get_tmi(cls, *args, **kwargs):
         """опрос ди блока устройства"""
         pass
-
-# TODO:
-#  желательно опросить КСО при выключенном КИС
-#  нужно опросить ТМИ КСО и очтистить БЦК, выключить КИС
-#  спустя минуту включить КИС, сбросить БЦК, подождать когда сбросится
-#  опросить БД ДИ КСО в режиме интервал
-#  исходя из этих значений можно оценить магнитную обстановку в БЭК
-#  и сделать условия проверки для КСО
-#  -----идет к тому что сделать мини рокот
-#  МНИИ БД в скрипте
-#  делаем словарь ключей в значения пишем словарь или класс
-#  в класс пишм значения проверять ли тми
-#  значение для проверки
-#  при вызове обьекта, проверяем ТМИ
-
-
-class DiStatus:
-    pass

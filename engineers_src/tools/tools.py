@@ -555,9 +555,246 @@ def controlGet(value_get, value_ref, cypher=None, text=None, toPrint=True):
     return res
 
 
+class PrimType(Enum):
+    NUM_CONST = 0
+    NUM_RANGE = 1
+    STRING_CONST = 2
+    NONE = 3
+    BOOLEAN = 4
+
+
+class SameType(Enum):
+    SAME = 0
+    UNSAME = 1
+
+
+class AnyAllType(Enum):
+    ALL = 0
+    ANY = 1
+
+
+class SimpleEquation:
+    def __init__(self, part):
+        self.caliber = None
+        self.type = None
+        self.all_any_operator = None
+        self.fromDB = []
+        self.eq_title = None
+        self.eq_eval = None
+        self._open_backw = None
+        self._operator = None
+        self._operat_not = None
+        self._cypher = None
+        self._value = None
+        self._cls_backw = None
+        self._log_operator = None
+        self.parse(part)
+
+    def parse(self, part):
+        """распарсить part"""
+        # полученные значения в соответсвии с используемой регуляркой
+        if part[0].endswith('not'):
+            self._open_backw = part[0][:-3]
+            self._operat_not = 'not'
+        else:
+            self._open_backw = part[0]
+            self._operat_not = None
+        self._cypher = part[1]
+        caliber_sign = part[2]
+        self._operator = part[3]
+        value_text = part[4].strip()
+        if value_text.strip('\"\'').endswith(('@all', '@any')):
+            raise Exception('Ошибка в выражении:\n', part, 'нет разделителя @all @any')
+        self.all_any_operator = part[5].lower()
+        self._cls_backw = part[6]
+        self._log_operator = part[7]
+
+        # проверка на ошибки
+        error_text = 'Ошибка в выражении: %s' % ' '.join(part)
+        if '' in [self._cypher, self._operator, value_text]:
+            raise ValueError(error_text)
+
+        self._value = value_text
+        if self.all_any_operator == '' or self.all_any_operator == '@all':
+            self.all_any_operator = AnyAllType.ALL
+        elif self.all_any_operator == '@any':
+            self.all_any_operator = AnyAllType.ANY
+
+        if re.fullmatch(r'[+\-\d\.]+', value_text):
+            if self._operator not in ['>=', '<=', '>', '<', '==', '!=']:
+                raise ValueError(error_text)
+            self.eq_eval = '%s' + ' %s %s' % (self._operator, value_text)
+            self.type = PrimType.NUM_CONST
+        elif value_text.startswith('[') and value_text.endswith(']') and self._operator in ['==', '!=']:
+            values = re.findall(r"[+\-\d\.]+", value_text)
+            if len(values) != 2:
+                raise ValueError(error_text)
+            if self._operator == '==':
+                self.eq_eval = ('(%s <= ' % values[0]) + '%s' + (' <= %s)' % values[1])
+            else:
+                self.eq_eval = ('not (%s <= ' % values[0]) + '%s' + (' <= %s)' % values[1])
+            self.type = PrimType.NUM_RANGE
+        elif value_text.startswith(('\'', '\"')) and value_text.endswith(('\'', '\"')):
+            self.eq_eval = '%s' + ' == %s' % value_text
+            self.type = PrimType.STRING_CONST
+        elif value_text == 'None' and self._operator in ('==', '!='):
+            self.eq_eval = '%s' + ' %s %s' % (self._operator, value_text)
+            self.type = PrimType.NONE
+        elif value_text in ['True', 'False']:
+            self.eq_eval = '%s' + ' == %s' % value_text
+            self.type = PrimType.BOOLEAN
+        elif value_text.startswith('@same'):
+            self.type = SameType.SAME
+            self.eq_eval = '%s == %s'
+        elif value_text.startswith('@unsame'):
+            self.type = SameType.UNSAME
+            self.eq_eval = '%s != %s'
+        else:
+            raise ValueError(error_text)
+
+        if self._operat_not:
+            self.eq_eval = 'not (' + self.eq_eval + ')'
+        else:
+            self._operat_not = ''
+
+        title = self.eq_eval
+        if isinstance(self.type, PrimType):
+            self.eq_title = (title % self._cypher) + ' ' + (
+                '@all' if self.all_any_operator is AnyAllType.ALL else '@any')
+        else:
+            self.eq_title = title % (
+                self._cypher, self._value + ' ' + ('@all' if self.all_any_operator is AnyAllType.ALL else '@any'))
+
+        if caliber_sign != '':
+            if caliber_sign[1] in ('К', 'K'):
+                self.caliber = 'КАЛИБР ТЕКУЩ'
+            else:
+                self.caliber = 'НЕКАЛИБР ТЕКУЩ'
+        else:
+            if self.type is PrimType.STRING_CONST:
+                self.caliber = 'КАЛИБР ТЕКУЩ'
+            else:
+                self.caliber = 'НЕКАЛИБР ТЕКУЩ'
+
+    def calculate_db_value(self):
+        """
+        обрабатывает последнее значение в поле fromDB, формирует текст, возвращает значением вып
+        простого выражения
+        :return: rowbool, rowtext
+        """
+        value = self.fromDB[-1]
+        eval_eq = self.eq_eval
+        if isinstance(value, str):
+            eval_eq = eval_eq.replace('%s', '\'%s\'')
+            eval_eq = eval_eq.lower()
+            valDB = value.lower()
+        else:
+            valDB = str(value)
+        if self.type is PrimType.BOOLEAN:
+            eval_eq = eval_eq.split('==')[1].strip()
+        elif isinstance(self.type, PrimType):
+            eval_eq = eval_eq % valDB
+        elif isinstance(self.type, SameType):
+            if len(self.fromDB) < 2:
+                eval_eq = 'None'
+            else:
+                eval_eq = eval_eq % (self.fromDB[-2], valDB)
+        try:
+            res = eval(eval_eq)
+        except Exception as ex:
+            res = None
+            rprint('eval::: %s --- error: %s' % (eval_eq, ex))
+        return res
+
+    def calculate_db_values(self):
+        """
+        обрабатывает значение в поле fromDB, формирует текст, возвращает значением вып
+        простого выражения
+        :return: rowbool, rowtext
+        """
+        row_text = []
+        row_bool = []
+        for idx, valDB in enumerate(self.fromDB):
+            eval_eq = self.eq_eval
+            if isinstance(valDB, str):
+                eval_eq = eval_eq.replace('%s', '\'%s\'')
+                eval_eq = eval_eq.lower()
+                valDB = valDB.lower()
+            else:
+                valDB = str(valDB)
+
+            if self.type is PrimType.BOOLEAN:
+                eval_eq = eval_eq.split('==')[1].strip()
+            elif isinstance(self.type, PrimType):
+                eval_eq = eval_eq % valDB
+            elif isinstance(self.type, SameType):
+                if idx == 0:
+                    eval_eq = 'None'
+                else:
+                    eval_eq = eval_eq % (self.fromDB[idx - 1], valDB)
+
+            try:
+                res = eval(eval_eq)
+            except Exception as ex:
+                res = None
+                rprint('eval::: %s --- error: %s' % (eval_eq, ex))
+
+            row_bool.append(res)
+            row_text.append(valDB)
+
+        # значение по всем значениям из fromDB
+        if self.all_any_operator is AnyAllType.ANY:
+            row_result = any(row_bool)
+        elif isinstance(self.type, SameType):
+            row_result = all(row_bool[1:])
+        else:
+            row_result = all(row_bool)
+
+        row_bool.insert(0, row_result)
+        row_text.insert(0, self.eq_title)
+        return row_bool, row_text
+
+
+def parse_equation(cyphers, equations_all, equations_dict):
+    """
+    парсин гвыражения на обьекты подвыражений SimpleEquation в спиоок equations_all
+    и словарь equations_dict куда по ключам будут записаны значения из БД
+    :return: gotSameType
+    """
+    gotSameType = False
+    for part in cyphers:
+        eq = SimpleEquation(part)
+        key = (eq._cypher, eq.caliber)
+        equations_all.append((key, eq))
+        equations_dict[key] = None
+        if isinstance(eq.type, SameType):
+            gotSameType = True
+    return gotSameType
+
+
+def execute_db(equations_dict, equations_all):
+    """
+    опрос БД словарем, значения fromDB подставляет в обьекты equations_all
+    """
+    query = {}
+    for item in equations_dict.items():
+        key = item[0]
+        query[key[0][1:-1]] = key[1].split()[0]  # шифр без скобок, и слово калибровки
+    fromDB = Ex.get('ТМИ', query, '')
+    # запись значений из БД в equations_all
+    for x in equations_all:
+        constrait_key = x[0]
+        key = constrait_key[0][1:-1]
+        eq = x[1]
+        eq.fromDB.append(fromDB[key])
+        # для словаря на выходе из всей функции
+        if equations_dict[constrait_key] is None:
+            equations_dict[constrait_key] = [fromDB[key]]
+        else:
+            equations_dict[constrait_key].append(fromDB[key])
+
+
 # TODO: вернуть число ошибок
-#  переделать на tabulate вывод параметров, функция которая делает eval и возвращает bool
-#  если выполнять eval на общий результат получится Ex.wait с принтом в терминал
 def controlGetEQ(equation, count=1, period=0, toPrint=True, downBCK=False):
     """
     Опрос выражения ТМИ сетом через потоки, автоматом определяет КАЛИБР запрашиваемого значения
@@ -571,207 +808,6 @@ def controlGetEQ(equation, count=1, period=0, toPrint=True, downBCK=False):
     :param downBCK: int - 0 - не печатает, 1 - минимум, 2 - полный вывод
     :return: bool - результат выражения
     """
-    class PrimType(Enum):
-        NUM_CONST = 0
-        NUM_RANGE = 1
-        STRING_CONST = 2
-        NONE = 3
-        BOOLEAN = 4
-
-    class SameType(Enum):
-        SAME = 0
-        UNSAME = 1
-
-    class AnyAllType(Enum):
-        ALL = 0
-        ANY = 1
-
-    class SimpleEquation:
-        def __init__(self, part):
-            self.caliber = None
-            self.type = None
-            self.all_any_operator = None
-            self.fromDB = []
-            self.eq_title = None
-            self.eq_eval = None
-            self._open_backw = None
-            self._operator = None
-            self._operat_not = None
-            self._cypher = None
-            self._value = None
-            self._cls_backw = None
-            self._log_operator = None
-            self.parse(part)
-
-        def parse(self, part):
-            """распарсить part"""
-            # полученные значения в соответсвии с используемой регуляркой
-            if part[0].endswith('not'):
-                self._open_backw = part[0][:-3]
-                self._operat_not = 'not'
-            else:
-                self._open_backw = part[0]
-                self._operat_not = None
-            self._cypher = part[1]
-            caliber_sign = part[2]
-            self._operator = part[3]
-            value_text = part[4].strip()
-            if value_text.strip('\"\'').endswith(('@all', '@any')):
-                raise Exception('Ошибка в выражении:\n', part, 'нет разделителя @all @any')
-            self.all_any_operator = part[5].lower()
-            self._cls_backw = part[6]
-            self._log_operator = part[7]
-
-            # проверка на ошибки
-            error_text = 'Ошибка в выражении: %s' % ' '.join(part)
-            if '' in [self._cypher, self._operator, value_text]:
-                raise ValueError(error_text)
-
-            self._value = value_text
-            if self.all_any_operator == '' or self.all_any_operator == '@all':
-                self.all_any_operator = AnyAllType.ALL
-            elif self.all_any_operator == '@any':
-                self.all_any_operator = AnyAllType.ANY
-
-            if re.fullmatch(r'[+\-\d\.]+', value_text):
-                if self._operator not in ['>=', '<=', '>', '<', '==', '!=']:
-                    raise ValueError(error_text)
-                self.eq_eval = '%s' + ' %s %s' % (self._operator, value_text)
-                self.type = PrimType.NUM_CONST
-            elif value_text.startswith('[') and value_text.endswith(']') and self._operator in ['==', '!=']:
-                values = re.findall(r"[+\-\d\.]+", value_text)
-                if len(values) != 2:
-                    raise ValueError(error_text)
-                if self._operator == '==':
-                    self.eq_eval = ('(%s <= ' % values[0]) + '%s' + (' <= %s)' % values[1])
-                else:
-                    self.eq_eval = ('not (%s <= ' % values[0]) + '%s' + (' <= %s)' % values[1])
-                self.type = PrimType.NUM_RANGE
-            elif value_text.startswith(('\'', '\"')) and value_text.endswith(('\'', '\"')):
-                self.eq_eval = '%s' + ' == %s' % value_text
-                self.type = PrimType.STRING_CONST
-            elif value_text == 'None' and self._operator in ('==', '!='):
-                self.eq_eval = '%s' + ' %s %s' % (self._operator, value_text)
-                self.type = PrimType.NONE
-            elif value_text in ['True', 'False']:
-                self.eq_eval = '%s' + ' == %s' % value_text
-                self.type = PrimType.BOOLEAN
-            elif value_text.startswith('@same'):
-                self.type = SameType.SAME
-                self.eq_eval = '%s == %s'
-            elif value_text.startswith('@unsame'):
-                self.type = SameType.UNSAME
-                self.eq_eval = '%s != %s'
-            else:
-                raise ValueError(error_text)
-
-            if self._operat_not:
-                self.eq_eval = 'not (' + self.eq_eval + ')'
-            else:
-                self._operat_not = ''
-
-            title = self.eq_eval
-            if isinstance(self.type, PrimType):
-                self.eq_title = (title % self._cypher) + ' ' + ('@all' if self.all_any_operator is AnyAllType.ALL else '@any')
-            else:
-                self.eq_title = title % (self._cypher, self._value + ' ' + ('@all' if self.all_any_operator is AnyAllType.ALL else '@any'))
-
-            if caliber_sign != '':
-                if caliber_sign[1] in ('К', 'K'):
-                    self.caliber = 'КАЛИБР ТЕКУЩ'
-                else:
-                    self.caliber = 'НЕКАЛИБР ТЕКУЩ'
-            else:
-                if self.type is PrimType.STRING_CONST:
-                    self.caliber = 'КАЛИБР ТЕКУЩ'
-                else:
-                    self.caliber = 'НЕКАЛИБР ТЕКУЩ'
-
-        def calculate_db_values(self):
-            """
-            обрабатывает значение в поле fromDB, формирует текст, возвращает значением вып
-            простого выражения
-            :return: rowbool, rowtext
-            """
-            row_text = []
-            row_bool = []
-            for idx, valDB in enumerate(self.fromDB):
-                eval_eq = self.eq_eval
-                if isinstance(valDB, str):
-                    eval_eq = eval_eq.replace('%s', '\'%s\'')
-                    eval_eq = eval_eq.lower()
-                    valDB = valDB.lower()
-                else:
-                    valDB = str(valDB)
-
-                if self.type is PrimType.BOOLEAN:
-                    eval_eq = eval_eq.split('==')[1].strip()
-                elif isinstance(self.type, PrimType):
-                    eval_eq = eval_eq % valDB
-                elif isinstance(self.type, SameType):
-                    if idx == 0:
-                        eval_eq = 'None'
-                    else:
-                        eval_eq = eval_eq % (self.fromDB[idx - 1], valDB)
-
-                try:
-                    res = eval(eval_eq)
-                except Exception as ex:
-                    res = None
-                    rprint('eval::: %s --- error: %s' % (eval_eq, ex))
-
-                row_bool.append(res)
-                row_text.append(valDB)
-
-            # значение по всем значениям из fromDB
-            if self.all_any_operator is AnyAllType.ANY:
-                row_result = any(row_bool)
-            elif isinstance(self.type, SameType):
-                row_result = all(row_bool[1:])
-            else:
-                row_result = all(row_bool)
-
-            row_bool.insert(0, row_result)
-            row_text.insert(0, self.eq_title)
-            return row_bool, row_text
-
-    def parse_equation(equations_all, equations_dict):
-        """
-        парсин гвыражения на обьекты подвыражений SimpleEquation в спиоок equations_all
-        и словарь equations_dict куда по ключам будут записаны значения из БД
-        :return: gotSameType
-        """
-        gotSameType = False
-        for part in cyphers:
-            eq = SimpleEquation(part)
-            key = (eq._cypher, eq.caliber)
-            equations_all.append((key, eq))
-            equations_dict[key] = None
-            if isinstance(eq.type, SameType):
-                gotSameType = True
-        return gotSameType
-
-    def execute_db():
-        """
-        опрос БД словарем, значения fromDB подставляет в обьекты equations_all
-        """
-        query = {}
-        for item in equations_dict.items():
-            key = item[0]
-            query[key[0][1:-1]] = key[1].split()[0]     # шифр без скобок, и слово калибровки
-        fromDB = Ex.get('ТМИ', query, '')
-        # запись значений из БД в equations_all
-        for x in equations_all:
-            constrait_key = x[0]
-            key = constrait_key[0][1:-1]
-            eq = x[1]
-            eq.fromDB.append(fromDB[key])
-            # для словаря на выходе из всей функции
-            if equations_dict[constrait_key] is None:
-                equations_dict[constrait_key] = [fromDB[key]]
-            else:
-                equations_dict[constrait_key].append(fromDB[key])
-
     """ПАРСИНГ"""
     bprint('ОПРОС ТМИ')
     pattern = re.compile(r"""\s?([not\s(]*)?                                        # _operator not and bacwards        
@@ -786,7 +822,7 @@ def controlGetEQ(equation, count=1, period=0, toPrint=True, downBCK=False):
     cyphers = re.findall(pattern, equation)
     equations_all = []  # список с обьектами [(_cypher, SimpleEquarion)] в порядке их в выражении
     equations_dict = {}  # cлвоарь с составными ключами {(_cypher, caliber): ''} чобы не запрашивать из бд те же знач
-    gotSameType = parse_equation(equations_all, equations_dict)
+    gotSameType = parse_equation(cyphers, equations_all, equations_dict)
     if gotSameType and count < 2:
         raise Exception('Шифры с параметром same должны быть опрошены не менее чем 2 раза')
 
@@ -807,7 +843,7 @@ def controlGetEQ(equation, count=1, period=0, toPrint=True, downBCK=False):
             sleep(5)
             SCPICMD(0xE060)     # сброс БЦК
             sleep(15)
-        execute_db()
+        execute_db(equations_dict, equations_all)
         count_passed += 1
     time_duration = datetime.now() - started_query_full
 
@@ -855,6 +891,110 @@ def controlGetEQ(equation, count=1, period=0, toPrint=True, downBCK=False):
             out += '%-25s%s\n' % ('Вычисленное выражение:', main_equation_reparsed)
             out += '%-25s%s\n' % ('Время опроса БД:', time_duration.total_seconds())
             out += '%-25s%s\n' % ('Время опроса БД + вычисления:', (datetime.now() - started_query_full).total_seconds())
+            out += '%s%s %s\n' % (Text.default, 'Результат:', Text.color_bool(main_eq_result, main_eq_result))
+        for x in rows_text:
+            out += ''.join(x)
+            out += '\n'
+        print(out[:-1])
+    errors = sum([1 for x in rows_bools if not x[0]])
+    return main_eq_result, equations_dict
+
+
+# TODO: переделать на таймер по time, если gotSameType опросить больше одного раза
+#  делать проверку последних значений при опросе выражений
+def controlWaitEQ(equation, time, period=0, toPrint=True, downBCK=False):
+    """Тоже что и controlGetEq только закончит выполнение если выполнится условия по всем строкам True"""
+    """ПАРСИНГ"""
+    bprint('ОПРОС ТМИ')
+    pattern = re.compile(r"""\s?([not\s(]*)?                                        # _operator not and bacwards        
+                                \s?({.+?})                                              # the _cypher
+                                \s?(@[КKНH])?                                           # the _caliber
+                                \s?(is\snot|is|[=><!]*)                                 # the _operator  == > < <= >= != is is not
+                                \s?(None|@[uns]+ame|True|False|\'[^\']+\'|\"[^\s]+\"|[\[+\-\d\.\,\s\]]*)   # the value [-0.0, +0.0] 0.0 'Включено' @same @unsame None
+                                \s?(@[alyn]+)?                                           # all any type
+                                \s?(\)*)?                                               # bacwards        
+                                \s?(and|or)?\s?                                         # logical _operator
+                                """, re.X)
+    cyphers = re.findall(pattern, equation)
+    equations_all = []      # список с обьектами [(_cypher, SimpleEquarion)] в порядке их в выражении
+    equations_dict = {}     # cлвоарь с составными ключами {(_cypher, caliber): ''} чобы не запрашивать из бд те же знач
+    gotSameType = parse_equation(cyphers, equations_all, equations_dict)
+
+    """ЗАПРОСЫ ИЗ БД"""
+    started_query = None
+    started_query_full = datetime.now()
+    while datetime.now() < started_query_full + timedelta(seconds=time):
+        waiter = 0
+        if started_query:
+            waiter = (started_query + timedelta(seconds=period) - datetime.now()).total_seconds()
+        if waiter > 0.1:
+            sleep(waiter)
+        started_query = datetime.now()
+        if downBCK:
+            bprint('Очистка и сброс БЦК')
+            SCPICMD(0xE107)  # очистит БЦК
+            sleep(5)
+            SCPICMD(0xE060)  # сброс БЦК
+            sleep(15)
+        execute_db(equations_dict, equations_all)
+        # TODO: обработать строку выражений
+        query_result = []
+        for simple_eq in equations_all:
+            bool_res = simple_eq[1].calculate_db_value()
+            if bool_res is None:
+                query_result.append(False)
+                break
+            else:
+                query_result.append(bool_res)
+        if all(query_result):
+            break
+    time_duration = datetime.now() - started_query_full
+
+    """ВЫЧИСЛИТЬ ОБЩИЙ РЕЗУЛЬТАТ ВЫРАЖЕНИЯ"""
+    rows_text = []
+    rows_bools = []
+    main_equation = []
+    main_equation_reparsed = []
+    for simple_eq in equations_all:
+        simple_eq = simple_eq[1]
+        bools, texts = simple_eq.calculate_db_values()
+        rows_text.append(texts)
+        rows_bools.append(bools)
+        # Восстановленное спарсенное выражение
+        main_equation_reparsed.append(' '.join([x for x in (simple_eq._open_backw, simple_eq._operat_not,
+                                                            simple_eq._cypher, simple_eq._operator,
+                                                            simple_eq._value, simple_eq._cls_backw,
+                                                            simple_eq._log_operator) if x != '']))
+        # Выражение дял вычисления общего результата
+        main_equation.append(' '.join(
+            (simple_eq._open_backw, str(bools[0]), simple_eq._cls_backw, simple_eq._log_operator)))
+    # составить главное выражение и результат по строке
+    main_equation_reparsed = ' '.join(main_equation_reparsed)
+    main_equation = ' '.join(main_equation)
+    main_eq_result = eval(main_equation)
+
+    """ФОРМАТИРОВАНИЕ ЦВЕТА ТЕКСТА"""
+    # вариант с tabulate модулем
+    # вариант с подсчетом добавлением separtors ' ' или '\t'
+    rows_count = len(rows_text[0])
+    for idx_col in range(0, rows_count):
+        max_column_len = max([len(x[idx_col]) for x in rows_text])
+        sep_symb = ';' if idx_col == rows_count - 1 else ','
+        for idx_row, row in enumerate(rows_text):
+            sep = sep_symb + ' ' * (max_column_len + 1 - len(row[idx_col])) if sep_symb == ',' else sep_symb
+            res = rows_bools[idx_row][idx_col]
+            new_text = Text.color_bool(rows_text[idx_row][idx_col], res)
+            rows_text[idx_row][idx_col] = new_text + sep
+
+    """ВЫВОД В ТРЕМИНАЛ"""
+    if toPrint:
+        out = ''
+        if toPrint == 2:
+            out += '%-25s%s\n' % ('Исходное выражение:', equation)
+            out += '%-25s%s\n' % ('Вычисленное выражение:', main_equation_reparsed)
+            out += '%-25s%s\n' % ('Время опроса БД:', time_duration.total_seconds())
+            out += '%-25s%s\n' % (
+            'Время опроса БД + вычисления:', (datetime.now() - started_query_full).total_seconds())
             out += '%s%s %s\n' % (Text.default, 'Результат:', Text.color_bool(main_eq_result, main_eq_result))
         for x in rows_text:
             out += ''.join(x)

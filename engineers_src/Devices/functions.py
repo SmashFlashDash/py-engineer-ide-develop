@@ -107,6 +107,20 @@ def executeTMI(*args, pause=None, stopFalse=True, **kwargs):
     return result, dict_cpyphers
 
 
+def executeWaitTMI(*args, pause=None, stopFalse=True, **kwargs):
+    """Вычислить выражние ТМИ с паузой перед опросом"""
+    if 'period' not in kwargs:
+        kwargs['period'] = DB.pause
+    if pause is None:
+        pause = DB.pause
+    sleep(pause)
+    result, dict_cpyphers = controlWaitEQ(*args, **kwargs)
+    if stopFalse and not result:
+        rprint('НЕ НОРМА: проверь ДИ')
+        inputG('Проверь ТМИ')
+    return result, dict_cpyphers
+
+
 def getAndSleep(*args, pause=None, **kwargs):
     """Получить значение ДИ с паузой перед опросом чтобы обновилась БД"""
     if pause is None:
