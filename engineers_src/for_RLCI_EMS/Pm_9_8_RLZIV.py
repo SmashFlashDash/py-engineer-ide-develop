@@ -122,7 +122,7 @@ def TEST_1():
     RLCI.mode('stop SHD', ask_TMI=False)
     RLCI.waitAntennaStop(period=60, toPrint=False)  # ожидание на остановку антенны
     RLCI.EA332.off()
-    yprint('ТЕСТ 1 ЗВЕРШЕН')
+    yprint('ТЕСТ 1 ЗАВЕРШЕН')
 
 
 def TEST_2():
@@ -132,7 +132,7 @@ def TEST_2():
     RLCI.mode('stop SHD', ask_TMI=False)
     RLCI.waitAntennaStop(period=60, toPrint=False)  # ожидание на остановку антенны
     RLCI.EA332.off()
-    yprint('ТЕСТ 2 ЗВЕРШЕН')
+    yprint('ТЕСТ 2 ЗАВЕРШЕН')
 
 
 def __TEST_3_4():
@@ -170,7 +170,7 @@ def TEST_3():
     RLCI.EA332.on(1, stop_shd=False, ask_TMI=False)
     __TEST_3_4()
     RLCI.EA332.off()
-    yprint('ТЕСТ 3 ЗВЕРШЕН', tab=1)
+    yprint('ТЕСТ 3 ЗАВЕРШЕН', tab=1)
 
 
 def TEST_4():
@@ -178,7 +178,7 @@ def TEST_4():
     RLCI.EA332.on(2, stop_shd=False, ask_TMI=False)
     __TEST_3_4()
     RLCI.EA332.off()
-    yprint('ТЕСТ 4 ЗВЕРШЕН')
+    yprint('ТЕСТ 4 ЗАВЕРШЕН')
 
 
 def __TEST_5_6(text, array):
@@ -208,7 +208,7 @@ def TEST_5():
                "{10.01.BA_AFU_DKP_OX}@H==1" + " and " +
                "{10.01.BA_AFU_DKP_OZ}@H==0", count=2, period=8)
     RLCI.EA332.off()
-    yprint('ТЕСТ 5 ЗВЕРШЕН')
+    yprint('ТЕСТ 5 ЗАВЕРШЕН')
 
 
 def TEST_6():
@@ -225,7 +225,7 @@ def TEST_6():
                "{10.01.BA_AFU_DKP_OX}@H==0" + " and " +
                "{10.01.BA_AFU_DKP_OZ}@H==1", count=2, period=8)
     RLCI.EA332.off()
-    yprint('ТЕСТ 6 ЗВЕРШЕН')
+    yprint('ТЕСТ 6 ЗАВЕРШЕН')
 
 
 '''
@@ -277,7 +277,7 @@ def TEST_11():
     RLCI.EA332.on(1, stop_shd=False, ask_TMI=False)
     __TEST_11_12()
     RLCI.EA332.off()
-    yprint('ТЕСТ 9 ЗВЕРШЕН', tab=1)
+    yprint('ТЕСТ 9 ЗАВЕРШЕН', tab=1)
 
 
 def TEST_12():
@@ -285,7 +285,7 @@ def TEST_12():
     RLCI.EA332.on(2, stop_shd=False, ask_TMI=False)
     __TEST_11_12()
     RLCI.EA332.off()
-    yprint('ТЕСТ 10 ЗВЕРШЕН', tab=1)
+    yprint('ТЕСТ 10 ЗАВЕРШЕН', tab=1)
 '''
 
 
@@ -324,7 +324,7 @@ def TEST_7():
     RLCI.PCH.off()          # Откл Пч
     RLCI.EA331.off()
     RLCI.EA332.off()
-    yprint('ТЕСТ 7 ЗВЕРШЕН')
+    yprint('ТЕСТ 7 ЗАВЕРШЕН')
 
 
 def TEST_8(ea332=1):
@@ -361,7 +361,7 @@ def TEST_8(ea332=1):
     RLCI.PCH.off()          # Откл Пч
     RLCI.EA331.off()
     RLCI.EA332.off()
-    yprint('ТЕСТ 8 ЗВЕРШЕН')
+    yprint('ТЕСТ 8 ЗАВЕРШЕН')
 
 
 def TEST_9():
@@ -393,7 +393,7 @@ def TEST_9():
     RLCI.PCH.off()              # Откл Пч
     RLCI.EA331.off()
     RLCI.EA332.off()
-    yprint('ТЕСТ 9 ЗВЕРШЕН')
+    yprint('ТЕСТ 9 ЗАВЕРШЕН')
 
 
 def TEST_10():
@@ -425,7 +425,7 @@ def TEST_10():
     RLCI.PCH.off()          # Откл Пч
     RLCI.EA331.off()
     RLCI.EA332.off()
-    yprint('ТЕСТ 10 ЗВЕРШЕН')
+    yprint('ТЕСТ 10 ЗАВЕРШЕН')
 
 
 def TEST_11():
@@ -462,7 +462,7 @@ def TEST_11():
     RLCI.UM.cur = None
     RLCI.EA331.off()
     RLCI.EA332.off()
-    yprint('ТЕСТ 11 ЗВЕРШЕН')
+    yprint('ТЕСТ 11 ЗАВЕРШЕН')
 
 
 def TEST_12():
@@ -500,7 +500,7 @@ def TEST_12():
     RLCI.UM.cur = None
     RLCI.EA331.off()
     RLCI.EA332.off()
-    yprint('ТЕСТ 12 ЗВЕРШЕН')
+    yprint('ТЕСТ 12 ЗАВЕРШЕН')
 
 
 def TEST_13():
@@ -525,7 +525,7 @@ def TEST_13():
     yprint('ПРОВЕРКА ВКЛЮЧЕНИЯ')
     inputG('Начать проверку?')
     TEST_7()
-    yprint('ТЕСТ 13 ЗВЕРШЕН')
+    yprint('ТЕСТ 13 ЗАВЕРШЕН')
 
 
 def TEST_14():
@@ -550,7 +550,7 @@ def TEST_14():
     yprint('ПРОВЕРКА ВКЛЮЧЕНИЯ')
     inputG('Начать проверку?')
     TEST_8(ea332=2)
-    yprint('ТЕСТ 14 ЗВЕРШЕН')
+    yprint('ТЕСТ 14 ЗАВЕРШЕН')
 
 
 def TEST_15(num=1):
@@ -608,7 +608,7 @@ def TEST_15(num=1):
     executeTMI(" and ".join(di))
 
     RLCI.off()
-    yprint('ТЕСТ %s ЗВЕРШЕН' % (14+num), tab=1)
+    yprint('ТЕСТ %s ЗАВЕРШЕН' % (14+num), tab=1)
 
 
 def TEST_16():

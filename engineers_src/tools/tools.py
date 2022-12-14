@@ -144,7 +144,7 @@ def yprint(*args, **kwargs):
 def proc_print(*args, **kwargs):
     kwargs['color'] = 'blue'
     kwargs['tab'] = 0
-    print(Text.default + 'Исполение: ' + Text.text(args, kwargs), **kwargs)
+    print(Text.default + 'Исполнение: ' + Text.text(args, kwargs), **kwargs)
 def comm_print(*args, **kwargs):
     kwargs['color'] = 'yellow'
     kwargs['tab'] = 0
