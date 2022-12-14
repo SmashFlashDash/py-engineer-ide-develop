@@ -1712,8 +1712,9 @@ class DUK(Device):
         setInitialStateValues()
 
     @classmethod
-    def test3(cls):
+    def autoOnDUk(cls):
         print('Проверка включения ДУК в автоматическом режиме с помощью ХВКЛ_КДУ')
+        bk, k, bpk = setDukConfig()
         cyclo_branch = setCycloBranch()
         avtoLaunchDuk(bk, k, bpk, cyclo_branch)
 
