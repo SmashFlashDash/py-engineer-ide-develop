@@ -905,7 +905,7 @@ def controlGetEQ(equation, count=1, period=0, toPrint=True, downBCK=False):
 def controlWaitEQ(equation, time, period=0, toPrint=True, downBCK=False):
     """Тоже что и controlGetEq только закончит выполнение если выполнится условия по всем строкам True"""
     """ПАРСИНГ"""
-    bprint('ОПРОС ТМИ')
+    bprint('ОПРОС ТМИ: %s сек' % time)
     pattern = re.compile(r"""\s?([not\s(]*)?                                        # _operator not and bacwards        
                                 \s?({.+?})                                              # the _cypher
                                 \s?(@[КKНH])?                                           # the _caliber
