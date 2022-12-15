@@ -120,7 +120,7 @@ def TEST_1():
     RLCI.EA332.on(1, stop_shd=False, ask_TMI=False)
     sleep(10)
     RLCI.mode('stop SHD', ask_TMI=False)
-    RLCI.waitAntennaStop(period=60, toPrint=False)  # ожидание на остановку антенны
+    RLCI.waitAntennaStop(60, toPrint=False)  # ожидание на остановку антенны
     RLCI.EA332.off()
     yprint('ТЕСТ 1 ЗАВЕРШЕН')
 
@@ -130,14 +130,14 @@ def TEST_2():
     RLCI.EA332.on(2, stop_shd=False, ask_TMI=False)
     sleep(10)
     RLCI.mode('stop SHD', ask_TMI=False)
-    RLCI.waitAntennaStop(period=60, toPrint=False)  # ожидание на остановку антенны
+    RLCI.waitAntennaStop(60, toPrint=False)  # ожидание на остановку антенны
     RLCI.EA332.off()
     yprint('ТЕСТ 2 ЗАВЕРШЕН')
 
 
 def __TEST_3_4():
     RLCI.isAntennaMoving()  # проверка что антенна движется
-    RLCI.waitAntennaStop(period=5*60, toPrint=False)  # ожидание на остановку антенны
+    RLCI.waitAntennaStop(5*60, toPrint=False)  # ожидание на остановку антенны
     executeTMI("{10.01.BA_AFU_DNP_OZ}==0" + " and " +  # првоерка параметров ДНП и имулсьсов НЗ
                "{10.01.BA_AFU_DNP_OX}==0")
     # Отправить массив НЗ 500
@@ -149,14 +149,14 @@ def __TEST_3_4():
                                              '000000000000000000000000000000000000000000000000000000000000000000000000'),
                                          std=2))
     sleep(5)
-    RLCI.waitAntennaStop(period=60 + 40, toPrint=False)  # ожидание когда антенна остановится в 0 градусной зоне
+    RLCI.waitAntennaStop(60 + 40, toPrint=False)  # ожидание когда антенна остановится в 0 градусной зоне
     executeTMI("{10.01.BA_AFU_IMP_OZ}@H==500" + " and " +  # проверка координат 0 градуснйо зоны
                "{10.01.BA_AFU_IMP_OX}@H==500" + " and " +
                "{10.01.BA_AFU_NP_OZ}@H==0" + " and " +
                "{10.01.BA_AFU_NP_OX}@H==0")
     # Запустить отработку массива
     RLCI.mode('start SHD')
-    RLCI.waitAntennaStop(period=5 * 60, toPrint=False)  # ожидание когда антенна остановится, или sleep(посчитать время)
+    RLCI.waitAntennaStop(5 * 60, toPrint=False)  # ожидание когда антенна остановится, или sleep(посчитать время)
     executeTMI("{10.01.BA_AFU_IMP_OZ}@H==@same@all" + " and " +  # Проверка НП и ДНП после остановки
                "{10.01.BA_AFU_IMP_OX}@H==@same@all" + " and " +
                "{10.01.BA_AFU_NP_OZ}@H==0" + " and " +
@@ -184,14 +184,14 @@ def TEST_4():
 def __TEST_5_6(text, array):
     RLCI.isAntennaMoving()  # проверка что антенна движется
     yprint('Ждем остановки антены в НП')
-    RLCI.waitAntennaStop(period=5 * 60, toPrint=False)  # ожидание на остановку антенны
+    RLCI.waitAntennaStop(5 * 60, toPrint=False)  # ожидание на остановку антенны
     executeTMI("{10.01.BA_AFU_DNP_OZ}==0" + " and " +  # првоерка АФУ в НП
                "{10.01.BA_AFU_DNP_OX}==0")
     yprint('Отправка массива НЗ ' + text)
     RLCI.sendArrayToAntenna('КПА', CPIMD(addr=0x0, data=AsciiHex(array), std=2))
     yprint('Ждать АФУ в НЗ')
     sleep(5)
-    RLCI.waitAntennaStop(period=5 * 60, toPrint=False)  # ждем когда АФУ в 0гр зоне
+    RLCI.waitAntennaStop(5 * 60, toPrint=False)  # ждем когда АФУ в 0гр зоне
 
 
 def TEST_5():
@@ -232,7 +232,7 @@ def TEST_6():
 def __TEST_11_12():
     RLCI.isAntennaMoving()  # проверка что антенна движется
     yprint('Ждем остановки антены в НП')
-    RLCI.waitAntennaStop(period=5*60, toPrint=False)  # ожидание на остановку антенны
+    RLCI.waitAntennaStop(5*60, toPrint=False)  # ожидание на остановку антенны
     executeTMI("{10.01.BA_AFU_DNP_OZ}==0" + " and " +  # првоерка параметров ДНП и имулсьсов НЗ
                "{10.01.BA_AFU_DNP_OX}==0")
     yprint('Отправка массива НЗ 0x=1200, 0z=12000')
@@ -264,7 +264,7 @@ def __TEST_11_12():
         rprint('Max 0z: %s' % z)
         inputG()
     yprint('Ждать возврат АФУ в НП')
-    RLCI.waitAntennaStop(period=60 * 5, toPrint=False)              # ждем 5 минут пока антенная вернется в ДНП
+    RLCI.waitAntennaStop(60 * 5, toPrint=False)              # ждем 5 минут пока антенная вернется в ДНП
     executeTMI("{10.01.BA_AFU_IMP_OZ}@H==@same@all" + " and " +     # Проверка антенна не Движ и ДНП
                "{10.01.BA_AFU_IMP_OX}@H==@same@all" + " and " +
                "{10.01.BA_AFU_DNP_OZ}@H==0" + " and " +

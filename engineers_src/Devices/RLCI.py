@@ -28,7 +28,7 @@ class EA332(Device):
             sendFromJson(SCPICMD, 0xA018)  # Остан ШД
         if ask_TMI:
             executeWaitTMI("{04.01.beBAEA%s1}@K==\'включен\'" % num + " and "
-                       + "{04.01.beBAEA%s1}@K==\'включен\'" % num + " and "
+                       + "{04.01.beBAEA%s2}@K==\'включен\'" % num + " and "
                        + doEquation('10.01.BA_FIP1', '@K', 'off') + " and "
                        + doEquation('10.01.BA_FIP2', '@K', 'off') + " and "
                        + doEquation('10.01.BA_MOD1', '@K', 'off') + " and "
@@ -80,7 +80,7 @@ class EA331(Device):
             raise Exception('Неверный параметр')
         if ask_TMI:
             executeWaitTMI("{04.01.beKKEA%s1}@K==\'включен\'" % num + " and "
-                       + "{04.01.beKKEA%s1}@K==\'включен\'" % num, 20, period=0)
+                       + "{04.01.beKKEA%s2}@K==\'включен\'" % num, 20, period=0)
 
     @classmethod
     def off(cls, ask_TMI=True):
@@ -306,7 +306,7 @@ class RLCI(Device):
                                         doEquation('10.01.PRD_MOD_INFO', '@K', 'cele') + " and " +
                                         doEquation('10.01.PRD_MOD_FIP_INF', '@K', 'on') + " and " +
                                         doEquation('10.01.FIP_M778B_INF', '@K', 'on'), 20, period=0),
-        'stop SHD': lambda: RLCI.waitAntennaStop(period=60, toPrint=False),
+        'stop SHD': lambda: RLCI.waitAntennaStop(60, toPrint=False),
         'start SHD': lambda: RLCI.isAntennaMoving()
     }
 
@@ -351,19 +351,19 @@ class RLCI(Device):
     def isAntennaMoving(cls):
         bprint('Проверка что антенна движется...')
         executeWaitTMI("{10.01.BA_AFU_IMP_OZ}@H==@unsame@all" + " and " +
-                   "{10.01.BA_AFU_IMP_OX}@H==@unsame@all", count=2, toPrint=True)
+                       "{10.01.BA_AFU_IMP_OX}@H==@unsame@all", 20, toPrint=True)
 
     @classmethod
-    def waitAntennaStop(cls, period=0, toPrint=False, query_period=8):
+    def waitAntennaStop(cls, time, period=8, toPrint=False):
         """ Ожидаие остановки антенны
-        @param int period:
+        @param int time:
         @param bool toPrint:
-        @param int query_period:
+        @param int period:
         """
         bprint('Ожидание остановки антенны')
         start = datetime.now()
         res, values = executeWaitTMI("{10.01.BA_AFU_IMP_OZ}@H==@unsame@all" + " and " +
-                       "{10.01.BA_AFU_IMP_OX}@H==@unsame@all", period, period=query_period, toPrint=True)
+                                     "{10.01.BA_AFU_IMP_OX}@H==@unsame@all", time, period=period, toPrint=toPrint)
         if res:
             bprint('Антенна остановлена')
         elif (datetime.now() - start).total_seconds() >= period:
