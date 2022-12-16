@@ -19,6 +19,7 @@ from ui.components.qBoxLayoutBuilder import QBoxLayoutBuilder
 from ui.commandsSearcherCMD import SelectUVwidget
 
 from ivk.config import updData
+from cpi_framework.utils.toolsForCPI import readBinFile
 
 
 class CommandsWidget(QDockWidget):
@@ -63,9 +64,11 @@ class CommandsWidget(QDockWidget):
         self.hex_checkbox.setChecked(False)
         self.hex_checkbox.setEnabled(True)
 
-        self.print_checkbox = QCheckBox('Print', self)
-        self.print_checkbox.setChecked(False)
-        self.print_checkbox.setEnabled(True)
+        self.log_checkbox = QCheckBox('Print log', self)
+        self.log_checkbox.setChecked(True)
+        self.log_checkbox.setEnabled(True)
+        # сразу обновляем разрешение для вывода лога
+        updData('Log', self.log_checkbox.isChecked())
 
         self.exchange_combo = QComboBox(self)
         self.exchange_combo.setEnabled(False)
@@ -91,7 +94,8 @@ class CommandsWidget(QDockWidget):
         lb = QBoxLayoutBuilder(buttons_widget, QBoxLayout.TopToBottom, spacing=6)
         lb.hbox(spacing=6).add(self.exchange_checkbox).add(self.exchange_combo).stretch().add(
             self.openFile_button).add(self.insert_button).add(self.run_button).fixW(100).up()
-        lb.hbox(spacing=6).add(self.hex_checkbox).add(self.print_checkbox).add(self.simple_checkbox).stretch().up()
+        lb.hbox(spacing=6).add(self.hex_checkbox).add(self.log_checkbox).add(self.simple_checkbox).stretch().up()
+
 
         self.info_widget = QTextEdit()
         self.info_widget.setObjectName('autoCompeteInfoFrame')
@@ -122,7 +126,7 @@ class CommandsWidget(QDockWidget):
         self.hide()
 
         self.hex_checkbox.clicked.connect(lambda: updData('HEX', self.hex_checkbox.isChecked()))
-        self.print_checkbox.clicked.connect(lambda: updData('PRINT', self.print_checkbox.isChecked()))
+        self.log_checkbox.clicked.connect(lambda: updData('Log', self.log_checkbox.isChecked()))
 
     def getCommand(self):
         if not self.tree_widget.currentItem() or 'name' not in self.tree_widget.currentItem().command:
@@ -175,24 +179,24 @@ class CommandsWidget(QDockWidget):
 
         return command
 
-    def readBinFile(self, path, cpibase=False):
-        s = path.split('.')[-1]
-        if s == 'bin':
-            with open(path, 'rb') as file:
-                data = file.read()
-                if cpibase and len(data) > 64:
-                    data = data[21: 21+64]
-                self.DataRead = "AsciiHex('0x" + data.hex() + "')"
-        elif s == 'hex':
-            with open(path, 'r', encoding='utf-8') as file:
-                lines = file.readlines()
-                data = []
-                for line in lines:
-                    words = line.split(r"\n")[0].split("#")[0]
-                    for b in words.split():
-                        data.append(b[2:] + b[:2])
-                self.DataRead = "AsciiHex('0x" + "".join(data) + "')"
-        return self.DataRead
+    # def readBinFile(self, path, cpibase=False):
+    #     s = path.split('.')[-1]
+    #     if s == 'bin':
+    #         with open(path, 'rb') as file:
+    #             data = file.read()
+    #             if cpibase and len(data) > 64:
+    #                 data = data[21: 21+64]
+    #             self.DataRead = "AsciiHex('0x" + data.hex() + "')"
+    #     elif s == 'hex':
+    #         with open(path, 'r', encoding='utf-8') as file:
+    #             lines = file.readlines()
+    #             data = []
+    #             for line in lines:
+    #                 words = line.split(r"\n")[0].split("#")[0]
+    #                 for b in words.split():
+    #                     data.append(b[2:] + b[:2])
+    #             self.DataRead = "AsciiHex('0x" + "".join(data) + "')"
+    #     return self.DataRead
 
     def insertCommand(self):
         command = self.getCommand()
@@ -207,9 +211,17 @@ class CommandsWidget(QDockWidget):
             return
 
         if len(self.args_widget.arg_editors) == 1:
-            self.args_widget.arg_editors[0].setText(self.readBinFile(filename, cpibase=True))
+            cpidata = readBinFile(filename, cpibase=True, commandW=True)
+            self.DataRead = cpidata
+            self.args_widget.arg_editors[0].setText(cpidata)
+        elif len(self.args_widget.arg_editors) == 2:
+            cpipz = readBinFile(filename, cpibase=False, commandW=True)
+            self.DataRead = cpipz
+            self.args_widget.arg_editors[1].setText(cpipz)
         elif len(self.args_widget.arg_editors) == 3:
-            self.args_widget.arg_editors[1].setText(self.readBinFile(filename))
+            cpiMDdata = readBinFile(filename, cpibase=False, commandW=True)
+            self.DataRead = cpiMDdata
+            self.args_widget.arg_editors[1].setText(cpiMDdata)
 
         DbLog.log('одиночная команда', 'выбран бинарный файл ' + filename, False, None, None)
 
@@ -430,7 +442,7 @@ class CommandsWidget(QDockWidget):
         #                                 'params' in current.command and 'path' in current.command['params'])
         self.openFile_button.setEnabled(current and 'name' in current.command and
                                         'params' in current.command and 'name' in current.command and current.command[
-                                            'name'] in ('CPIMD', 'CPIBASE'))
+                                            'name'] in ('CPIMD', 'CPIBASE', 'CPIPZ'))
 
         # очищаем Данные КПИМД при выборе любой ддругой команды
         self.__dataIsNone()

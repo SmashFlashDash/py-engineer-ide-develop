@@ -1,24 +1,26 @@
 import re
 from datetime import datetime
-from PyQt5.QtWidgets import QTextEdit, QLineEdit, QDockWidget, QSplitter, QWidget, QMenu, QAction, QLabel, QBoxLayout, QListWidget, QListWidgetItem,QPushButton
+from PyQt5.QtWidgets import QTextEdit, QLineEdit, QDockWidget, QSplitter, QWidget, QLabel, QBoxLayout, QListWidget, \
+    QListWidgetItem, QMenu, QAction, QFileDialog
 from PyQt5.QtGui import QColor, QTextCursor, QIcon, QFontMetrics, QFont, QBrush
 from PyQt5.QtCore import Qt, QEventLoop, QObject, pyqtSignal
 
-from ui.components.qBoxLayoutBuilder import QBoxLayoutBuilder 
+from ui.components.qBoxLayoutBuilder import QBoxLayoutBuilder
+
 
 class ConsoleWidget(QDockWidget):
     def __init__(self, parent, title, settings_keyword):
         super().__init__(parent)
         self.setWindowTitle(title)
         self.settings_keyword = settings_keyword
-        self.setWidget(IvkConsole(self, lambda: False, lambda: False))
+        self.setWidget(IvkConsole(self, lambda: False, lambda: True))
         self.hide()
 
     def closeEvent(self, event):
         if hasattr(self.parent(), 'onDockClose'):
             self.parent().onDockClose(self)
         super().closeEvent(event)
-    
+
     def settingsKeyword(self):
         return self.settings_keyword
 
@@ -36,7 +38,7 @@ class IvkConsole(QWidget):
     colorWriteSignal = pyqtSignal(str, int)
     inputRequestedSignal = pyqtSignal(bool, str)
     inputEndedSignal = pyqtSignal(str)
-    
+
     addSubThreadSignal = pyqtSignal(object)
     removeSubThreadSignal = pyqtSignal(object, bool)
     subThreadSuspendSignal = pyqtSignal(str)
@@ -50,7 +52,7 @@ class IvkConsole(QWidget):
         self.colorWriteSignal.connect(self.__colorWrite)
         self.inputRequestedSignal.connect(self.__onInputRequest)
         self.inputEndedSignal.connect(lambda command: self.onInputEnded())
-        
+
         self.line_edit_normal_css = 'normalInput'
         self.line_edit_pdb_css = 'pdbInput'
         self.waiting_input = False
@@ -88,47 +90,45 @@ class IvkConsole(QWidget):
 
         lb = QBoxLayoutBuilder(self, QBoxLayout.TopToBottom, margins=(3, 3, 3, 3), spacing=5)
         lb.add(self.console_splitter) \
-          .hbox(spacing=2) \
+            .hbox(spacing=2) \
             .add(self.line_edit_label).fix() \
             .add(self.line_edit)
-        
+
         self.line_edit.inputEndSignal.connect(self.__lineEditInputEnded)
         self.addSubThreadSignal.connect(self.__addSubThread)
         self.removeSubThreadSignal.connect(self.__removeSubThread)
         self.subThreadSuspendSignal.connect(self.__subThreadSuspended)
         self.sub_thread_list.currentItemChanged.connect(self.__subThreadCurrentChanged)
 
-    def __showContextMenu(self, pos):
-        context_menu = QMenu(self)
-        console_clear_action = QAction('Очистить консоль', self)
-        console_clear_action.triggered.connect(self.console.clear)
-        context_menu.addAction(console_clear_action)
-        context_menu.exec(self.mapToGlobal(pos))
-
     def writeNormal(self, stream):
         self.colorWriteSignal.emit(stream, IvkConsole.WRITE_NORMAL)
+
     def writeInput(self, stream):
         self.colorWriteSignal.emit('{#b5fff5}%s' % stream, IvkConsole.WRITE_INPUT)
+
     def writeError(self, stream):
         self.colorWriteSignal.emit(stream, IvkConsole.WRITE_ERROR)
+
     def writePdb(self, stream):
         self.colorWriteSignal.emit(stream, IvkConsole.WRITE_PDB)
 
     def sendContinue(self):
         self.line_edit.command = '!c'
         self.line_edit.inputEndSignal.emit()
+
     def sendNext(self):
         self.line_edit.command = '!n'
         self.line_edit.inputEndSignal.emit()
+
     def sendPause(self):
         self.inputEndedSignal.emit('!p')
-    
+
     def onExecutionStart(self):
         self.waiting_input = False
 
     def __onInputRequest(self, from_pdb, label):
         self.input_from_pdb = from_pdb
-         
+
         self.line_edit.setObjectName(self.line_edit_normal_css if not from_pdb else self.line_edit_pdb_css)
         self.line_edit.style().unpolish(self.line_edit)
         self.line_edit.style().polish(self.line_edit)
@@ -149,21 +149,21 @@ class IvkConsole(QWidget):
             self.console.ensureCursorVisible()
 
         self.waiting_input = True
-        
-    
+
     def __lineEditInputEnded(self):
         if self.waiting_input:
             self.waiting_input = False
             command = self.line_edit.command
             if self.input_from_pdb:
                 thread = self.sub_thread_list.currentItem().thread
-                self.writePdb('[КОМАНДА ПОТОКУ %s "%s"] <<< %s\n' % (thread['thread_id'], thread['thread_name'], command))
+                self.writePdb(
+                    '[КОМАНДА ПОТОКУ %s "%s"] <<< %s\n' % (thread['thread_id'], thread['thread_name'], command))
             else:
                 self.writeNormal('{#b5fff5}%s\n' % command)
             if self.sub_thread_list.currentItem():
                 self.sub_thread_list.currentItem().setBackground(QColor(255, 255, 255))
             self.inputEndedSignal.emit(command)
-    
+
     def onInputEnded(self):
         self.waiting_input = False
         if self.pdb_console.isVisible():
@@ -187,15 +187,16 @@ class IvkConsole(QWidget):
             istart = text.find('{#')
             if istart != -1:
                 while istart != -1:
-                    icolor = text.find('}', istart+2)
-                    iend = text.find('{#', icolor+1)
+                    icolor = text.find('}', istart + 2)
+                    iend = text.find('{#', icolor + 1)
                     self.console.moveCursor(QTextCursor.End)
-                    self.console.setTextColor(QColor(text[istart+1:icolor]))
-                    self.console.insertPlainText(text[icolor+1:] if iend == -1 else text[icolor+1:iend])
+                    self.console.setTextColor(QColor(text[istart + 1:icolor]))
+                    self.console.insertPlainText(text[icolor + 1:] if iend == -1 else text[icolor + 1:iend])
                     istart = iend
             else:
                 self.console.moveCursor(QTextCursor.End)
-                self.console.setTextColor(IvkConsole.ERROR_COLOR if mode == IvkConsole.WRITE_ERROR else IvkConsole.MAIN_COLOR)
+                self.console.setTextColor(
+                    IvkConsole.ERROR_COLOR if mode == IvkConsole.WRITE_ERROR else IvkConsole.MAIN_COLOR)
                 self.console.insertPlainText(text)
             self.console.moveCursor(QTextCursor.End)
             if '\n' in text:
@@ -216,7 +217,7 @@ class IvkConsole(QWidget):
     ###################################################################################################################
     ############################################# SUB THREAD LIST #####################################################
     ###################################################################################################################
-    
+
     def onSubThreadsCheckboxStateChanged(self, checked):
         if self.sub_thread_list.isVisible() and not checked:
             self.console_splitter.real_sizes = self.console_splitter.sizes()
@@ -230,7 +231,7 @@ class IvkConsole(QWidget):
         item = QListWidgetItem(thread['thread_name'], self.sub_thread_list)
         item.thread = thread
         self.sub_thread_list.addItem(item)
-    
+
     def __removeSubThread(self, thread, is_main_thread):
         if is_main_thread:
             self.sub_thread_list.clear()
@@ -265,7 +266,7 @@ class IvkConsole(QWidget):
     ###################################################################################################################
     ########################################### SHOW/HIDE/SETTINGS ####################################################
     ###################################################################################################################
-    
+
     def showEvent(self, event):
         if not hasattr(self.console_splitter, 'real_sizes'):
             self.console_splitter.real_sizes = self.console_splitter.sizes()
@@ -273,16 +274,40 @@ class IvkConsole(QWidget):
             self.line_edit.setVisible(False)
             self.sub_thread_list.setVisible(False)
         super().showEvent(event)
-    
+
     def saveSettings(self):
-        return {'console_sizes' : self.console_splitter.real_sizes}
-    
+        return {'console_sizes': self.console_splitter.real_sizes}
+
     def restoreSettings(self, settings):
         self.console_splitter.real_sizes = settings['console_sizes']
         self.console_splitter.setSizes(self.console_splitter.real_sizes)
         self.pdb_console.setVisible(False)
         self.line_edit.setVisible(False)
-        self.sub_thread_list.setVisible('sub_threads_check_state' in settings and settings['sub_threads_check_state'] == Qt.Checked)
+        self.sub_thread_list.setVisible(
+            'sub_threads_check_state' in settings and settings['sub_threads_check_state'] == Qt.Checked)
+
+    # контекстное меню для консоли
+    def __showContextMenu(self, pos):
+        context_menu = QMenu(self)
+        claer_log_action = QAction(QIcon('res/cleaning.png'), "Очистить лог")
+        save_text_file = QAction(QIcon('res/save_as.png'), "Сохранить лог в файл", self.console)
+        claer_log_action.triggered.connect(self.console.clear)
+        save_text_file.triggered.connect(self.__saveLogConsole)
+        context_menu.addAction(claer_log_action)
+        context_menu.addAction(save_text_file)
+        context_menu.exec(self.mapToGlobal(pos))
+
+    # запись лог из консоли в файл
+    def __saveLogConsole(self):
+        try:
+            save_file = QFileDialog.getSaveFileName(None, 'SaveTextFile', "/", "Text Files (*.txt)")
+            logText = self.console.toPlainText()
+            if save_file[0]:
+                with open(save_file[0], 'w') as file:
+                    file.write(logText)
+        except Exception:
+            from ui.components.commons import Commons
+            Commons.WarningBox('Ошибка', 'Невозможно сохранить файл в данную папку.\nПопробуйте в Домашней директории пользователя.')
 
 
 class CommandLineEdit(QLineEdit):
@@ -298,8 +323,3 @@ class CommandLineEdit(QLineEdit):
             self.clear()
             self.inputEndSignal.emit()
         return super().keyPressEvent(event)
-
-
-
-
-

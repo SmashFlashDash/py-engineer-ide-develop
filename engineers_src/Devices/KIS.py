@@ -131,7 +131,7 @@ class KIS(Device):
 
     # TODO: как использовать
     @classmethod
-    @print_start_and_end(string='КИС: установить измеренный урвоень мощности КПА')
+    @print_start_and_end(string='КИС: установить измеренный уровень мощности КПА')
     def set_KPA_level(cls):
         """Установить найденный ранее уровень мощности КПА КИС для текущего БАРЛ"""
         power = cls.levels_kpa.get(cls.cur)

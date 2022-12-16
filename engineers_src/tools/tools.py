@@ -905,7 +905,7 @@ def controlGetEQ(equation, count=1, period=0, toPrint=True, downBCK=False):
 def controlWaitEQ(equation, time, period=0, toPrint=True, downBCK=False):
     """Тоже что и controlGetEq только закончит выполнение если выполнится условия по всем строкам True"""
     """ПАРСИНГ"""
-    bprint('ОПРОС ТМИ')
+    bprint('ОПРОС ТМИ: %s сек' % time)
     pattern = re.compile(r"""\s?([not\s(]*)?                                        # _operator not and bacwards        
                                 \s?({.+?})                                              # the _cypher
                                 \s?(@[КKНH])?                                           # the _caliber
@@ -919,6 +919,13 @@ def controlWaitEQ(equation, time, period=0, toPrint=True, downBCK=False):
     equations_all = []      # список с обьектами [(_cypher, SimpleEquarion)] в порядке их в выражении
     equations_dict = {}     # cлвоарь с составными ключами {(_cypher, caliber): ''} чобы не запрашивать из бд те же знач
     gotSameType = parse_equation(cyphers, equations_all, equations_dict)
+    # TODO: собрать заранее строку общего выражения
+    main_equation = []
+    for simple_eq in equations_all:
+        simple_eq = simple_eq[1]
+        main_equation.append(' '.join(
+            (simple_eq._open_backw, '%s', simple_eq._cls_backw, simple_eq._log_operator)))
+    main_equation = ' '.join(main_equation)
 
     """ЗАПРОСЫ ИЗ БД"""
     started_query = None
@@ -941,12 +948,8 @@ def controlWaitEQ(equation, time, period=0, toPrint=True, downBCK=False):
         query_result = []
         for simple_eq in equations_all:
             bool_res = simple_eq[1].calculate_db_value()
-            if bool_res is None:
-                query_result.append(False)
-                break
-            else:
-                query_result.append(bool_res)
-        if all(query_result):
+            query_result.append(False) if bool_res is None else query_result.append(bool_res)
+        if eval(main_equation % tuple(query_result)):
             break
     time_duration = datetime.now() - started_query_full
 
@@ -992,6 +995,7 @@ def controlWaitEQ(equation, time, period=0, toPrint=True, downBCK=False):
         if toPrint == 2:
             out += '%-25s%s\n' % ('Исходное выражение:', equation)
             out += '%-25s%s\n' % ('Вычисленное выражение:', main_equation_reparsed)
+            out += '%-25s%s\n' % ('Вычисленное выражение:', main_equation)
             out += '%-25s%s\n' % ('Время опроса БД:', time_duration.total_seconds())
             out += '%-25s%s\n' % (
             'Время опроса БД + вычисления:', (datetime.now() - started_query_full).total_seconds())
