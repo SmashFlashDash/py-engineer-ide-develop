@@ -219,6 +219,10 @@ class TabWidget(QWidget):
             getScriptDataFunc = lambda line: [global_source, line - self.line_correction, self.text(line - self.line_correction - 1).strip()]
         )
 
+        # кнлопки управляющие процессом PyDevDRunner
+        self.stop_button.setEnabled(True)
+        self.pause_button.setEnabled(True)
+
         breakpoints = []
         input_breakpoints = []
         txt_lines = txt.splitlines()
@@ -266,8 +270,8 @@ class TabWidget(QWidget):
 
     def __executionStarted(self):
         self.run_button.setEnabled(False)
-        self.stop_button.setEnabled(True)
-        self.pause_button.setEnabled(True)
+        # self.stop_button.setEnabled(True)
+        # self.pause_button.setEnabled(True)
         self.continue_button.setEnabled(False)
         self.next_button.setEnabled(False)
 
