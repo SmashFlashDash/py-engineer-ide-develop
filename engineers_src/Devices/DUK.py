@@ -545,7 +545,7 @@ def dukZapret(bk, k):
     controlGetEQ(equationDUK(), count=1, period=0, downBCK=True)
     modeRH()
     setInitialStateValues()
-    input('Для продолжения нажмите Enter')
+    inputG('Для продолжения нажмите Продолжить')
     return
 
 
@@ -648,7 +648,7 @@ def nsh0Check(mode, duk_ban_control):
     time.sleep(10)
     print_kr_analizys()
     print('Проверка НШ0 завершена')
-    input('Для продолжения нажмите Enter')
+    inputG('Для продолжения нажмите Продолжить')
     return
 
 
@@ -717,7 +717,7 @@ def emergencyPressureRelease(mode, bpk):
     setTioValue()
 
     print('Проверка срабатывыния МДКР завершена')
-    input('Для продолжения нажмите Enter')
+    inputG('Для продолжения нажмите Продолжить')
     return
 
 
@@ -764,7 +764,7 @@ def heaterFailure(bk, k, bpk):
     dukZapretCheck()
     setInitialStateValues()
     print('Проверка с НШ3{}{} завершена'.format(bk, k))
-    input('Для продолжения нажмите Enter')
+    inputG('Для продолжения нажмите Продолжить')
     return
 
 
@@ -778,7 +778,7 @@ def sublaunch(bk, k, bpk, nsh):
         bk, k, bpk, nsh)
 
     print('Проверка подзапусков ДУК')
-    input('Пауза. Для продолжения нажмите Enter')
+    inputG('Для продолжения нажмите Продолжить')
     RK('ХНАД')
     DI['DI1']['01.01.{}'.format(NGRD_AVTO)]['@H'] = '[0,1]'
     set_5HzTMI_value(K, '[0, 1]')
@@ -811,11 +811,11 @@ def sublaunch(bk, k, bpk, nsh):
         setInitialStateValues()
         controlGetEQ(equationDUK(), count=1, period=0, downBCK=True)
         print('Проверка подзапуска с НШ4{}{} завершена'.format(k, bk))
-        input('Пауза. Для продолжения нажмите Enter')
+        inputG('Для продолжения нажмите Продолжить')
         return
     else:
         yprint('Установите на ЭИБК{} ток разряда ТАД БОЛЬШЕ 1.5 А'.format(bk_num))
-        input('Пауза. Для продолжения нажмите Enter')
+        inputG('Для продолжения нажмите Продолжить')
     return
 
 
@@ -828,7 +828,7 @@ def invalidCathodeMode(bk, k, bpk, nsh):
     Ex.get('ТМИ', '01.04.TAD{}'.format(bk_num), 'НЕКАЛИБР ТЕКУЩ')
     Ex.get('ТМИ', '01.04.STZA{}'.format(bk_num), 'НЕКАЛИБР ТЕКУЩ')
     yprint('Переключите на ЭИБК{} тумблер ТОК ОГРАНИЧЕНИЯ в положение ВКЛ'.format(bk))
-    input('Пауза. Для продолжения нажмите Enter')
+    inputG('Для продолжения нажмите Продолжить')
     SCPICMD(UV['БЦК_СБРОС_ПАМЯТИ'])
     print('Ожидание приведения ДУК в режим РХ')
     rh = diWait('01.01.VYP_UV_KPDU', uvNum(UV['ХДУК_Ц2']), 200)
@@ -885,7 +885,7 @@ def invalidCathodeMode(bk, k, bpk, nsh):
     setInitialStateValues()
     controlGetEQ(equationDUK(), count=1, period=0, downBCK=True)
     print('Проверка срабатывания NSh1{}{} завершена'.format(k, bk))
-    input('Для продолжения нажмите Enter')
+    inputG('Для продолжения нажмите Продолжить')
     return
 
 
@@ -893,7 +893,7 @@ def exchangeInterruption(bk, k, mkpd_kontr):
     print('ПРОВЕРКА НАРУШЕНИЯ ОБМЕНА БЦК и КПДУ')
     if mkpd_kontr == None:
         print('Контроль обмена: 0 -- отключить, 1 -- включить')
-        mkpd_kontr = input('Введите значение - ')
+        mkpd_kontr = inputGGG('mkpd_kontr', title='Введите значение:\nКонтроль обмена: 0 -- отключить, 1 -- включить')
     if mkpd_kontr == '0':
         SCPICMD(UV['ХМКПД_ОТКЛ'])
         print('Выдано УВ на отключение контроля информационного обмена')
@@ -909,7 +909,7 @@ def exchangeInterruption(bk, k, mkpd_kontr):
     while True:
         print("ОСТАНОВКА ОБМЕНА БЦК И КПДУ!")
         SCPICMD(0xE06F, AsciiHex('0x0100 0000 0000 0000'))
-        input('Для продолжения нажмите Enter')
+        inputG('Для продолжения нажмите Продолжить')
         time.sleep(10)
         kpdu_vremya = Ex.get('ТМИ', '01.01.KPDU_VREMYa', 'НЕКАЛИБР ТЕКУЩ')
         time.sleep(3)
@@ -950,7 +950,7 @@ def exchangeInterruption(bk, k, mkpd_kontr):
     print('Установлено предельное время тяги ДУК == {} с'.format(time_pred))
     time.sleep(10)
     setInitialStateValues()
-    input('Для продолжения нажмите Enter')
+    inputG('Для продолжения нажмите Продолжить')
     return
 
 
@@ -1080,7 +1080,7 @@ def cyclogramChoice():
         '4': 'ХДУК_Ц4'
     }
     print(cyclo_dict)
-    return cyclo_dict[input('Введите номер - ')]
+    return cyclo_dict[inputGGG('number', title='Введите номер:\n1-ХДУК_Ц1\n2 - ХДУК_Ц2\n3 - ХДУК_Ц3\n4 - ХДУК_Ц4')]
 
 
 def checkUvList(cyclo_list, uv_list):
@@ -1162,7 +1162,7 @@ def avtoLaunchDuk(bk, k, bpk, *args):
     else:
         rprint('Автоматический режим ДУК == {}'.format(duk_avto))
         print('Остановка проверки')
-        input('Для продолжения нажмите Enter')
+        inputG('Для продолжения нажмите Продолжить')
         return
     config_value = setDukConfigValue_avto(bk, k, bpk)
     Ex.get('ТМИ', '01.01.VYP_UV_KPDU', 'НЕКАЛИБР ТЕКУЩ')
@@ -1249,7 +1249,7 @@ def avtoLaunchDuk(bk, k, bpk, *args):
 
     print('Проверка включения ДУК через ХВКЛ_КДУ завершена')
     yprint('Приведите органы управления на ЭИБК{} в исходное положение'.format(bk[2]))
-    input('Для продолжения нажмите Enter')
+    inputG('Для продолжения нажмите Продолжить')
     return
 
 
@@ -1354,7 +1354,7 @@ def cyclogramDuk(cyclogram_key, *args, bk=None, k=None, bpk=None):
         yprint('Приведите органы управления на ЭИБК{} в исходное положение'.format(bk[2]))
 
     print('Проверка выполнения циклограммы {} завершена'.format(cyclogram_key))
-    input('Для продолжения нажмите Enter')
+    inputG('Для продолжения нажмите Продолжить')
     return
 
 
@@ -1447,7 +1447,7 @@ def manualLaunchDuk(bk, k, bpk, nsh, *args, mkpd_kontr=None):
     else:
         RK('ХНАД')
     yprint('Установите на ЭИБК{} ток разряда ТАД от 4.4 до 4.6 А'.format(bk_num))
-    input('Для продолжения нажмите Enter')
+    inputG('Для продолжения нажмите Продолжить')
     set_5HzTMI_value(NAD, '[28300, 31500]')  # ПРЕДВАРИТЕЛЬНО ПРОВЕРИТЬ ДАННЫЙ КУСОК ПРИ ШТАТНОМ ВКЛЮЧЕНИИ
     set_5HzTMI_value(TAD, '[430, 470]')  # ВОЗМОЖНЫ ПРАВКИ -- СРАЗУ ВЫСТАВИТЬ ЗНАЧЕНИЯ ДЛЯ РЕЖИМА РД
     set_5HzTMI_value(TND, '[0, 20]')
@@ -1510,17 +1510,16 @@ def manualLaunchDuk(bk, k, bpk, nsh, *args, mkpd_kontr=None):
     controlGetEQ(equationDUK(), count=1, period=0, downBCK=True)
     DI['DI1']['01.01.KDU_SOST']['@H'] = '1'
     yprint('Приведите ЭИБК{} в исхожное состояние'.format(bk_num))
-    input('Для продолжения нажмите Enter')
+    inputG('Для продолжения нажмите Продолжить')
     return
 
 
 def setDukConfig():
     print('1 - БК1, 2 - БК2')
-    bk = 'BK' + input('Введите номер - ')
-    print('1 - К1, 2 - К2')
-    k = 'K' + input('Введите номер - ')
-    print('1 - БПК1, 2 - БПК2')
-    bpk = 'BPK' + input('Введите номер - ')
+    ret = inputGGG(['bk', 'k', 'bpk'], 'Введите номер:\n1 - БК1, 2 - БК2\n1 - К1, 2 - К2\n1 - БПК1, 2 - БПК2')
+    bk = 'BK' + ret['bk']
+    k = 'K' + ret['k']
+    bpk = 'BPK' + ret['bpk']
     return bk, k, bpk
 
 
@@ -1533,7 +1532,7 @@ def setBranch():
     }
     print(branch)
     while True:
-        br = input('Введите номер - ')
+        br = inputGGG('num', 'Введите номер\n1 - ПОДЗАПУСК\n2 - НЕВЫПОЛНЕНИЕ\n3 - НАРУШЕНИЕ ОБМЕНА\n0 - None')
         if br in branch.keys():
             return branch[br]
         print('Введено неверное значение')
@@ -1548,7 +1547,7 @@ def setNSh():
     }
     print(nsh_dict)
     while True:
-        nsh = input('Введите номер - ')
+        nsh = inputGGG('nsh', title='Введите номер\n1 - NSh1\n3 - NSh3\n4 - NSh4\n0 - None')
         if nsh in nsh_dict.keys():
             return nsh_dict[nsh]
         print('Введено неверное значение')
@@ -1562,7 +1561,7 @@ def setCycloBranch():
     }
     print(cyclo_branch_dict)
     while True:
-        cyclo_br = input('Введите номер - ')
+        cyclo_br = inputGGG('cyclo_br', title='Введите номер:\n1 - ПРЕРЫВАНИЕ\n2 - НЕВЫПОЛНЕНИЕ\n0 - None')
         if cyclo_br in cyclo_branch_dict.keys():
             return cyclo_branch_dict[cyclo_br]
         print('Введено неверное значение')
@@ -1576,7 +1575,7 @@ def setNsh0Mode():
     }
     print(nsh0_mode)
     while True:
-        mode = input('Введите номер - ')
+        mode = inputGGG('mode', 'Введите номер:\nВключите или отключите контроль НШ0\n1 - ВКЛ\n2 - ОТКЛ')
         if mode in nsh0_mode.keys():
             return nsh0_mode[mode]
         print('Введено неверное значение')
@@ -1590,7 +1589,7 @@ def setDukZapretKontr():
     }
     print(duk_zapret_kontr)
     while True:
-        mode = input('Введите номер - ')
+        mode = inputGGG('mode', title='Введите номер:\nВключите или отключите контроль запрета ДУК:\n1 - ВКЛ\n2 - ОТКЛ')
         if mode in duk_zapret_kontr.keys():
             return duk_zapret_kontr[mode]
         print('Введено неверное значение')
@@ -1604,7 +1603,7 @@ def setMdkrKontr():
     }
     print(mdkr_kontr)
     while True:
-        mode = input('Введите номер - ')
+        mode = inputGGG('mode' 'Введите номер\nВключите или отключите контроль МДКР\n1 - ВКЛ\n2 - ОТКЛ')
         if mode in mdkr_kontr.keys():
             return mdkr_kontr[mode]
         print('Введено неверное значение')
@@ -1618,7 +1617,7 @@ def setBpkNum():
     }
     print(bpk)
     while True:
-        bpk_num = input('Введите номер - ')
+        bpk_num = inputGGG('bpk_num', 'Введите номер - ')
         if bpk_num in bpk.keys():
             return bpk[bpk_num]
         print('Введено неверное значение')
@@ -1674,7 +1673,7 @@ class DUK(Device):
         SICCELL('Импульс', out=[0x01, 0x00])  # Исходное ЭИБК1
         time.sleep(5)
         SICCELL('Импульс', out=[0x80, 0x00])  # Исходное ЭИБК2
-        pa = input('Выставить опрос ПА 1. 0 - нет, 1 - да')
+        pa = inputGGG('pa', 'Выставить опрос:\nПА 1. 0 - нет, 1 - да')
         if pa == '1':
             PA(1)
             time.sleep(10)
@@ -1688,7 +1687,7 @@ class DUK(Device):
         print('Текущий модуль КПДУ == {}'.format(kpdu_mod))
         print('Перед полной проверкой ДУК рекомендуется начинать проверку с первого модуля')
         print('Переключить модуль? 0 - нет, 1 - да')
-        switch_module = input('Введите номер -')
+        switch_module = inputGGG('switch_module','Переключить модуль\n0 - нет\n1 - да')
         if switch_module == '1':
             switchModuleKpdu()
         time_pred = 600
@@ -1710,7 +1709,7 @@ class DUK(Device):
         time_pred = 7200
         SCPICMD(UV['ХДУК_ТВ_ПРЕД'], AsciiHex('0x{} 0000 0000 0000'.format(s2h(time_pred))))
         yprint('Сбросить НШ? 0 - нет, 1 - да')
-        nsh_sbros = input('Введите номер -')
+        nsh_sbros = inputGGG('nsh_sbros','Введите номер\nСбросить НШ?\n0 - нет\n1 - да')
         if nsh_sbros == '1':
             clearNsh()
         SCPICMD(0x1051, AsciiHex('0x0000'))  # опрос ДИ2
@@ -1725,7 +1724,7 @@ class DUK(Device):
         SCPICMD(0x1071, AsciiHex('0x0200 0000 0000 0000'))  # ХКАТОД_СБРОС БК2К1
         SCPICMD(0x1071, AsciiHex('0x0300 0000 0000 0000'))  # ХКАТОД_СБРОС БК2К2
         yprint('Отключить КПДУ? 0 - нет, 1 - да')
-        kpdu_off = input('Введите номер -')
+        kpdu_off = inputGGG('kpdu_off', 'Отключить КПДУ? 0 - нет, 1 - да')
         if kpdu_off == '1':
             #    SCPICMD(0xE005, AsciiHex('0x011D 0000 0000 0000')) #отключить КПДУ сил
             SCPICMD(UV['КПДУ_СИЛ_ОТКЛ'])
@@ -1738,7 +1737,7 @@ class DUK(Device):
             diWait('04.01.beKPDUU12', 0, 20)
 
         yprint('Отключить СПУ 28В? 0 - нет, 1 - да')
-        spu_off = input('Введите номер -')
+        spu_off = inputGGG('spu_off', 'Отключить СПУ 28В? 0 - нет, 1 - да')
         if spu_off == '1':
             SCPICMD(UV['СПУ_28В_ОТКЛ'])
             print('Выдано УВ на отключение шины СПУ 28В')
@@ -1796,7 +1795,7 @@ class DUK(Device):
 #     diWait('05.01.beSPU12', 1, 10)
 #
 # yprint('Включите стойку КИБК')
-# input('Для продолжения нажмите Enter')
+# inputG('Для продолжения нажмите Продолжить')
 # SICCELL('Импульс', out=[0x01, 0x00])  # Исходное ЭИБК1
 # time.sleep(5)
 # SICCELL('Импульс', out=[0x80, 0x00])  # Исходное ЭИБК2
