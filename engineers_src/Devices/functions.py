@@ -111,9 +111,10 @@ def executeWaitTMI(*args, pause=None, stopFalse=True, **kwargs):
     """Вычислить выражние ТМИ с паузой перед опросом"""
     if 'period' not in kwargs:
         kwargs['period'] = DB.pause
-    if pause is None:
-        pause = DB.pause
-    sleep(pause)
+    # пауза чтобы в бд изменились зачения
+    # if pause is None:
+    #     pause = DB.pause
+    # sleep(pause)
     result, dict_cpyphers = controlWaitEQ(*args, **kwargs)
     if stopFalse and not result:
         rprint('НЕ НОРМА: проверь ДИ')
