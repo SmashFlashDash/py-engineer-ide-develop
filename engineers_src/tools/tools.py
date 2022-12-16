@@ -346,12 +346,16 @@ class ScriptQDialog(QDialog):
         self.headerLayout.addLayout(btns_layout)
 
     def addInputFields(self, params):
-        for param_name in params:
+        filedsLayout = QGridLayout()
+        self.headerLayout.addLayout(filedsLayout)
+        for row_num, param_name in enumerate(params):
             lineEdit = QLineEdit()
             self.inputFields[param_name] = lineEdit
             label = QLabel(param_name)
             label.setStyleSheet("font: 10pt Consolas, DejaVu Sans Mono;")
-            self.headerLayout.addLayout(self.__makeHLayout((label, lineEdit), align=Qt.AlignLeft))
+            filedsLayout.addWidget(label, row_num, 1)
+            filedsLayout.addWidget(lineEdit, row_num, 2)
+            # self.headerLayout.addLayout(self.__makeHLayout((label, lineEdit), align=Qt.AlignLeft))
 
     def fixHeight(self):
         self.adjustSize()
