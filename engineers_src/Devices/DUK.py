@@ -1,23 +1,9 @@
 from engineers_src.Devices.Device import Device
 from engineers_src.Devices.functions import print_start_and_end, sendFromJson, executeTMI, doEquation
 from engineers_src.tools.ivk_script_tools import *
-from engineers_src.tools.tools import SCPICMD, AsciiHex, KPA, SOTC, SKPA, Ex, sleep, SICCELL, s2h
+from engineers_src.tools.tools import SCPICMD, AsciiHex, KPA, SOTC, SKPA, Ex, sleep, SICCELL, s2h, b2h, Ex
 import time
-from cpi_framework.utils.basecpi_abc import *
-from ivk import config
-from ivk.scOMKA.simplifications import SCPICMD
-from ivk.scOMKA.simplifications import SICCELL
-from ivk.cpi_framework_connections import b2h
-from ivk.cpi_framework_connections import s2h
-
-Ex = config.get_exchange()
-redis_dp_get = config.getData  # вторая бд redis
-redis_dp_set = config.updData  # вторая бд redis
-redis_dp_inc = config.incData  # вторая бд redis
-from time import sleep
-from engineers_src.tools.ivk_script_tools import *
-
-'''Остальные импорты'''
+# from cpi_framework.utils.basecpi_abc import *
 from collections import OrderedDict
 from copy import deepcopy
 
