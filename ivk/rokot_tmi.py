@@ -105,7 +105,8 @@ class RokotTmi:
     #value_type == 'КАЛИБР ТЕКУЩ', 'КАЛИБР ИНТЕРВАЛ', 'НЕКАЛИБР ТЕКУЩ', 'НЕКАЛИБР ИНТЕРВАЛ'
     @staticmethod
     def getTmi(param_name, value_type):
-        if value_type not in ('КАЛИБР ТЕКУЩ', 'КАЛИБР ИНТЕРВАЛ', 'НЕКАЛИБР ТЕКУЩ', 'НЕКАЛИБР ИНТЕРВАЛ'):
+        if value_type not in ('КАЛИБР ТЕКУЩ', 'КАЛИБР ИНТЕРВАЛ', 'НЕКАЛИБР ТЕКУЩ', 'НЕКАЛИБР ИНТЕРВАЛ',
+                              'КАЛИБР ФУЛ', 'НЕКАЛИБР ФУЛ'):
             raise Exception('Выбран неизвестный тип получаемых данных "%s"' % value_type)
         RokotTmi.connectDb()
         tmsid = config.getData('rokot_current_tmsid')
@@ -133,14 +134,20 @@ class RokotTmi:
                 res = res[0]['value'] if 'НЕКАЛИБР' in value_type else res[0]['calibrated_value']
             else:
                 res = None
-        else:
+        elif 'ИНТЕРВАЛ' in value_type:
             last_tmid = config.getData("%d_%s" % (threading.get_ident(), param_name))
             if last_tmid is None:
                 raise Exception('Не удалось обнаружить предыдущий запрос параметра "%s"' % param_name)
             cur.execute("SELECT value FROM tm WHERE tmsid = %s AND tmid > %s AND value->>'name' = %s ORDER BY tmid ASC", (tmsid, last_tmid, param_name))
             res = []
             for row in cur:
-                res.append(row[0]['value'] if 'НЕКАЛИБР' in value_type else row[0]['calibrated_value']) 
+                res.append(row[0]['value'] if 'НЕКАЛИБР' in value_type else row[0]['calibrated_value'])
+        elif 'ФУЛ' in value_type:
+            cur.execute("SELECT value, tmid, time FROM tm WHERE tmsid = %s AND value->>'name' = %s ORDER BY tmid ASC", (tmsid, param_name))
+            res = {'values': [], 'time': []}
+            for row in cur:
+                res['values'].append(row[0]['values'] if 'НЕКАЛИБР' in value_type else row[0]['calibrated_value'])
+                res['time'].append(row[2])
         cur.close()
         return res
 
@@ -152,8 +159,10 @@ class RokotTmi:
         for param_name, value_type in params.items():
             if value_type not in ('КАЛИБР', 'НЕКАЛИБР'):
                 raise Exception('Выбран неизвестный тип получаемых данных "%s"' % value_type)
-            if field_name == 'ИНТЕРВАЛ':
+            if field_name in 'ИНТЕРВАЛ':
                 res[param_name] = []
+            elif field_name in 'ФУЛ':
+                res[param_name] = {'values': [], 'time': []}
             else:
                 res[param_name] = None
         RokotTmi.connectDb()
@@ -161,7 +170,11 @@ class RokotTmi:
         if tmsid is None:
             raise Exception("Не выбран сеанс для получения данных ТМИ")
 
-        if field_name == 'ИНТЕРВАЛ':
+        if field_name == "ТЕКУЩ":
+            query = "SELECT DISTINCT ON(tmparamsid) value, tmid FROM tm " \
+                    "WHERE tmsid = %s AND value->>'name' IN %s " \
+                    "ORDER BY tmparamsid, tmid DESC " % (tmsid, str(tuple(params.keys())).replace(',)', ')'))
+        elif field_name == 'ИНТЕРВАЛ':
             query = "SELECT value, tmid FROM tm WHERE tmsid = %s AND (" % tmsid
             tmp_query = []
             for param_name in params.keys():
@@ -170,16 +183,14 @@ class RokotTmi:
                     raise Exception('Не удалось обнаружить предыдущий запрос параметра "%s"' % param_name)
                 tmp_query.append("(tmid > %s AND value->>'name' = '%s')" % (last_tmid, param_name))
             query += ' OR '.join(tmp_query) + ") ORDER BY tmid ASC"
-        else:
-            query = "SELECT DISTINCT ON(tmparamsid) value, tmid FROM tm " \
+        elif field_name == "ФУЛ":
+            query = "SELECT value, tmid, time FROM tm " \
                     "WHERE tmsid = %s AND value->>'name' IN %s " \
-                    "ORDER BY tmparamsid, tmid DESC " % (tmsid, str(tuple(params.keys())).replace(',)', ')'))
-
+                    "ORDER BY tmparamsid, tmid ASC " % (tmsid, str(tuple(params.keys())).replace(',)', ')'))
         cur = RokotTmi.db_connection.cursor()
         cur.execute(query)
         for row in cur:
             config.updData("%d_%s" % (threading.get_ident(), row[0]['name']), row[1])
-
             ##################### DEBUG
             # if field_name != 'ИНТЕРВАЛ':
             #     config.updData("%d_%s" % (threading.get_ident(), row[0]['name']), 648681700)
@@ -187,8 +198,11 @@ class RokotTmi:
             #       config.getData("%d_%s" % (threading.get_ident(), row[0]['name']))))
 
             value = row[0]['value'] if 'НЕКАЛИБР' in params[row[0]['name']] else row[0]['calibrated_value']
-            if field_name == 'ИНТЕРВАЛ':
+            if field_name in 'ИНТЕРВАЛ':
                 res[row[0]['name']].append(value)
+            if field_name in 'ФУЛ':
+                res[row[0]['name']]['values'].append(value)
+                res[row[0]['name']]['time'].append(row[2])
             else:
                 res[row[0]['name']] = value
         cur.close()
