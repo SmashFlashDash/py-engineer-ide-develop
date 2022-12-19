@@ -6,6 +6,7 @@ from cpi_framework.utils.basecpi_abc import BaseCpi
 from cpi_framework.spacecrafts.omka.otc import OTC
 
 from ivk import config as conf
+from ivk import config
 from ivk.global_log import GlobalLog
 from ivk.log_db import DbLog
 from ivk.abstract import AbstractExchange
@@ -18,8 +19,6 @@ from ivk.scOMKA.widget_scpi import ScpiWidget
 from ivk.scOMKA.simplifications import getSimpleCommandsCPI, getSimpleCommandsOTC
 
 from ivk.rokot_tmi import RokotTmi, RokotWidget
-
-
 
 
 class Exchange(AbstractExchange):
@@ -588,7 +587,9 @@ res = Ex.wait('', '{ММ_X1.ЗапрТок} < 6.3 and {ММ_Z2.ЗапрНапр�
             raise Exception('Неверный пункт назначения "%s"' % queue_label)
 
         HEX = conf.getData('HEX')
-        PRINT = conf.getData('PRINT')
+        Log = conf.getData('Log')
+        DelayCheck = conf.getData('DelayCheck')
+        DelayTime = conf.getData('DelayTime')
 
         local_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         local_sock_udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -606,8 +607,11 @@ res = Ex.wait('', '{ММ_X1.ЗапрТок} < 6.3 and {ММ_Z2.ЗапрНапр�
                 outdata = data.asByteStream()
                 for out in outdata:
                     stream = KPA('Отпр-КПИ', out).stream
-                    if PRINT:
-                        print('{#ffffff}Отправка {#f7f68f}%s {#ffffff}в {#bad9ff}КПА' % data.getDescription()['translation'])
+                    cmdHex = '0x{0:0{1}X}'.format(data.params.get('cmds')[0]['cmd'], 4) if data.params.get(
+                        'cmds') else ''  # код УВ
+                    if Log:
+                        print('{#ffffff}Отправка {#f7f68f}%s %s {#ffffff}в {#bad9ff}КПА' % (data.getDescription()[
+                                                                                                'translation'], cmdHex))
                     if HEX:
                         print('{#0bbeea}%s' % stream.hex())
                     DbLog.log(Exchange.ivk_file_name, 'Отправка %s в КПА' % data.getDescription()['translation'], False,
@@ -615,8 +619,12 @@ res = Ex.wait('', '{ММ_X1.ЗапрТок} < 6.3 and {ММ_Z2.ЗапрНапр�
                     local_sock.sendall(dest + stream)
                     local_sock_udp.sendto(stream, kpa_adress)
             elif isinstance(data, OTC):
+                # для отсчёта времени начала или продления сеанса
+                if data.otc in (1, 2, 3, 4, 5, 95):
+                    time = datetime.today().strftime("%Y:%m:%d:%H:%M:%S")
+                    config.updData('StartSession', time)
                 stream = KPA('Отпр-РКо' if data.isOpenOTC() else 'Отпр-РКз', data.asByteStreamKpa()).stream
-                if PRINT:
+                if Log:
                     print('{#ffffff}Отправка {#f7f68f}%s-%d {#ffffff}в {#bad9ff}КПА' % (
                         'РКо' if data.isOpenOTC() else 'РКз', data.otc))
                 if HEX:
@@ -627,7 +635,7 @@ res = Ex.wait('', '{ММ_X1.ЗапрТок} < 6.3 and {ММ_Z2.ЗапрНапр�
                 local_sock.sendall(dest + stream)
                 local_sock_udp.sendto(stream, kpa_adress)
             elif isinstance(data, KPA):
-                if PRINT:
+                if Log:
                     print('{#ffffff}Отправка {#ffe2ad}%s (%d) {#ffffff}в {#bad9ff}КПА' % (data.name, data.msg['id']))
                 if HEX:
                     print('{#0bbeea}%s' % data.stream.hex())
@@ -637,11 +645,18 @@ res = Ex.wait('', '{ММ_X1.ЗапрТок} < 6.3 and {ММ_Z2.ЗапрНапр�
                 local_sock_udp.sendto(data.stream, kpa_adress)
             else:
                 raise Exception('Неопределен тип отправляемых данных "%s"' % repr(type(data)))
+
+            # пауза перед выдачей следующей КПИ, иначе КПИМД не успевает обрабатываться в БЦК
+            if DelayCheck and DelayTime:
+                print('{#A600A6}'+'Включена задержка выдачи КПИ: ' + DelayTime + ' c')
+                import time
+                time.sleep(float(DelayTime))
+
         elif queue_label == 'Ячейка ПИ':
             if isinstance(data, ICCELL):
-                if PRINT:
+                if Log:
                     print('{#ffffff}Отправка {#ffe2ad}%s (%d) {#ffffff}в {#b9a9de}Ячейку ПИ' % (
-                    data.name, data.msg['id']))
+                        data.name, data.msg['id']))
                 DbLog.log(Exchange.ivk_file_name, 'Отправка %s (%d) в Ячейку ПИ' % (data.name, data.msg['id']), False,
                           Exchange.ivk_file_path, str(data.stream))
                 if HEX:
@@ -655,7 +670,7 @@ res = Ex.wait('', '{ММ_X1.ЗапрТок} < 6.3 and {ММ_Z2.ЗапрНапр�
             if isinstance(data, SCPI):
                 # Проверка отправляемого сообщения в свзяке с источником питания (макс вольтаж, макс ток)
                 data.deviceCheck(queue_label)
-                if PRINT:
+                if Log:
                     print('{#ffffff}Отправка {#ffe2ad}%s (%d) {#ffffff}в {#bdffc2}%s' % (
                         data.name, data.msg['id'], queue_label))
                 if HEX:
@@ -676,8 +691,8 @@ res = Ex.wait('', '{ММ_X1.ЗапрТок} < 6.3 and {ММ_Z2.ЗапрНапр�
             raise Exception('Неверный источник "%s"' % queue_label)
 
         DbLog.log(Exchange.ivk_file_name, 'Получение данных из %s, %s->%s' % (
-           queue_label if queue_label != '' else 'источника питания', msg_name, field_name), False,
-                 Exchange.ivk_file_path)
+            queue_label if queue_label != '' else 'источника питания', msg_name, field_name), False,
+                  Exchange.ivk_file_path)
 
         if queue_label == 'ТМИ':
             if isinstance(msg_name, str):

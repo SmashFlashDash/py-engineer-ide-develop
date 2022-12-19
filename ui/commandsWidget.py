@@ -73,6 +73,10 @@ class CommandsWidget(QDockWidget):
         self.exchange_combo = QComboBox(self)
         self.exchange_combo.setEnabled(False)
 
+        self.delay_combo = QComboBox(self)
+        self.delay_combo.setEnabled(True)
+        self.delay_combo.addItems(['0', '0.5', '1', '1.5', '2.0'])
+
         self.simple_checkbox = QCheckBox('Упрощенный', self)
         self.simple_checkbox.setChecked(True)
         self.simple_checkbox.setVisible(False)
@@ -90,11 +94,17 @@ class CommandsWidget(QDockWidget):
         self.openFile_button.setEnabled(False)
         self.openFile_button.setFixedWidth(80)
 
+        self.delay_checkbox = QCheckBox('Задержка выдачи КПИ', self)
+        self.delay_checkbox.setChecked(False)
+        self.delay_checkbox.setVisible(True)
+
+
         buttons_widget = QWidget(self)
         lb = QBoxLayoutBuilder(buttons_widget, QBoxLayout.TopToBottom, spacing=6)
         lb.hbox(spacing=6).add(self.exchange_checkbox).add(self.exchange_combo).stretch().add(
             self.openFile_button).add(self.insert_button).add(self.run_button).fixW(100).up()
         lb.hbox(spacing=6).add(self.hex_checkbox).add(self.log_checkbox).add(self.simple_checkbox).stretch().up()
+        lb.hbox(spacing=6).add(self.delay_checkbox).add(self.delay_combo).stretch().up()
 
 
         self.info_widget = QTextEdit()
@@ -127,6 +137,9 @@ class CommandsWidget(QDockWidget):
 
         self.hex_checkbox.clicked.connect(lambda: updData('HEX', self.hex_checkbox.isChecked()))
         self.log_checkbox.clicked.connect(lambda: updData('Log', self.log_checkbox.isChecked()))
+        self.delay_checkbox.clicked.connect(lambda: (updData('DelayCheck', self.delay_checkbox.isChecked()), updData('DelayTime', self.delay_combo.currentText())))
+        self.delay_combo.activated.connect(lambda: updData('DelayTime', self.delay_combo.currentText()))
+
 
     def getCommand(self):
         if not self.tree_widget.currentItem() or 'name' not in self.tree_widget.currentItem().command:
