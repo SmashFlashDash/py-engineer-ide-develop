@@ -31,7 +31,7 @@ from time import sleep
 '''Остальные импорты'''
 from datetime import datetime, timedelta
 from enum import Enum
-import re
+import re, csv
 import threading
 from PyQt5.QtWidgets import QApplication, QMessageBox, QPushButton, QDialogButtonBox, QSizePolicy, QBoxLayout, QLabel, \
     QDialog, QVBoxLayout, QStyle, QLineEdit, QHBoxLayout, QWidget, QBoxLayout, QDialogButtonBox, QGridLayout
@@ -517,6 +517,41 @@ def ExGet(*args):
 #     dt_diff_bytes += struct.pack("%s%s" % (_ord[order], _type[type]), dt_diff).hex()
 #     print('Секунд с 2000: %s\nВ байтах %s %s: %s' % (dt_diff, type, order, dt_diff_bytes))
 #     return dt_diff_bytes
+
+def writeFullToCsv(filename, vals_from_ExGet_Full):
+    # в orderedDict
+    # to_odict_keys = vals.keys()
+    # to_odict_vals = [(key, vals[key]) for key in to_odict_keys]
+    # newdict = OrderedDict(to_odict_vals)
+    if filename.count('/') > 0:
+        os.makedirs(os.path.dirname(filename), 0o775, exist_ok=True)
+    with open(filename, 'w', newline='') as f:
+        # все массивы равной длинны
+        maxlen = 0
+        for item in vals_from_ExGet_Full.values():
+            for x in item.values():
+                if len(x) > maxlen:
+                    maxlen = len(x)
+        for item in vals_from_ExGet_Full.values():
+            for x in item.values():
+                if len(x) < maxlen:
+                    x.extend([None] * (maxlen - len(x)))
+        # сплитануть в массивы построчно
+        fieldnames = []
+        keys = vals_from_ExGet_Full.keys()
+        for x in keys:
+            fieldnames.append('time_' + x)
+            fieldnames.append(x)
+        towrite_columns = [fieldnames]
+        for idx in range(0, maxlen):
+            towrite_columns.append([])
+            for x in keys:
+                towrite_columns[-1].append(vals_from_ExGet_Full[x]['time'][idx])
+                towrite_columns[-1].append(vals_from_ExGet_Full[x]['values'][idx])
+        # записать в csv
+        writer = csv.writer(f, delimiter=';')
+        for row in towrite_columns:
+            writer.writerow(row)
 
 
 # TODO: добавить тестов на поле value_ref

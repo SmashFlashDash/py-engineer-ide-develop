@@ -15,41 +15,47 @@ vals = Ex.get('ТМИ', '14.00.writepointerAllways', 'КАЛИБР ФУЛ')
 vals = Ex.get('ТМИ', {'14.00.writepointerAllways': "КАЛИБР", '14.00.readpointerSession': "НЕКАЛИБР"}, 'ФУЛ')
 # print(vals)
 
-
-# TODO: вручную фомратирвоать файл потом
 import csv
-from _collections import OrderedDict
-with open('excel.csv', 'w', newline='') as f:
+import os
+
+
+def writeFullToCsv(filename, vals_from_ExGet_Full):
     # в orderedDict
     # to_odict_keys = vals.keys()
     # to_odict_vals = [(key, vals[key]) for key in to_odict_keys]
     # newdict = OrderedDict(to_odict_vals)
-    # все массивы сделаь равной длинны
-    maxlen = 0
-    for item in vals.values():
-        for x in item.values():
-            if len(x) > maxlen:
-                maxlen = len(x)
-    for item in vals.values():
-        for x in item.values():
-            if len(x) < maxlen:
-                x.extend([None] * (maxlen - len(x)))
-    # сплитануть в массив построчно
-    fieldnames = []
-    keys = vals.keys()
-    for x in keys:
-        fieldnames.append('time_' + x)
-        fieldnames.append(x)
-    towrite_columns = [fieldnames]
-    for idx in range(0, maxlen):
-        towrite_columns.append([])
+    if filename.count('/') > 0:
+        os.makedirs(os.path.dirname(filename), 0o775, exist_ok=True)
+    with open(filename, 'w', newline='') as f:
+        # все массивы равной длинны
+        maxlen = 0
+        for item in vals_from_ExGet_Full.values():
+            for x in item.values():
+                if len(x) > maxlen:
+                    maxlen = len(x)
+        for item in vals_from_ExGet_Full.values():
+            for x in item.values():
+                if len(x) < maxlen:
+                    x.extend([None] * (maxlen - len(x)))
+        # сплитануть в массивы построчно
+        fieldnames = []
+        keys = vals_from_ExGet_Full.keys()
         for x in keys:
-            towrite_columns[-1].append(vals[x]['time'][idx])
-            towrite_columns[-1].append(vals[x]['values'][idx])
-    # записать в csv
-    writer = csv.writer(f, delimiter=';')
-    for row in towrite_columns:
-        writer.writerow(row)
+            fieldnames.append('time_' + x)
+            fieldnames.append(x)
+        towrite_columns = [fieldnames]
+        for idx in range(0, maxlen):
+            towrite_columns.append([])
+            for x in keys:
+                towrite_columns[-1].append(vals_from_ExGet_Full[x]['time'][idx])
+                towrite_columns[-1].append(vals_from_ExGet_Full[x]['values'][idx])
+        # записать в csv
+        writer = csv.writer(f, delimiter=';')
+        for row in towrite_columns:
+            writer.writerow(row)
+
+
+writeFullToCsv('excel.csv', vals)
 
 
 
