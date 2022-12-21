@@ -518,6 +518,26 @@ def ExGet(*args):
 #     print('Секунд с 2000: %s\nВ байтах %s %s: %s' % (dt_diff, type, order, dt_diff_bytes))
 #     return dt_diff_bytes
 
+
+def get_byte(started_bit, bits_objs):
+    """Собирает байт из бит по именам переменных в bits_objs"""
+    # TODO: добавить что вместо started_bit передать список бит
+    search_num = re.findall('[0-9]+', started_bit)[-1]
+    search_pref = started_bit[:started_bit.rfind(search_num)]
+    byte = 0
+    for byte_num in range(0, 8):
+        part = '%s%s' % (search_pref, int(search_num) + byte_num)
+        bit_val = None
+        for bit_key in list(bits_objs.keys()):
+            if bit_key.startswith(part):
+                bit_val = bits_objs.pop(bit_key)
+                break
+        if bit_val is None:
+            raise Exception('нет такого бита в словаре')
+        byte = byte | (bit_val << byte_num)
+    return byte
+
+
 def writeFullToCsv(filename, vals_from_ExGet_Full):
     # в orderedDict
     # to_odict_keys = vals.keys()
