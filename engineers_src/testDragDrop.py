@@ -17,6 +17,7 @@ vals = Ex.get('ТМИ', {'14.00.writepointerAllways': "КАЛИБР", '14.00.rea
 
 import csv
 import os
+from datetime import datetime
 
 
 def writeFullToCsv(filename, vals_from_ExGet_Full):
@@ -47,8 +48,17 @@ def writeFullToCsv(filename, vals_from_ExGet_Full):
         for idx in range(0, maxlen):
             towrite_columns.append([])
             for x in keys:
-                towrite_columns[-1].append(vals_from_ExGet_Full[x]['time'][idx])
-                towrite_columns[-1].append(vals_from_ExGet_Full[x]['values'][idx])
+                val = vals_from_ExGet_Full[x]['values'][idx]
+                if isinstance(val, float):
+                    val = str(val).replace('.', ',')
+                elif isinstance(val, str) and val.endswith('.000'):
+                    val = val[:-4]
+                time = vals_from_ExGet_Full[x]['time'][idx]
+                # TODO: если из бд значение < 0 будет ошибка
+                # time = str(vals_from_ExGet_Full[x]['time'][idx]).replace('.', ',')
+                time = datetime.fromtimestamp(int(time)).strftime("%Y:%m:%d %H:%M:%S")
+                towrite_columns[-1].append(time)
+                towrite_columns[-1].append(val)
         # записать в csv
         writer = csv.writer(f, delimiter=';')
         for row in towrite_columns:
