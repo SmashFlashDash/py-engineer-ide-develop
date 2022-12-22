@@ -1,6 +1,6 @@
 from engineers_src.Devices.Device import Device
 from engineers_src.Devices.BCK import BCK
-from engineers_src.Devices.functions import print_start_and_end, sendFromJson, executeTMI, doEquation
+from engineers_src.Devices.functions import print_start_and_end, sendFromJson, executeTMI, executeWaitTMI, doEquation
 from engineers_src.tools.ivk_script_tools import *
 from engineers_src.tools.tools import SCPICMD, config, AsciiHex, KPA, SOTC, SKPA, Ex, sleep
 from lib.tabulate.tabulate import tabulate
@@ -75,15 +75,18 @@ class KSO(Device):
         # sendFromJson(SCPICMD, 0xE114, AsciiHex('0x4400 0000 0000 0000'), describe='Отключить ЦНФ')  # Отключить ЦНФ
         sendFromJson(SCPICMD, 0xE004, AsciiHex('0x0209 0000 0000 0000'))  # Включить КСО + обмен
         bprint(':::Ждем 60 сек 00.01.ARO == 15200 ')
-        if not Ex.wait('ТМИ', '{00.01.ARO.НЕКАЛИБР} == 15200', 60):  # ждем КСО включился
-            rprint('00.01.ARO == 15200')
-            inputG('00.01.ARO не == 15200')
-        else:
-            gprint('00.01.ARO == 15200')
-        sendFromJson(SCPICMD, 0x0082, AsciiHex('0x0100 0000'), describe='Фейк мод', pause=10)  # Фейк мод
-        executeTMI("{00.01.fakeAocsMode}@H == 1")  # Ex.wait('ТМИ', '{00.01.fakeAocsMode} == 1', 10)
-        sendFromJson(SCPICMD, 0x0064, AsciiHex('0x0300 0000'), describe='Перейти 2ЗКТ', pause=10)  # перейти в 2ЗКТ для ЗД
-        executeTMI("{00.01.mode}@H == 3 and {00.01.submode}@H == 31")  # Ex.wait('ТМИ', '{00.01.mode.НЕКАЛИБР} == 3 and {00.01.submode.НЕКАЛИБР} == 31', 10)
+        # if not Ex.wait('ТМИ', '{00.01.ARO.НЕКАЛИБР} == 15200', 60):  # ждем КСО включился
+        #     rprint('00.01.ARO == 15200')
+        #     inputG('00.01.ARO не == 15200')
+        # else:
+        #     gprint('00.01.ARO == 15200')
+        executeWaitTMI("{00.01.fakeAocsMode}@H == 1", 60)
+        sendFromJson(SCPICMD, 0x0082, AsciiHex('0x0100 0000'), describe='Фейк мод')  # Фейк мод
+        # executeTMI("{00.01.fakeAocsMode}@H == 1")  # Ex.wait('ТМИ', '{00.01.fakeAocsMode} == 1', 10)
+        executeWaitTMI("{00.01.fakeAocsMode}@H == 1", 20)
+        sendFromJson(SCPICMD, 0x0064, AsciiHex('0x0300 0000'), describe='Перейти 2ЗКТ')  # перейти в 2ЗКТ для ЗД
+        # executeTMI("{00.01.mode}@H == 3 and {00.01.submode}@H == 31")  # Ex.wait('ТМИ', '{00.01.mode.НЕКАЛИБР} == 3 and {00.01.submode.НЕКАЛИБР} == 31', 10)
+        executeWaitTMI("{00.01.mode}@H == 3 and {00.01.submode}@H == 31", 20)
         # первичный опрос ТМИ
         # if ask_TMI:
         #     prevLength = len(cls.di)

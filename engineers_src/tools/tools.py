@@ -972,9 +972,11 @@ def controlGetEQ(equation, count=1, period=0, toPrint=True, downBCK=False):
 
 # TODO: переделать на таймер по time, если gotSameType опросить больше одного раза
 #  делать проверку последних значений при опросе выражений
-def controlWaitEQ(equation, time, period=0, toPrint=True, downBCK=False):
+def controlWaitEQ(equation, time, period=1, toPrint=True, downBCK=False):
     """Тоже что и controlGetEq только закончит выполнение если выполнится условия по всем строкам True"""
     """ПАРСИНГ"""
+    if period < 1:
+        period = 1
     bprint('ОПРОС ТМИ: %s сек' % time)
     pattern = re.compile(r"""\s?([not\s(]*)?                                        # _operator not and bacwards        
                                 \s?({.+?})                                              # the _cypher
@@ -1030,6 +1032,7 @@ def controlWaitEQ(equation, time, period=0, toPrint=True, downBCK=False):
     main_equation_reparsed = []
     for simple_eq in equations_all:
         simple_eq = simple_eq[1]
+        simple_eq.all_any_operator = AnyAllType.ANY
         bools, texts = simple_eq.calculate_db_values()
         rows_text.append(texts)
         rows_bools.append(bools)
