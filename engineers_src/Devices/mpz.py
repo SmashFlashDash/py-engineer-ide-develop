@@ -5,6 +5,7 @@ from engineers_src.Devices.Device import Device
 from engineers_src.Devices.functions import print_start_and_end, sendFromJson, executeTMI, doEquation
 from engineers_src.tools.ivk_script_tools import *
 from engineers_src.tools.tools import SCPICMD, AsciiHex, KPA, SOTC, SKPA, Ex, sleep, OBTS,CPIMD, ClassInput
+input = ClassInput.getInputFoo()
 
 #time+4c
 def vklMROD1(time):
@@ -373,7 +374,6 @@ def vklrlci2():
 
 
 def launch():
-    input = ClassInput.getInputFoo()
     while True:
         print(
             '''

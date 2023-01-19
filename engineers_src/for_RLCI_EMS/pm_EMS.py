@@ -35,6 +35,10 @@ import logging
 # exec('from EMSRLCI_foos import windowChooser, sendFromJson, doEquation, executeTMI, getAndSleep, executeDI')
 
 # Импорт с рабочей директории скрипта
+from engineers_src.tools.tools import ClassInput
+def wrapInput(text):
+   return input(text)
+ClassInput.set(wrapInput)
 from engineers_src.Devices.functions import windowChooser, sendFromJson, doEquation, executeTMI, print_start_and_end
 from engineers_src.Devices.dictionariesUVDI import DIstorage
 from engineers_src.Devices import BCK, M778, KIS, RLCI, ASN, Imitators, BSK_BSPA, BSK_P, BSK_KU, KSO
@@ -42,10 +46,8 @@ from engineers_src.Devices.DUK import DUK
 from engineers_src.Devices.Device import LOGGER
 from engineers_src.Devices.functions import DB
 from engineers_src.Devices.mpz import launch as MPZlaunch
-from engineers_src.tools.tools import ClassInput
-def wrapInput(text):
-   return input(text)
-ClassInput.set(wrapInput)
+from engineers_src.Devices.kdu_execute import launch as KDUExecute
+
 # from engineers_src.Devices.test import Test_Input
 # Test_Input()
 
@@ -292,17 +294,17 @@ foo = {
             'ВКЛ': lambda: KSO.on(),
             'ОТКЛ': lambda: KSO.off()},
         ret_btn=True),
-    'КСО ДИ': KSO.__unrealized__,
-    # 'КСО ДИ': lambda: windowChooser(
-    #     btnsText=('Редис', 'ТЕКУЩ', 'ИНТРЕВАЛ', 'ИНТРЕВАЛ сравнить', 'Очистить лог'),
-    #     title='КСО ДИ',
-    #     fooDict={
-    #         'Редис': lambda: KSO.init_di(),
-    #         'ТЕКУЩ': lambda: KSO.get_tmi(),
-    #         'ИНТРЕВАЛ': lambda: KSO.get_tmi(isInterval=True),
-    #         'ИНТРЕВАЛ сравнить': KSO.get_tmi_and_compare,
-    #         'Очистить лог': lambda: KSO.clear_tmi()},
-    #     ret_btn=True),
+    # 'КСО ДИ': KSO.__unrealized__,
+    'КСО ДИ': lambda: windowChooser(
+        btnsText=('init', 'ТЕКУЩ', 'ИНТРЕВАЛ', 'Очистить лог'),
+        title='КСО ДИ',
+        fooDict={
+            'init': lambda: KSO.init_di(),
+            'ТЕКУЩ': lambda: KSO.get_tmi(),
+            'ИНТРЕВАЛ': lambda: KSO.get_tmi(isInterval=True),
+            # 'ИНТРЕВАЛ сравнить': KSO.get_tmi_and_compare,
+            'Очистить лог': lambda: KSO.clear_tmi()},
+        ret_btn=True),
     'КСО ММ': lambda: windowChooser(
         btnsText=('ММ 1', 'ММ 2'),
         title='КСО ММ',
@@ -310,9 +312,10 @@ foo = {
             'ММ 1': lambda: KSO.set_MM(1),
             'ММ 2': lambda: KSO.set_MM(2)},
         ret_btn=True),
-    'ДУК ВКЛ': DUK.on,
-    'ДУК ОТКЛ': DUK.off,
-    'ДУК ВКЛ КИБК': DUK.autoOnDUk,
+    # 'ДУК ВКЛ': DUK.on,
+    # 'ДУК ОТКЛ': DUK.off,
+    # 'ДУК ВКЛ КИБК': DUK.autoOnDUk,
+    'КДУ ПМ': KDUExecute,
     'M778': lambda: windowChooser(
                 btnsText=(('ВКЛ А', 'ВКЛ Б'), 'ОТКЛ'),
                 title='ПИТАНИЕ М778',
@@ -422,7 +425,8 @@ btns = (('ОЧИСТ НАКОПИТЕЛЬ', 'СБРОС НАКОПИТЕЛЬ'),
         ('АСН ВКЛ ОТКЛ', 'АСН тест КСВЧ', 'АСН контроль', 'АСН сброс все ДИ'),
         ('ИМ ДС ВКЛ', 'ИМ ДС ОТКЛ', 'ИМ ЗД ВКЛ', 'ИМ ЗД ОТКЛ',),
         ('КСО ВКЛ ОТКЛ', 'КСО ДИ', 'КСО ММ'),
-        ('ДУК ВКЛ', 'ДУК ОТКЛ', 'ДУК ВКЛ КИБК'),
+        # ('ДУК ВКЛ', 'ДУК ОТКЛ', 'ДУК ВКЛ КИБК'),
+        'КДУ ПМ',
         'M778',
         ('РЛЦИ ЭА', 'РЛЦИ АФУ МАССИВ', 'РЛЦИ ПЧ', 'РЛЦИ ФИП', 'РЛЦИ МОД', 'РЛЦИ УМ', 'РЛЦИ РЕЖИМ', 'РЛЦИ ВСЕ БЛОКИ'),
         'МПЗ ПМ',

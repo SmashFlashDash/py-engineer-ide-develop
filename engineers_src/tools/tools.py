@@ -158,10 +158,16 @@ class ClassInput:
 
     @staticmethod
     def set(foo):
+        """from engineers_src.tools.tools import ClassInput
+            def wrapInput(text):
+            return input(text)
+            ClassInput.set(wrapInput)"""
         ClassInput.__input = foo
 
     @staticmethod
     def getInputFoo():
+        if ClassInput.__input is None:
+            raise Exception('input в ClassInput: None, сделай set в начале программы')
         return ClassInput.__input
 
     @staticmethod
@@ -982,7 +988,7 @@ def controlGetEQ(equation, count=1, period=0, toPrint=True, downBCK=False):
 
 # TODO: переделать на таймер по time, если gotSameType опросить больше одного раза
 #  делать проверку последних значений при опросе выражений
-def controlWaitEQ(equation, time, period=1, toPrint=True, downBCK=False):
+def controlWaitEQ(equation, time, period=0, toPrint=True, downBCK=False):
     """Тоже что и controlGetEq только закончит выполнение если выполнится условия по всем строкам True"""
     """ПАРСИНГ"""
     if period < 1:
