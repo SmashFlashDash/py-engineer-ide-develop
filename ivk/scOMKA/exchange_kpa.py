@@ -606,6 +606,11 @@ res = Ex.wait('', '{ММ_X1.ЗапрТок} < 6.3 and {ММ_Z2.ЗапрНапр�
             if isinstance(data, BaseCpi):
                 outdata = data.asByteStream()
                 for out in outdata:
+                    # пауза перед выдачей следующей КПИ, иначе КПИМД не успевает обрабатываться в БЦК
+                    if DelayCheck and DelayTime:
+                        print('{#AD66D5}' + 'Включена задержка выдачи КПИ: ' + DelayTime + ' c')
+                        import time
+                        time.sleep(float(DelayTime))
                     stream = KPA('Отпр-КПИ', out).stream
                     cmdHex = '0x{0:0{1}X}'.format(data.params.get('cmds')[0]['cmd'], 4) if data.params.get(
                         'cmds') else ''  # код УВ
@@ -618,6 +623,7 @@ res = Ex.wait('', '{ММ_X1.ЗапрТок} < 6.3 and {ММ_Z2.ЗапрНапр�
                               Exchange.ivk_file_path, str(stream))
                     local_sock.sendall(dest + stream)
                     local_sock_udp.sendto(stream, kpa_adress)
+
             elif isinstance(data, OTC):
                 # для отсчёта времени начала или продления сеанса
                 if data.otc in (1, 2, 3, 4, 5, 95):
@@ -646,12 +652,6 @@ res = Ex.wait('', '{ММ_X1.ЗапрТок} < 6.3 and {ММ_Z2.ЗапрНапр�
             else:
                 raise Exception('Неопределен тип отправляемых данных "%s"' % repr(type(data)))
 
-            # пауза перед выдачей следующей КПИ, иначе КПИМД не успевает обрабатываться в БЦК
-            if DelayCheck and DelayTime:
-                print('{#A600A6}'+'Включена задержка выдачи КПИ: ' + DelayTime + ' c')
-                import time
-                time.sleep(float(DelayTime))
-
         elif queue_label == 'Ячейка ПИ':
             if isinstance(data, ICCELL):
                 if Log:
@@ -663,7 +663,7 @@ res = Ex.wait('', '{ММ_X1.ЗапрТок} < 6.3 and {ММ_Z2.ЗапрНапр�
                     print('{#0bbeea}%s' % data.stream.hex())
                 conf.incConf('iccell_counter', 255)
                 local_sock.sendall(dest + data.stream)
-                local_sock_udp.sendto(data.stream, kpa_adress)
+                # local_sock_udp.sendto(data.stream, kpa_adress)
             else:
                 raise Exception('Неопределен тип отправляемых данных "%s"' % repr(type(data)))
         elif queue_label in SCPI.SCPI_DEVICES.keys():

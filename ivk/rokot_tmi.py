@@ -3,7 +3,8 @@ import pika
 import psycopg2, psycopg2.extras
 from datetime import datetime
 
-from PyQt5.QtWidgets import QWidget, QBoxLayout, QDockWidget, QLabel, QPushButton, QComboBox, QLineEdit, QMenu, QAction, QFileDialog
+from PyQt5.QtWidgets import QWidget, QBoxLayout, QDockWidget, QLabel, QPushButton, QComboBox, QLineEdit, QMenu, QAction, \
+    QFileDialog
 from PyQt5.QtGui import QColor, QIcon, QPalette
 from PyQt5.QtCore import Qt
 
@@ -14,6 +15,7 @@ from ui.components.commons import Commons
 from ivk.global_log import GlobalLog
 from ivk.log_db import DbLog
 from ivk import config
+
 
 class RokotTmi:
     '''
@@ -34,16 +36,15 @@ class RokotTmi:
 
     db_connection = None
 
-
     @staticmethod
     def init(amqp_config):
         RokotTmi.amqp_config = amqp_config
         try:
-            #Параметры AMQP соединения
+            # Параметры AMQP соединения
             parameters = pika.ConnectionParameters(
                 amqp_config['amqp_ip'],
                 amqp_config['amqp_port'],
-                amqp_config['amqp_virtual_host'], 
+                amqp_config['amqp_virtual_host'],
                 pika.PlainCredentials(amqp_config['amqp_user'], amqp_config['amqp_password'])
             )
             parameters.heartbeat = 0
@@ -52,33 +53,39 @@ class RokotTmi:
             RokotTmi.amqp_channel.queue_declare(amqp_config['amqp_queue'], arguments=amqp_config['amqp_queue_params'])
             RokotTmi.amqp_channel.queue_purge(amqp_config['amqp_queue'])
 
-            GlobalLog.log(threading.get_ident(), 'ROKOT', 'Подключено к AMQP серверу (%s:%d), создана и очищена очередь: %s\n' % (
-                amqp_config['amqp_ip'],
-                amqp_config['amqp_port'],
-                amqp_config['amqp_queue']
-            ), False)
+            GlobalLog.log(threading.get_ident(), 'ROKOT',
+                          'Подключено к AMQP серверу (%s:%d), создана и очищена очередь: %s\n' % (
+                              amqp_config['amqp_ip'],
+                              amqp_config['amqp_port'],
+                              amqp_config['amqp_queue']
+                          ), False)
 
         except Exception as exc:
-            GlobalLog.log(threading.get_ident(), 'ROKOT', 'Не удалось подключиться к AMQP серверу: %s\n' % repr(exc), True)
-        
+            GlobalLog.log(threading.get_ident(), 'ROKOT', 'Не удалось подключиться к AMQP серверу: %s\n' % repr(exc),
+                          True)
+
         try:
             RokotTmi.connectDb()
             if config.getConf('rokot_use_log_database'):
                 GlobalLog.log(threading.get_ident(), 'ROKOT', 'Подключено к локальной БД\n', False)
             else:
-                GlobalLog.log(threading.get_ident(), 'ROKOT', 'Подключено к PostgreSQL серверу (%s:%d)\n' % (config.getConf("rokot_db_ip"), config.getConf("rokot_db_port")), False)
+                GlobalLog.log(threading.get_ident(), 'ROKOT', 'Подключено к PostgreSQL серверу (%s:%d)\n' % (
+                config.getConf("rokot_db_ip"), config.getConf("rokot_db_port")), False)
         except Exception as exc:
             if config.getConf('rokot_use_log_database'):
-                GlobalLog.log(threading.get_ident(), 'ROKOT', 'Не удалось подключиться к локальной БД - %s\n' % repr(exc), True)
+                GlobalLog.log(threading.get_ident(), 'ROKOT',
+                              'Не удалось подключиться к локальной БД - %s\n' % repr(exc), True)
             else:
-                GlobalLog.log(threading.get_ident(), 'ROKOT', 'Не удалось подключиться к PostgreSQL серверу: %s - %s\n' % (config.getConf("rokot_db_ip"), repr(exc)), True)
-    
+                GlobalLog.log(threading.get_ident(), 'ROKOT',
+                              'Не удалось подключиться к PostgreSQL серверу: %s - %s\n' % (
+                              config.getConf("rokot_db_ip"), repr(exc)), True)
+
     @staticmethod
     def sendTmi(data):
         if RokotTmi.amqp_channel:
             RokotTmi.amqp_channel.basic_publish(exchange='', routing_key=RokotTmi.amqp_config['amqp_queue'], body=data)
 
-    #Выполняется из pydev процесса, не использовать переменные ui-процесса, выбрасывать исключения
+    # Выполняется из pydev процесса, не использовать переменные ui-процесса, выбрасывать исключения
     @staticmethod
     def connectDb():
         if RokotTmi.db_connection is not None and not RokotTmi.db_connection.closed:
@@ -95,14 +102,13 @@ class RokotTmi:
             db = config.getConf("rokot_db_name")
             user = config.getConf("rokot_db_user")
             password = config.getConf("rokot_db_password")
-            
+
         if host is None or port is None or db is None or user is None or password is None:
             raise Exception("Не удалость получить параметры подключения к БД РОКОТ из конфигурации")
         RokotTmi.db_connection = psycopg2.connect(host=host, port=port, dbname=db, user=user, password=password)
 
-
-    #Выполняется из pydev процесса, не использовать переменные ui-процесса, выбрасывать исключения
-    #value_type == 'КАЛИБР ТЕКУЩ', 'КАЛИБР ИНТЕРВАЛ', 'НЕКАЛИБР ТЕКУЩ', 'НЕКАЛИБР ИНТЕРВАЛ'
+    # Выполняется из pydev процесса, не использовать переменные ui-процесса, выбрасывать исключения
+    # value_type == 'КАЛИБР ТЕКУЩ', 'КАЛИБР ИНТЕРВАЛ', 'НЕКАЛИБР ТЕКУЩ', 'НЕКАЛИБР ИНТЕРВАЛ'
     @staticmethod
     def getTmi(param_name, value_type):
         if value_type not in ('КАЛИБР ТЕКУЩ', 'КАЛИБР ИНТЕРВАЛ', 'НЕКАЛИБР ТЕКУЩ', 'НЕКАЛИБР ИНТЕРВАЛ',
@@ -127,7 +133,8 @@ class RokotTmi:
         #         config.updData("%d_%s" % (threading.get_ident(), row[0]['name']), row[0]['value'])
         #         res[row[0]['name']] = row[0]['value'] if 'НЕКАЛИБР' in value_type else row[0]['calibrated_value']
         if 'ТЕКУЩ' in value_type:
-            cur.execute("SELECT value, tmid FROM tm WHERE tmsid = %s AND value->>'name' = %s ORDER BY tmid DESC", (tmsid, param_name))
+            cur.execute("SELECT value, tmid FROM tm WHERE tmsid = %s AND value->>'name' = %s ORDER BY tmid DESC",
+                        (tmsid, param_name))
             res = cur.fetchone()
             if res is not None:
                 config.updData("%d_%s" % (threading.get_ident(), param_name), res[1])
@@ -138,12 +145,14 @@ class RokotTmi:
             last_tmid = config.getData("%d_%s" % (threading.get_ident(), param_name))
             if last_tmid is None:
                 raise Exception('Не удалось обнаружить предыдущий запрос параметра "%s"' % param_name)
-            cur.execute("SELECT value FROM tm WHERE tmsid = %s AND tmid > %s AND value->>'name' = %s ORDER BY tmid ASC", (tmsid, last_tmid, param_name))
+            cur.execute("SELECT value FROM tm WHERE tmsid = %s AND tmid > %s AND value->>'name' = %s ORDER BY tmid ASC",
+                        (tmsid, last_tmid, param_name))
             res = []
             for row in cur:
                 res.append(row[0]['value'] if 'НЕКАЛИБР' in value_type else row[0]['calibrated_value'])
         elif 'ФУЛ' in value_type:
-            cur.execute("SELECT value, tmid, time FROM tm WHERE tmsid = %s AND value->>'name' = %s ORDER BY tmid ASC", (tmsid, param_name))
+            cur.execute("SELECT value, tmid, time FROM tm WHERE tmsid = %s AND value->>'name' = %s ORDER BY tmid ASC",
+                        (tmsid, param_name))
             res = {'values': [], 'time': []}
             for row in cur:
                 res['values'].append(row[0]['values'] if 'НЕКАЛИБР' in value_type else row[0]['calibrated_value'])
@@ -151,17 +160,17 @@ class RokotTmi:
         cur.close()
         return res
 
-    #Выполняется из pydev процесса, не использовать переменные ui-процесса, выбрасывать исключения
-    #params = {'name1' : 'КАЛИБР', 'name2' : 'НЕКАЛИБР', ...}
+    # Выполняется из pydev процесса, не использовать переменные ui-процесса, выбрасывать исключения
+    # params = {'name1' : 'КАЛИБР', 'name2' : 'НЕКАЛИБР', ...}
     @staticmethod
     def getTmis(params, field_name=None):
         res = {}
         for param_name, value_type in params.items():
             if value_type not in ('КАЛИБР', 'НЕКАЛИБР'):
                 raise Exception('Выбран неизвестный тип получаемых данных "%s"' % value_type)
-            if field_name in 'ИНТЕРВАЛ':
+            if field_name == 'ИНТЕРВАЛ':
                 res[param_name] = []
-            elif field_name in 'ФУЛ':
+            elif field_name == 'ФУЛ':
                 res[param_name] = {'values': [], 'time': []}
             else:
                 res[param_name] = None
@@ -170,11 +179,7 @@ class RokotTmi:
         if tmsid is None:
             raise Exception("Не выбран сеанс для получения данных ТМИ")
 
-        if field_name == "ТЕКУЩ":
-            query = "SELECT DISTINCT ON(tmparamsid) value, tmid FROM tm " \
-                    "WHERE tmsid = %s AND value->>'name' IN %s " \
-                    "ORDER BY tmparamsid, tmid DESC " % (tmsid, str(tuple(params.keys())).replace(',)', ')'))
-        elif field_name == 'ИНТЕРВАЛ':
+        if field_name == 'ИНТЕРВАЛ':
             query = "SELECT value, tmid FROM tm WHERE tmsid = %s AND (" % tmsid
             tmp_query = []
             for param_name in params.keys():
@@ -187,6 +192,10 @@ class RokotTmi:
             query = "SELECT value, tmid, time FROM tm " \
                     "WHERE tmsid = %s AND value->>'name' IN %s " \
                     "ORDER BY tmparamsid, tmid ASC " % (tmsid, str(tuple(params.keys())).replace(',)', ')'))
+        else:
+            query = "SELECT DISTINCT ON(tmparamsid) value, tmid FROM tm " \
+                    "WHERE tmsid = %s AND value->>'name' IN %s " \
+                    "ORDER BY tmparamsid, tmid DESC " % (tmsid, str(tuple(params.keys())).replace(',)', ')'))
         cur = RokotTmi.db_connection.cursor()
         cur.execute(query)
         for row in cur:
@@ -198,9 +207,9 @@ class RokotTmi:
             #       config.getData("%d_%s" % (threading.get_ident(), row[0]['name']))))
 
             value = row[0]['value'] if 'НЕКАЛИБР' in params[row[0]['name']] else row[0]['calibrated_value']
-            if field_name in 'ИНТЕРВАЛ':
+            if field_name == 'ИНТЕРВАЛ':
                 res[row[0]['name']].append(value)
-            if field_name in 'ФУЛ':
+            if field_name == 'ФУЛ':
                 res[row[0]['name']]['values'].append(value)
                 res[row[0]['name']]['time'].append(row[2])
             else:
@@ -208,7 +217,7 @@ class RokotTmi:
         cur.close()
         return res
 
-    #Выполняется из pydev процесса, не использовать переменные ui-процесса, выбрасывать исключения
+    # Выполняется из pydev процесса, не использовать переменные ui-процесса, выбрасывать исключения
     @staticmethod
     def putTmi(name, value):
         if not config.getConf('rokot_allow_tmi_insert'):
@@ -216,8 +225,8 @@ class RokotTmi:
         RokotTmi.connectDb()
         tmsid = config.getData('rokot_current_tmsid')
         if tmsid is None:
-            raise Exception("Не выбран сеанс для записи ТМИ") 
-        #Для колонок jsonb
+            raise Exception("Не выбран сеанс для записи ТМИ")
+            # Для колонок jsonb
         from psycopg2.extensions import register_adapter
         register_adapter(dict, psycopg2.extras.Json)
 
@@ -226,20 +235,24 @@ class RokotTmi:
             cur.execute('SELECT MAX(tmid) AS last_id FROM tm')
             last_id = cur.fetchone()
             last_id = 0 if last_id is None else last_id[0]
-            cur.execute('INSERT INTO tm ("tmid", "tmsid", "time", "value", "tmparamsid", "framenumber", "tlmspeed", "UNCALIB_dk", "UNCALIB_dkw", "CALIB_dk", "CALIB_dkw") VALUES (%s, %s, 0, %s, 0, 0, 0, FALSE, FALSE, FALSE, FALSE)', [
-                last_id + 1,
-                tmsid, 
-                {'mode' : 'НП IVK-TEST', 'name' : name, 'value' : value, 'calibrated_value' : value}
-            ])
+            cur.execute(
+                'INSERT INTO tm ("tmid", "tmsid", "time", "value", "tmparamsid", "framenumber", "tlmspeed", "UNCALIB_dk", "UNCALIB_dkw", "CALIB_dk", "CALIB_dkw") VALUES (%s, %s, 0, %s, 0, 0, 0, FALSE, FALSE, FALSE, FALSE)',
+                [
+                    last_id + 1,
+                    tmsid,
+                    {'mode': 'НП IVK-TEST', 'name': name, 'value': value, 'calibrated_value': value}
+                ])
         else:
-            cur.execute('INSERT INTO tm ("tmsid", "time", "value", "tmparamsid", "framenumber", "tlmspeed", "UNCALIB_dk", "UNCALIB_dkw", "CALIB_dk", "CALIB_dkw") VALUES (%s, 0, %s, 0, 0, 0, FALSE, FALSE, FALSE, FALSE)', [
-                tmsid, 
-                {'mode' : 'НП IVK-TEST', 'name' : name, 'value' : value, 'calibrated_value' : value}
-            ])
+            cur.execute(
+                'INSERT INTO tm ("tmsid", "time", "value", "tmparamsid", "framenumber", "tlmspeed", "UNCALIB_dk", "UNCALIB_dkw", "CALIB_dk", "CALIB_dkw") VALUES (%s, 0, %s, 0, 0, 0, FALSE, FALSE, FALSE, FALSE)',
+                [
+                    tmsid,
+                    {'mode': 'НП IVK-TEST', 'name': name, 'value': value, 'calibrated_value': value}
+                ])
         RokotTmi.db_connection.commit()
         cur.close()
         pass
-    
+
     @staticmethod
     def getKAs():
         try:
@@ -251,7 +264,7 @@ class RokotTmi:
         res = cur.fetchall()
         cur.close()
         return res
-    
+
     @staticmethod
     def getSessions(k00id):
         try:
@@ -290,64 +303,64 @@ class RokotTmi:
 
         commands = []
         commands.append({
-            'name' : '{GET}',
-            'import_string' : 'from ivk.rokot_tmi import RokotTmi',
-            'description' : 'Получить параметр из ТМИ. Используется для получения значение определенных параметров ТМИ из БД. ВНИМАНИЕ, для работы команд категории ТМИ необходимо выбрать сеанс ТМИ в окне "Телеметрия ROKOT"\nПараметры:\n' + \
-                            '  - msg_name(str): ИД параметра ТМИ,\n' + \
-                            "  - field_name(str): тип значения параметра ('КАЛИБР ТЕКУЩ', 'КАЛИБР ИНТЕРВАЛ', 'НЕКАЛИБР ТЕКУЩ', 'НЕКАЛИБР ИНТЕРВАЛ')",
-            'example' : '''#Получить калиброванное значение поля 'Кадр'
+            'name': '{GET}',
+            'import_string': 'from ivk.rokot_tmi import RokotTmi',
+            'description': 'Получить параметр из ТМИ. Используется для получения значение определенных параметров ТМИ из БД. ВНИМАНИЕ, для работы команд категории ТМИ необходимо выбрать сеанс ТМИ в окне "Телеметрия ROKOT"\nПараметры:\n' + \
+                           '  - msg_name(str): ИД параметра ТМИ,\n' + \
+                           "  - field_name(str): тип значения параметра ('КАЛИБР ТЕКУЩ', 'КАЛИБР ИНТЕРВАЛ', 'НЕКАЛИБР ТЕКУЩ', 'НЕКАЛИБР ИНТЕРВАЛ')",
+            'example': '''#Получить калиброванное значение поля 'Кадр'
 val = Ex.get('ТМИ', 'Кадр', 'КАЛИБР ТЕКУЩ')
 #Получить некалиброванное значение поля 'синхромаркер'
 val = Ex.get('ТМИ', 'синхромаркер', 'НЕКАЛИБР ТЕКУЩ')
 #Получить список некалиброванных значений поля 'синхромаркер'
 #c момента последнего запроса
 values = Ex.get('ТМИ', 'синхромаркер', 'НЕКАЛИБР ИНТЕРВАЛ')''',
-            'msg_fields' : msg_fields_get,
-            'translation' : 'Получить ТМИ',
-            'cat' : 'ТМИ',
-            'cat_description' : 'Команды категории "ТМИ" позволяют получать данные из телеметрической БД.',
-            'queues' : ['ТМИ'],
-            'ex_send' : False, 
-            'is_function' : False
+            'msg_fields': msg_fields_get,
+            'translation': 'Получить ТМИ',
+            'cat': 'ТМИ',
+            'cat_description': 'Команды категории "ТМИ" позволяют получать данные из телеметрической БД.',
+            'queues': ['ТМИ'],
+            'ex_send': False,
+            'is_function': False
         })
         commands.append({
-            'name' : '{WAIT}',
-            'import_string' : 'from ivk.rokot_tmi import RokotTmi',
-            'description' : 'Ожидание значений параметров из ТМИ. Используется для ожидания наступления определенного события. Возвращает результат (событие наступило или вышло время ожидания). ВНИМАНИЕ, для работы команд категории ТМИ необходимо выбрать сеанс ТМИ в окне "Телеметрия ROKOT"\nПараметры:\n' + \
-                            '  - expression(str): выражение для ожидания, можно использовать любые логические конструкции Python (and, or, not, ==, >=, <=, >, <, !=), группировку скобками и имена параметров в формате {ИД_ПАРАМЕТРА.ТИП_ЗНАЧЕНИЯ},\n' + \
-                            '  - timeout(float): максимальное время ожидания в секундах',
-            'example' : '''#Ожидание CLCW.КАЛИБР > 3.1 или tlmWorkMode.НЕКАЛИБР >= 0,
+            'name': '{WAIT}',
+            'import_string': 'from ivk.rokot_tmi import RokotTmi',
+            'description': 'Ожидание значений параметров из ТМИ. Используется для ожидания наступления определенного события. Возвращает результат (событие наступило или вышло время ожидания). ВНИМАНИЕ, для работы команд категории ТМИ необходимо выбрать сеанс ТМИ в окне "Телеметрия ROKOT"\nПараметры:\n' + \
+                           '  - expression(str): выражение для ожидания, можно использовать любые логические конструкции Python (and, or, not, ==, >=, <=, >, <, !=), группировку скобками и имена параметров в формате {ИД_ПАРАМЕТРА.ТИП_ЗНАЧЕНИЯ},\n' + \
+                           '  - timeout(float): максимальное время ожидания в секундах',
+            'example': '''#Ожидание CLCW.КАЛИБР > 3.1 или tlmWorkMode.НЕКАЛИБР >= 0,
 #при том что синхромаркер.КАЛИБР < 1.2, с таймаутом 14 сек
 res = Ex.wait('ТМИ', '({CLCW.КАЛИБР} > 3.1 or {tlmWorkMode.НЕКАЛИБР} >= 0) 
     and {синхромаркер.КАЛИБР} < 1.2', 14)
 #Ожидание ИОК_БРК.КАЛИБР != 1 и ИОК_БЦКОСН.НЕКАЛИБР >= 4, с таймаутом 31.5 сек
 res = Ex.wait('ТМИ', '{ИОК_БРК.КАЛИБР} != 1 and {ИОК_БЦКОСН.НЕКАЛИБР} >= 4', 31.5)''',
-            'msg_fields' : msg_fields_wait,
-            'default_timeout' : 20,
-            'translation' : 'Ожидание ТМИ',
-            'cat' : 'ТМИ',
-            'cat_description' : 'Команды категории "ТМИ" позволяют получать данные из телеметрической БД.',
-            'queues' : ['ТМИ'],
-            'ex_send' : False, 
-            'is_function' : False
+            'msg_fields': msg_fields_wait,
+            'default_timeout': 20,
+            'translation': 'Ожидание ТМИ',
+            'cat': 'ТМИ',
+            'cat_description': 'Команды категории "ТМИ" позволяют получать данные из телеметрической БД.',
+            'queues': ['ТМИ'],
+            'ex_send': False,
+            'is_function': False
         })
         if config.getConf('rokot_allow_tmi_insert'):
             commands.append({
-                'name' : 'RokotTmi.putTmi',
-                'import_string' : 'from ivk.rokot_tmi import RokotTmi',
-                'description' : 'Добавляет в БД ТМИ запись с указанным именем параметра и значением (одинаковое значение для КАЛИБР/НЕКАЛИБР). ВНИМАНИЕ, для работы команд категории ТМИ необходимо выбрать сеанс ТМИ в окне "Телеметрия ROKOT". Использовать только для тестовых ПК вне МИКа',
-                'example' : '''#ИСПОЛЬЗОВАТЬ ТОЛЬКО ДЛЯ ТЕСТОВВЫХ ПК ВНЕ МИКа
+                'name': 'RokotTmi.putTmi',
+                'import_string': 'from ivk.rokot_tmi import RokotTmi',
+                'description': 'Добавляет в БД ТМИ запись с указанным именем параметра и значением (одинаковое значение для КАЛИБР/НЕКАЛИБР). ВНИМАНИЕ, для работы команд категории ТМИ необходимо выбрать сеанс ТМИ в окне "Телеметрия ROKOT". Использовать только для тестовых ПК вне МИКа',
+                'example': '''#ИСПОЛЬЗОВАТЬ ТОЛЬКО ДЛЯ ТЕСТОВВЫХ ПК ВНЕ МИКа
 #Запись параметров в БД ТМИ
 RokotTmi.putTmi('CLCW', 2.5)
 RokotTmi.putTmi('tlmWorkMode', 0x6f55)''',
-                'params' : ['name', 'value'],
-                'values' : ["'Имя параметра'", '0'],
-                'keyword' : [False, False],
-                'translation' : "Запись ТМИ",
-                'cat' : 'ТМИ',
-                'cat_description' : 'Команды категории "ТМИ" позволяют получать данные из телеметрической БД.',
-                'queues' : ['ТМИ'],
-                'ex_send' : False
+                'params': ['name', 'value'],
+                'values': ["'Имя параметра'", '0'],
+                'keyword': [False, False],
+                'translation': "Запись ТМИ",
+                'cat': 'ТМИ',
+                'cat_description': 'Команды категории "ТМИ" позволяют получать данные из телеметрической БД.',
+                'queues': ['ТМИ'],
+                'ex_send': False
             })
 
         return commands
@@ -355,12 +368,14 @@ RokotTmi.putTmi('tlmWorkMode', 0x6f55)''',
     @staticmethod
     def copyToLogDb():
         if config.getConf('rokot_use_log_database'):
-            Commons.WarningBox('Ошибка копирования в локальную БД', 'В качестве БД ТМИ используется локальная БД, копирование данных ТМИ невозможно')
+            Commons.WarningBox('Ошибка копирования в локальную БД',
+                               'В качестве БД ТМИ используется локальная БД, копирование данных ТМИ невозможно')
             return
         try:
             connected = DbLog.connectDb(raise_exceptions=True)
             if not connected:
-                Commons.WarningBox('Ошибка копирования в локальную БД', 'Подключение к локальной БД отключено в настройках, копирование данных ТМИ невозможно')
+                Commons.WarningBox('Ошибка копирования в локальную БД',
+                                   'Подключение к локальной БД отключено в настройках, копирование данных ТМИ невозможно')
                 return
         except Exception as exc:
             Commons.WarningBox('Ошибка копирования в локальную БД', 'Ошибка подключения к локальной БД: %s' % str(exc))
@@ -371,16 +386,17 @@ RokotTmi.putTmi('tlmWorkMode', 0x6f55)''',
             Commons.WarningBox('Ошибка копирования в локальную БД', 'Ошибка подключения к БД ТМИ: %s' % str(exc))
             return
 
-        #Для колонок jsonb
+        # Для колонок jsonb
         from psycopg2.extensions import register_adapter
         register_adapter(dict, psycopg2.extras.Json)
 
         t = threading.Thread(target=RokotTmi.__copyToLogDb, daemon=True)
         t.start()
+
     @staticmethod
     def __copyToLogDb():
         try:
-            #Получаем архитектуру интересующих нас таблиц
+            # Получаем архитектуру интересующих нас таблиц
             GlobalLog.log(threading.get_ident(), 'ROKOT', "Получение архитектуры таблиц из БД ТМИ ...\n", False)
             tables = config.odict(("k00", None), ("tmparams", None), ("tms", None), ("tm", None))
             for table_name in tables:
@@ -388,33 +404,40 @@ RokotTmi.putTmi('tlmWorkMode', 0x6f55)''',
                 insert_columns = []
 
                 cur = RokotTmi.db_connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-                cur.execute("SELECT column_name, data_type, is_nullable FROM information_schema.columns WHERE table_name = %s", (table_name,))
+                cur.execute(
+                    "SELECT column_name, data_type, is_nullable FROM information_schema.columns WHERE table_name = %s",
+                    (table_name,))
                 for c in cur:
-                    datatype = c['data_type'] if table_name != "tmparams" or c['column_name'] != "startbyte" else "_int4"
-                    create_columns.append("\"%s\" %s %s" % (c['column_name'], datatype, "NOT NULL" if c['is_nullable'] == "NO" else "NULL"))
+                    datatype = c['data_type'] if table_name != "tmparams" or c[
+                        'column_name'] != "startbyte" else "_int4"
+                    create_columns.append("\"%s\" %s %s" % (
+                    c['column_name'], datatype, "NOT NULL" if c['is_nullable'] == "NO" else "NULL"))
                     insert_columns.append("\"%s\"" % c["column_name"])
                 cur.close()
 
                 tables[table_name] = {
-                    'create' : "CREATE TABLE IF NOT EXISTS %s (%s)" % (table_name, ", ".join(create_columns)),
-                    'clear' : "DELETE FROM %s" % table_name,
-                    'select' : "SELECT %s FROM %s" % (", ".join(insert_columns), table_name),
-                    'insert' : "INSERT INTO %s (%s) VALUES (%s)" % (table_name, ", ".join(insert_columns), ", ".join(["%s" for i in range(len(insert_columns))]))
+                    'create': "CREATE TABLE IF NOT EXISTS %s (%s)" % (table_name, ", ".join(create_columns)),
+                    'clear': "DELETE FROM %s" % table_name,
+                    'select': "SELECT %s FROM %s" % (", ".join(insert_columns), table_name),
+                    'insert': "INSERT INTO %s (%s) VALUES (%s)" % (
+                    table_name, ", ".join(insert_columns), ", ".join(["%s" for i in range(len(insert_columns))]))
                 }
-            GlobalLog.log(threading.get_ident(), 'ROKOT', "Успешно получена архитекутра таблиц %s\n" % ", ".join(tables), False)
+            GlobalLog.log(threading.get_ident(), 'ROKOT',
+                          "Успешно получена архитекутра таблиц %s\n" % ", ".join(tables), False)
             time.sleep(2)
 
             for table_name, statements in tables.items():
-                GlobalLog.log(threading.get_ident(), 'ROKOT', "Копирование \"%s\" в локальную БД ...\n" % table_name, False)
+                GlobalLog.log(threading.get_ident(), 'ROKOT', "Копирование \"%s\" в локальную БД ...\n" % table_name,
+                              False)
 
-                #Создаем / чистим таблицы
+                # Создаем / чистим таблицы
                 cur = DbLog.db_connection.cursor()
                 cur.execute(statements['create'])
                 cur.execute(statements['clear'])
                 DbLog.db_connection.commit()
                 cur.close()
 
-                #Копируем данные
+                # Копируем данные
                 cur = RokotTmi.db_connection.cursor()
                 cur2 = DbLog.db_connection.cursor()
 
@@ -435,20 +458,15 @@ RokotTmi.putTmi('tlmWorkMode', 0x6f55)''',
             GlobalLog.log(threading.get_ident(), 'ROKOT', "Ошибка копирования в локальную БД: %s\n" % str(exc), True)
             traceback.print_exc()
 
-            
-
-
-
-
 
 class RokotWidget(QDockWidget):
-    
+
     def __init__(self, parent, tabs_widget):
         super().__init__(parent)
         self.setWindowTitle('Телеметрия ROKOT')
         self.tabs_widget = tabs_widget
 
-        #Контекстное меню для копирования БД ТМИ в локальную БД
+        # Контекстное меню для копирования БД ТМИ в локальную БД
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.__showContextMenu)
 
@@ -461,13 +479,12 @@ class RokotWidget(QDockWidget):
         self.combo_ka.setSizeAdjustPolicy(QComboBox.AdjustToContents)
         self.combo_ka.currentIndexChanged.connect(self.updateSessions)
         self.combo_ka_refreshing = False
-        
+
         self.combo_sessions = QComboBox()
         self.combo_sessions.setSizeAdjustPolicy(QComboBox.AdjustToContents)
         self.combo_sessions.currentIndexChanged.connect(self.setCurrentSession)
         self.combo_sessions_refreshing = False
-        
-        
+
         self.tmi_start_time = None
         self.tmi_sent_count = 0
         self.label_tmi_speed = StyledLabel('?', object_name='consolasBoldFont')
@@ -475,17 +492,18 @@ class RokotWidget(QDockWidget):
         self.button_upd = QPushButton(QIcon('res/refresh.png'), 'Обновить')
         self.button_upd.clicked.connect(self.udateKAs)
 
-        #tmp_edit_name = QLineEdit("ИОК8.0")
-        #tmp_edit_type = QLineEdit("КАЛИБР ТЕКУЩ")
-        #tmp_btn = QPushButton("TEST")
-        #tmp_btn.clicked.connect(lambda: print(RokotTmi.getTmi(tmp_edit_name.text(), tmp_edit_type.text())))
-        #.hbox(spacing=5).add(tmp_edit_name).add(tmp_edit_type).add(tmp_btn).stretch().up() \
+        # tmp_edit_name = QLineEdit("ИОК8.0")
+        # tmp_edit_type = QLineEdit("КАЛИБР ТЕКУЩ")
+        # tmp_btn = QPushButton("TEST")
+        # tmp_btn.clicked.connect(lambda: print(RokotTmi.getTmi(tmp_edit_name.text(), tmp_edit_type.text())))
+        # .hbox(spacing=5).add(tmp_edit_name).add(tmp_edit_type).add(tmp_btn).stretch().up() \
 
         self.setWidget(QWidget(self))
         lb = QBoxLayoutBuilder(self.widget(), QBoxLayout.TopToBottom, margins=(5, 5, 5, 5), spacing=5)
-        lb.hbox(spacing=5).add(QLabel("КА")).fixW().add(self.combo_ka).add(QLabel("Сеанс")).fixW().add(self.combo_sessions).add(self.button_upd).fixW().up() \
-          .hbox(spacing=5).add(QLabel("Пересылка ТМИ:")).add(self.label_tmi_speed).stretch().up() \
-          .stretch()
+        lb.hbox(spacing=5).add(QLabel("КА")).fixW().add(self.combo_ka).add(QLabel("Сеанс")).fixW().add(
+            self.combo_sessions).add(self.button_upd).fixW().up() \
+            .hbox(spacing=5).add(QLabel("Пересылка ТМИ:")).add(self.label_tmi_speed).stretch().up() \
+            .stretch()
 
         self.hide()
 
@@ -501,7 +519,7 @@ class RokotWidget(QDockWidget):
                 for ka in kas:
                     self.combo_ka.addItem('%s (%s)' % (ka['Название'], ka['Индекс']), (ka['k00id'], ka['Индекс']))
                     if default_umn and ka['Индекс'] == default_umn:
-                        index_to_select = self.combo_ka.count()-1
+                        index_to_select = self.combo_ka.count() - 1
         except Exception as exc:
             Commons.WarningBox('Ошибка', 'Ошибка обновления списка КА: %s' % repr(exc), self.tabs_widget)
         self.combo_ka_refreshing = False
@@ -521,48 +539,48 @@ class RokotWidget(QDockWidget):
                 k00id, umn = self.combo_ka.itemData(combo_ka_index)
                 sessions = RokotTmi.getSessions(k00id)
                 for session in sessions:
-                    self.combo_sessions.addItem('%d - %s' % (session['tmsid'], session['date'].strftime('%Y.%m.%d %H:%M:%S')), session['tmsid'])
+                    self.combo_sessions.addItem(
+                        '%d - %s' % (session['tmsid'], session['date'].strftime('%Y.%m.%d %H:%M:%S')), session['tmsid'])
             except Exception as exc:
-                Commons.WarningBox('Ошибка', 'Ошибка получения сеансов ТМИ для КА %s: %s' % (umn, repr(exc)), self.tabs_widget)
+                Commons.WarningBox('Ошибка', 'Ошибка получения сеансов ТМИ для КА %s: %s' % (umn, repr(exc)),
+                                   self.tabs_widget)
         self.combo_sessions_refreshing = False
         if self.combo_sessions.count():
             if self.combo_sessions.currentIndex() == 0:
                 self.setCurrentSession(0)
             else:
                 self.combo_sessions.setCurrentIndex(0)
-            
-    
+
     def setCurrentSession(self, combo_sessions_index):
         if not self.combo_sessions_refreshing and self.combo_sessions.count():
             tmsid = self.combo_sessions.itemData(combo_sessions_index)
             config.updData('rokot_current_tmsid', tmsid)
-        
 
     def tmiSent(self):
         self.tmi_sent_count += 1
         if self.tmi_start_time is None:
             self.tmi_start_time = datetime.now()
             return
-        total_time = (datetime.now()-self.tmi_start_time).total_seconds()
+        total_time = (datetime.now() - self.tmi_start_time).total_seconds()
         if total_time > 10:
             self.tmi_start_time = datetime.now()
             self.tmi_sent_count = 1
         elif total_time > 0:
-            self.setLabelText(self.label_tmi_speed, '%.1f пакетов/сек' % (self.tmi_sent_count/total_time,))
+            self.setLabelText(self.label_tmi_speed, '%.1f пакетов/сек' % (self.tmi_sent_count / total_time,))
 
     def setLabelText(self, label, text):
         if text != label.text():
             label.setText(text)
-            
+
             self.colored_labels_lock.acquire()
-            self.colored_labels[label] = {'dt': datetime.now(), 'colored' : True}
+            self.colored_labels[label] = {'dt': datetime.now(), 'colored': True}
             self.colored_labels_lock.release()
-            
+
             label.setAutoFillBackground(True)
             pal = label.palette()
             pal.setColor(QPalette.Window, QColor('#5effb1'))
             label.setPalette(pal)
-    
+
     def dispatchLabelColors(self):
         while True:
             time.sleep(1)
@@ -586,7 +604,7 @@ class RokotWidget(QDockWidget):
         self.udateKAs()
         print("UPDATE KAs")
         super().showEvent(event)
-    
+
     def closeEvent(self, event):
         if hasattr(self.parent(), 'onDockClose'):
             self.parent().onDockClose(self)
@@ -602,7 +620,7 @@ class RokotWidget(QDockWidget):
         #     'napr_check_state' : self.napr_checkbox.checkState(),
         #     'tempab_check_state' : self.tempab_checkbox.checkState()
         # }
-    
+
     def restoreSettings(self, settings):
         pass
         # self.sost_checkbox.setCheckState(settings['sost_check_state'])
@@ -611,13 +629,13 @@ class RokotWidget(QDockWidget):
         # self.naprtlm_checkbox.setCheckState(settings['naprtlm_check_state'])
         # self.napr_checkbox.setCheckState(settings['napr_check_state'])
         # self.tempab_checkbox.setCheckState(settings['tempab_check_state'])
-        
+
     def settingsKeyword(self):
         return 'RokotWidget'
-    
+
     def getMenuParams(self):
         return {
-            'icon' : 'res/tmi_icon.png',
-            'text' : 'Телеметрия ROKOT',
-            'status_tip' : 'Окно мониторинга телеметрии из ROKOT'
+            'icon': 'res/tmi_icon.png',
+            'text': 'Телеметрия ROKOT',
+            'status_tip': 'Окно мониторинга телеметрии из ROKOT'
         }

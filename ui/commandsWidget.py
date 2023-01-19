@@ -75,7 +75,7 @@ class CommandsWidget(QDockWidget):
 
         self.delay_combo = QComboBox(self)
         self.delay_combo.setEnabled(True)
-        self.delay_combo.addItems(['0', '0.5', '1', '1.5', '2.0'])
+        self.delay_combo.addItems(['0', '0.1', '0.2', '0.5', '1', '1.5', '2.0'])
 
         self.simple_checkbox = QCheckBox('Упрощенный', self)
         self.simple_checkbox.setChecked(True)
@@ -98,14 +98,12 @@ class CommandsWidget(QDockWidget):
         self.delay_checkbox.setChecked(False)
         self.delay_checkbox.setVisible(True)
 
-
         buttons_widget = QWidget(self)
         lb = QBoxLayoutBuilder(buttons_widget, QBoxLayout.TopToBottom, spacing=6)
         lb.hbox(spacing=6).add(self.exchange_checkbox).add(self.exchange_combo).stretch().add(
             self.openFile_button).add(self.insert_button).add(self.run_button).fixW(100).up()
         lb.hbox(spacing=6).add(self.hex_checkbox).add(self.log_checkbox).add(self.simple_checkbox).stretch().up()
         lb.hbox(spacing=6).add(self.delay_checkbox).add(self.delay_combo).stretch().up()
-
 
         self.info_widget = QTextEdit()
         self.info_widget.setObjectName('autoCompeteInfoFrame')
@@ -137,9 +135,10 @@ class CommandsWidget(QDockWidget):
 
         self.hex_checkbox.clicked.connect(lambda: updData('HEX', self.hex_checkbox.isChecked()))
         self.log_checkbox.clicked.connect(lambda: updData('Log', self.log_checkbox.isChecked()))
-        self.delay_checkbox.clicked.connect(lambda: (updData('DelayCheck', self.delay_checkbox.isChecked()), updData('DelayTime', self.delay_combo.currentText())))
+        self.delay_checkbox.clicked.connect(lambda: (
+            updData('DelayCheck', self.delay_checkbox.isChecked()),
+            updData('DelayTime', self.delay_combo.currentText())))
         self.delay_combo.activated.connect(lambda: updData('DelayTime', self.delay_combo.currentText()))
-
 
     def getCommand(self):
         if not self.tree_widget.currentItem() or 'name' not in self.tree_widget.currentItem().command:
@@ -166,11 +165,15 @@ class CommandsWidget(QDockWidget):
                 'name'] if 'simple_name' not in command_params or not self.simple_checkbox.isChecked() else \
                 command_params['simple_name']
             command += '(' if 'is_function' not in command_params or command_params['is_function'] else ''
+            if command_params['name'] == 'CPIRIK':
+                command += 'riks=[('
             for i, arg in enumerate(self.args_widget.arg_editors):
-                if self.args_widget.skip_arg_checkboxes[i] is not None and not self.args_widget.skip_arg_checkboxes[i].isChecked():
+                if self.args_widget.skip_arg_checkboxes[i] is not None and not self.args_widget.skip_arg_checkboxes[
+                    i].isChecked():
                     continue
                 if arg.text():
-                    if 'keyword' in command_params and command_params['keyword'][i] and not(command_params['name'] == 'CPIMD' and command_params['params'][i] == 'data'):
+                    if 'keyword' in command_params and command_params['keyword'][i] and not (
+                            command_params['name'] == 'CPIMD' and command_params['params'][i] == 'data'):
                         command += command_params['params'][i] + '=' + arg.text()
                     elif command_params['name'] == 'CPIMD' and command_params['params'][i] == 'data':
                         command += 'data=' + (self.DataRead if not (self.DataRead is None) else arg.text())
@@ -180,6 +183,9 @@ class CommandsWidget(QDockWidget):
                         command += ', '
             if command.endswith(', '):
                 command = command[:-2]
+
+            if command_params['name'] == 'KPIRIK':
+                command += ')]'
 
             if self.exchange_checkbox.isChecked() and self.exchange_checkbox.isEnabled() and (
                     'ex_send' not in command_params or command_params['ex_send']) and (
@@ -191,25 +197,6 @@ class CommandsWidget(QDockWidget):
                 command += ')'
 
         return command
-
-    # def readBinFile(self, path, cpibase=False):
-    #     s = path.split('.')[-1]
-    #     if s == 'bin':
-    #         with open(path, 'rb') as file:
-    #             data = file.read()
-    #             if cpibase and len(data) > 64:
-    #                 data = data[21: 21+64]
-    #             self.DataRead = "AsciiHex('0x" + data.hex() + "')"
-    #     elif s == 'hex':
-    #         with open(path, 'r', encoding='utf-8') as file:
-    #             lines = file.readlines()
-    #             data = []
-    #             for line in lines:
-    #                 words = line.split(r"\n")[0].split("#")[0]
-    #                 for b in words.split():
-    #                     data.append(b[2:] + b[:2])
-    #             self.DataRead = "AsciiHex('0x" + "".join(data) + "')"
-    #     return self.DataRead
 
     def insertCommand(self):
         command = self.getCommand()
@@ -386,6 +373,9 @@ class CommandsWidget(QDockWidget):
         elif 'params' in current.command and current.command['params']:
             fm = QFontMetrics(self.args_widget.font())
             label_w = max(fm.width(param) for param in current.command['params'])
+
+            # if current.command['']
+
             for i, param in enumerate(current.command['params']):
                 label = QLabel(param, self.args_widget)
                 label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
@@ -459,8 +449,6 @@ class CommandsWidget(QDockWidget):
 
         # очищаем Данные КПИМД при выборе любой ддругой команды
         self.__dataIsNone()
-
-
 
     def addMsgFieldArgControls(self):
         controls = config.odict()

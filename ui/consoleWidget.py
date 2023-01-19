@@ -24,6 +24,14 @@ class ConsoleWidget(QDockWidget):
     def settingsKeyword(self):
         return self.settings_keyword
 
+    def saveSettings(self):
+        # pass
+        self.widget().saveSettings()
+
+    def restoreSettings(self, settings):
+        self.widget().restoreSettings(settings)
+        # pass
+
 
 class IvkConsole(QWidget):
     WRITE_NORMAL = 1
@@ -279,12 +287,13 @@ class IvkConsole(QWidget):
         return {'console_sizes': self.console_splitter.real_sizes}
 
     def restoreSettings(self, settings):
-        self.console_splitter.real_sizes = settings['console_sizes']
-        self.console_splitter.setSizes(self.console_splitter.real_sizes)
-        self.pdb_console.setVisible(False)
-        self.line_edit.setVisible(False)
-        self.sub_thread_list.setVisible(
-            'sub_threads_check_state' in settings and settings['sub_threads_check_state'] == Qt.Checked)
+        if 'console_sizes' in settings.keys():
+            self.console_splitter.real_sizes = settings['console_sizes']
+            self.console_splitter.setSizes(self.console_splitter.real_sizes)
+            self.pdb_console.setVisible(False)
+            self.line_edit.setVisible(False)
+            self.sub_thread_list.setVisible(
+                'sub_threads_check_state' in settings and settings['sub_threads_check_state'] == Qt.Checked)
 
     # контекстное меню для консоли
     def __showContextMenu(self, pos):
