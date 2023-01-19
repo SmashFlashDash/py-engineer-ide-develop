@@ -153,24 +153,34 @@ def comm_print(*args, **kwargs):
 
 ################ INPUT ###################
 class ClassInput:
-    '''класс для исп input ivk'''
-    input = None
+    """класс для исп input ivk"""
+    __input = None
 
     @staticmethod
     def set(foo):
-        ClassInput.input = foo
+        ClassInput.__input = foo
+
+    @staticmethod
+    def getInputFoo():
+        return ClassInput.__input
 
     @staticmethod
     def isInputSet():
-        if ClassInput.input is None:
+        if ClassInput.__input is None:
             raise Exception('\ndef inp(quest):'
                             '\n\treturn input(quest)'
                             '\nClassInput.set(inp)')
 
     @staticmethod
+    def input(*args):
+        if ClassInput.__input is None:
+            raise Exception("ClassInput.input None сделай set")
+        return ClassInput.__input(args)
+
+    @staticmethod
     def input_break():
         while True:
-            answer = ClassInput.input('Нажать [y]/[n]: ')
+            answer = ClassInput.__input('Нажать [y]/[n]: ')
             if answer == 'y':
                 bprint(':::Продолжить')
                 return
@@ -1002,6 +1012,7 @@ def controlWaitEQ(equation, time, period=1, toPrint=True, downBCK=False):
     """ЗАПРОСЫ ИЗ БД"""
     started_query = None
     started_query_full = datetime.now()
+    main_eq_result = False
     while datetime.now() < started_query_full + timedelta(seconds=time):
         waiter = 0
         if started_query:
@@ -1022,6 +1033,7 @@ def controlWaitEQ(equation, time, period=1, toPrint=True, downBCK=False):
             bool_res = simple_eq[1].calculate_db_value()
             query_result.append(False) if bool_res is None else query_result.append(bool_res)
         if eval(main_equation % tuple(query_result)):
+            main_eq_result = True
             break
     time_duration = datetime.now() - started_query_full
 
@@ -1047,7 +1059,6 @@ def controlWaitEQ(equation, time, period=1, toPrint=True, downBCK=False):
     # составить главное выражение и результат по строке
     main_equation_reparsed = ' '.join(main_equation_reparsed)
     main_equation = ' '.join(main_equation)
-    main_eq_result = eval(main_equation)
 
     """ФОРМАТИРОВАНИЕ ЦВЕТА ТЕКСТА"""
     # вариант с tabulate модулем
