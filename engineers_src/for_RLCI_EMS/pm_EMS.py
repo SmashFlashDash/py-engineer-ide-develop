@@ -41,6 +41,13 @@ from engineers_src.Devices import BCK, M778, KIS, RLCI, ASN, Imitators, BSK_BSPA
 from engineers_src.Devices.DUK import DUK
 from engineers_src.Devices.Device import LOGGER
 from engineers_src.Devices.functions import DB
+from engineers_src.tools.tools import ClassInput
+def wrapInput(text):
+   return input(text)
+ClassInput.set(wrapInput)
+# from engineers_src.Devices.test import Test_Input
+# Test_Input()
+
 
 # TODO: првоерить
 #  есть ли коммутация в DiStorage и RLCIV
