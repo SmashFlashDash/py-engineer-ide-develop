@@ -14,7 +14,7 @@ from time import sleep as sleep2
 import time
 time.sleep = lambda *args: sleep2(0)
 sleep = lambda *args: sleep2(0)
-# Импорт зависимостей на винде
+# # Импорт зависимостей на винде
 import sys
 sys.path.insert(0, 'lib/')
 from engineers_src.tools.tools import *
@@ -41,6 +41,7 @@ from engineers_src.Devices import BCK, M778, KIS, RLCI, ASN, Imitators, BSK_BSPA
 from engineers_src.Devices.DUK import DUK
 from engineers_src.Devices.Device import LOGGER
 from engineers_src.Devices.functions import DB
+from engineers_src.Devices.mpz import launch as MPZlaunch
 from engineers_src.tools.tools import ClassInput
 def wrapInput(text):
    return input(text)
@@ -397,15 +398,16 @@ foo = {
                  'ВКЛ-2': lambda: RLCI.on(2),
                  'ОТКЛ': lambda: RLCI.off()},
         ret_btn=True),
-    'БСКР ВКЛ': lambda: BSK_P.on(),
-    'БСКР ОТКЛ': lambda: BSK_P.off(),
-    'БСКР ДИ': lambda: BSK_P.get_tmi(),
-    'БСКKu ВКЛ': lambda: BSK_KU.on(),
-    'БСКKu ОТКЛ': lambda: BSK_KU.off(),
-    'БСКKu ДИ': lambda: BSK_KU.get_tmi(),
-    'БСКСП ВКЛ': lambda: BSK_BSPA.on(),
-    'БСКСП ОТКЛ': lambda: BSK_BSPA.off(),
-    'БСКСП ДИ': lambda: BSK_BSPA.get_tmi(),
+    # 'БСКР ВКЛ': lambda: BSK_P.on(),
+    # 'БСКР ОТКЛ': lambda: BSK_P.off(),
+    # 'БСКР ДИ': lambda: BSK_P.get_tmi(),
+    # 'БСКKu ВКЛ': lambda: BSK_KU.on(),
+    # 'БСКKu ОТКЛ': lambda: BSK_KU.off(),
+    # 'БСКKu ДИ': lambda: BSK_KU.get_tmi(),
+    # 'БСКСП ВКЛ': lambda: BSK_BSPA.on(),
+    # 'БСКСП ОТКЛ': lambda: BSK_BSPA.off(),
+    # 'БСКСП ДИ': lambda: BSK_BSPA.get_tmi(),
+    'МПЗ ПМ': MPZlaunch,
     'ОПИСАНИЕ ТЕСТОВ': lambda: TEST_DESCRIPTION(),
     'АВТОМАТИЗ ТЕСТЫ': lambda: windowChooser(
         btnsText=('ИЗМ БАРЛ',
@@ -423,9 +425,10 @@ btns = (('ОЧИСТ НАКОПИТЕЛЬ', 'СБРОС НАКОПИТЕЛЬ'),
         ('ДУК ВКЛ', 'ДУК ОТКЛ', 'ДУК ВКЛ КИБК'),
         'M778',
         ('РЛЦИ ЭА', 'РЛЦИ АФУ МАССИВ', 'РЛЦИ ПЧ', 'РЛЦИ ФИП', 'РЛЦИ МОД', 'РЛЦИ УМ', 'РЛЦИ РЕЖИМ', 'РЛЦИ ВСЕ БЛОКИ'),
-        ('БСКР ВКЛ', 'БСКР ОТКЛ', 'БСКР ДИ'),
-        ('БСКKu ВКЛ', 'БСКKu ОТКЛ', 'БСКKu ДИ'),
-        ('БСКСП ВКЛ', 'БСКСП ОТКЛ', 'БСКСП ДИ'),
+        'МПЗ ПМ',
+        # ('БСКР ВКЛ', 'БСКР ОТКЛ', 'БСКР ДИ'),
+        # ('БСКKu ВКЛ', 'БСКKu ОТКЛ', 'БСКKu ДИ'),
+        # ('БСКСП ВКЛ', 'БСКСП ОТКЛ', 'БСКСП ДИ'),
         ('ОПИСАНИЕ ТЕСТОВ', 'АВТОМАТИЗ ТЕСТЫ'))
 print()
 yprint('ИСПЫТАНИЕ: АИП ИСПЫТАНИЙ МКА НА ЭМС ЧАСТЬ 1 НАСТРОЙКА РЭС', tab=3)
@@ -434,7 +437,9 @@ while True:
     print()
     try:
         windowChooser(btnsText=btns, fooDict=foo, labels=['БЦК', 'БАРЛ', 'АСН', 'ИМИТ КСО', 'КСО', 'ДУК', 'M778',
-                                                          'РЛЦИ', 'БСК P', 'БСК Ku', 'БСКСП', 'ТЕСТЫ'])
+                                                          'РЛЦИ',
+                                                          'МПЗ',    # 'БСК P', 'БСК Ku', 'БСКСП',
+                                                          'ТЕСТЫ'])
     except Exception as ex:
         LOGGER.error(traceback.format_exc().strip('\n').split('\n')[-1])
         rprint(traceback.format_exc())
