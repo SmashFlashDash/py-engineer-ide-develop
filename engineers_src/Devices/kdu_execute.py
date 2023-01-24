@@ -162,8 +162,8 @@ def dugRik(xvkl_kdu=False):
         dug_config = setDugConfigValue(str(dug_config))
         SCPICMD(0x1047, OBTS(xvkl_kdu), AsciiHex('0x {} {}00 0000'.format(s2h(dur_dug), b2h(dug_config))))
         return
-    Ex.send('КПА', CPIRIK(CPIP(obts=OBTS(start_time),
-        number=rik_number, EngineType=1, DBDug=dug_config, BK=0, OrienMode=orientation, duration=dur_dug)))
+    Ex.send('КПА', CPIRIK(obts=OBTS(start_time),
+        number=rik_number, EngineType=1, DBDug=dug_config, BK=0, OrienMode=orientation, duration=dur_dug))
     rik_number += 1
     return
 
@@ -207,8 +207,8 @@ def dukRik(xvkl_kdu=False):
     if xvkl_kdu is True:
         duk_config = setDukConfigValue(str(duk_config))
     else:   
-        Ex.send('КПА', CPIRIK(CPIP(obts=OBTS(start_time),
-            number=rik_number, EngineType=0, DBDug=0, BK=duk_config, OrienMode=orientation, duration=dur_duk)))
+        Ex.send('КПА', CPIRIK(obts=OBTS(start_time),
+            number=rik_number, EngineType=0, DBDug=0, BK=duk_config, OrienMode=orientation, duration=dur_duk))
         sleep(0.1)
         rik_number += 1
         
