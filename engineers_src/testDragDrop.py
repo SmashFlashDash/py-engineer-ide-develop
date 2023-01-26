@@ -15,14 +15,18 @@ config.updData('rokot_current_tmsid', 6236)
 
 import csv
 import os
+import sys
 from datetime import datetime
+
+# test InputGGG
+from engineers_src.tools.tools import *
+inputGGG(['a', 'aa', 'ay'], 'title')
+sys.exit()
 
 vals = Ex.get('ТМИ', '14.00.writepointerAllways', 'КАЛИБР ФУЛ')
 # print(vals)
 vals = Ex.get('ТМИ', {'14.00.writepointerAllways': "КАЛИБР", '14.00.readpointerSession': "НЕКАЛИБР"}, 'ФУЛ')
 # print(vals)
-
-
 def writeFullToCsv(filename, vals_from_ExGet_Full):
     # в orderedDict
     # to_odict_keys = vals.keys()

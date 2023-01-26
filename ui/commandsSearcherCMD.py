@@ -283,6 +283,9 @@ class SelectUVwidget(QWidget):
     current_device = None
     parse_err = None
 
+    default_line_obts = 'OBTS(\'2000:1:1:0:0:0\')'
+    default_line_args = 'AsciiHex(\'0x 0000 0000\')'
+
     SCPICMD = 0
     SOTC = 1
     NUMBER = 0
@@ -472,6 +475,8 @@ class SelectUVwidget(QWidget):
             self.cmd_line.completer().model().setStringList(mathces)
         elif text in self.cur_data:
             self.__cmd_comp_activate(text)
+        else:
+            self.__line_obts_args_set_default_text()
 
     def __cmd_comp_select(self, text):
         if self.btn_search.isChecked():
@@ -507,6 +512,12 @@ class SelectUVwidget(QWidget):
         line.clear()
         line.completer().setCompletionPrefix(line.text())
         line.completer().complete()
+        self.__line_obts_args_set_default_text()
+
+    def __line_obts_args_set_default_text(self):
+        if self.cur_type == SelectUVwidget.SCPICMD:
+            self.line_obts.setText(self.default_line_obts)
+            self.line_args.setText(self.default_line_args)
 
     def lineArgs_comp_select(self, text):
         self.line_args.setText(text)
@@ -539,6 +550,7 @@ class SelectUVwidget(QWidget):
             self.change_completer_model(self.data.uv_dict[self.current_device]['list_uv'])
             self.line_obts.show()
             self.line_obts_label.show()
+            self.__line_obts_args_set_default_text()
             # self.line_obts.setDisabled(False)
         elif arg == 'SOTC' or arg == SelectUVwidget.SOTC:
             self.cur_type = SelectUVwidget.SOTC

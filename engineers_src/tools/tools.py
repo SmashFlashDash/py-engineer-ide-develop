@@ -368,10 +368,12 @@ class ScriptQDialog(QDialog):
             lineEdit = QLineEdit()
             self.inputFields[param_name] = lineEdit
             label = QLabel(param_name)
+            label.setFocusPolicy(Qt.NoFocus)
             label.setStyleSheet("font: 10pt Consolas, DejaVu Sans Mono;")
             filedsLayout.addWidget(label, row_num, 1)
             filedsLayout.addWidget(lineEdit, row_num, 2)
             # self.headerLayout.addLayout(self.__makeHLayout((label, lineEdit), align=Qt.AlignLeft))
+        self.inputFields[params[0]].setFocus()
 
     def fixHeight(self):
         self.adjustSize()
@@ -988,7 +990,7 @@ def controlGetEQ(equation, count=1, period=0, toPrint=True, downBCK=False):
 
 # TODO: переделать на таймер по time, если gotSameType опросить больше одного раза
 #  делать проверку последних значений при опросе выражений
-def controlWaitEQ(equation, time, period=0, toPrint=True, downBCK=False):
+def controlWaitEQ(equation, time, period=1, toPrint=True, downBCK=False):
     """Тоже что и controlGetEq только закончит выполнение если выполнится условия по всем строкам True"""
     """ПАРСИНГ"""
     if period < 1:
