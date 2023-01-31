@@ -1,5 +1,5 @@
 from engineers_src.Devices.Device import Device
-from engineers_src.Devices.functions import print_start_and_end, sendFromJson, executeTMI, doEquation
+from engineers_src.Devices.functions import print_start_and_end, sendFromJson, executeTMI, doEquation, executeWaitTMI
 from engineers_src.tools.ivk_script_tools import *
 from engineers_src.tools.tools import SCPICMD, AsciiHex, KPA, SOTC, SKPA, Ex, sleep
 
@@ -55,9 +55,10 @@ class KIS(Device):
             raise Exception("Для провеки СР нужно включить БАРЛ")
         bprint('Проверка: обмена по мкпд, номера активного БАРЛ, уровня сигнала БАРЛ')
         cypher = cls.cyphs[cls.cur]
-        executeTMI('{15.00.MKPD%s}@H==1 and ' % cypher +
+        nrk_cypher = '1/2' if cls.cur in [0, 1] else '3/4'
+        executeTMI('{15.00.MKPD%s}@H==1 and ' % nrk_cypher +
                    '{15.00.NBARL}@H==%s and' % (cls.cur - 1) +
-                   '{15.00.UPRM%s}@H==[80,255]' % cypher, count=1)
+                   '{15.00.UPRM%s}@H==[80,255]' % nrk_cypher, count=1)
 
     @classmethod
     @print_start_and_end(string='КИС: тест соединения')
@@ -146,14 +147,14 @@ class KIS(Device):
         :param n_cmd: кол-во раз сколько будет выданы комманды"""
         yprint('Тест прохождения %s комманд' % n_cmd)
         result = []
+        nrk_cypher = '1/2' if cls.cur in [0,1] else '3/4'
         for cmd_count in range(0, n_cmd // 2):
             for x in ('uncog', 'fx'):
                 cls.__run_cmd(x)
-                out = '{15.00.NRK%s.НЕКАЛИБР} == %s' % (cls.cyphs[cls.cur], cls.cmds[x][0][1])
-                result.append(Ex.wait('ТМИ', out, 10))
-                gprint(out) if result[-1] is True else rprint(out)
-                # result.append(executeTMI('{15.00.NRK%s}@H == %s' % (cls.cyphs[cls.cur], cls.cmds[x][0][1]),
-                #                          count=1, stopFalse=False)[0])
+                # out = '{15.00.NRK%s.НЕКАЛИБР} == %s' % (nrk_cypher, cls.cmds[x][0][1])
+                # result.append(Ex.wait('ТМИ', out, 20))
+                # gprint(out) if result[-1] is True else rprint(out)
+                result.append(executeWaitTMI('{15.00.NRK%s}@H == %s' % (nrk_cypher, cls.cmds[x][0][1]), 10, stopFalse=False)[0])
             print('Команд: %s/%s' % (cmd_count * 2, n_cmd))
         errors_count = result.count(False)
         comm_print('Ошибок приема %s из %s' % (errors_count, n_cmd))

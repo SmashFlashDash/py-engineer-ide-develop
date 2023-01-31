@@ -113,6 +113,10 @@ class Text:
         return color + cls._tab * tab + text.replace('\n', '%s\n%s' % (Text.default, color)) + cls.default
 
     @staticmethod
+    def color_boolG(flag):
+        return (Text.colors['green'] + 'НОРМА' if flag else Text.colors['red'] + 'НЕ НОРМА') + Text.default
+
+    @staticmethod
     def color_bool(text, flag):
         if flag is None:
             colored = Text.colors['default']

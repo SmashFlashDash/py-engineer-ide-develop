@@ -27,6 +27,9 @@ class ASN(Device):
         else:
             raise Exception('Номер блока только 1 и 2')
         cls.cur.append(num)
+        bprint('выставить периодич опрос ди7, ди 13')
+        cls.__di_form(num, 7)
+        cls.__di_form(num, 13)
         # if ask_TMI:
         #     cls.res_control()
 
@@ -54,7 +57,8 @@ class ASN(Device):
         if num not in cls.cur:
             raise Exception('АСН %s отключен!' % num)
         print('Скидываем накопитель БЦК не затирая, ждем 20 сек, потом опросить из Базы ДИ7')
-        BCK.downBCK(pause=20)
+        BCK.downBCK(pause=1)
+        inputG('нажми продолжить после сброса накопителя')
         syst_num = cls.__get_syst_num(num)
         cls.__KSVCH_check(syst_num)
         DI_7 = ad_dict_DI_7(syst_num)

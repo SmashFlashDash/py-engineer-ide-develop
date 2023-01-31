@@ -3,6 +3,7 @@ from engineers_src.Devices.BCK import BCK
 from engineers_src.Devices.functions import print_start_and_end, sendFromJson, executeTMI, executeWaitTMI, doEquation
 from engineers_src.tools.ivk_script_tools import *
 from engineers_src.tools.tools import SCPICMD, config, AsciiHex, KPA, SOTC, SKPA, Ex, sleep
+from engineers_src.Devices.Imitators import Imitators
 from lib.tabulate.tabulate import tabulate
 from copy import deepcopy
 
@@ -72,18 +73,26 @@ class KSO(Device):
             raise Exception('КСО уже включен!')
         cls.log('Включить')
         cls.cur = True  # или определить какой включится
-        # sendFromJson(SCPICMD, 0xE114, AsciiHex('0x4400 0000 0000 0000'), describe='Отключить ЦНФ')  # Отключить ЦНФ
+        Imitators.on_imitators_ZD()     # включить имиатор
         sendFromJson(SCPICMD, 0xE004, AsciiHex('0x0209 0000 0000 0000'))  # Включить КСО + обмен
-        bprint(':::Ждем 60 сек 00.01.ARO == 15200 ')
+
+
+        # sendFromJson(SCPICMD, 0xE114, AsciiHex('0x4400 0000 0000 0000'), describe='Отключить ЦНФ')  # Отключить ЦНФ
+        # sendFromJson(SCPICMD, 0xE004, AsciiHex('0x0209 0000 0000 0000'))  # Включить КСО + обмен
+        # bprint(':::Ждем 60 сек 00.01.ARO == 15200 ')
         # if not Ex.wait('ТМИ', '{00.01.ARO.НЕКАЛИБР} == 15200', 60):  # ждем КСО включился
         #     rprint('00.01.ARO == 15200')
         #     inputG('00.01.ARO не == 15200')
         # else:
         #     gprint('00.01.ARO == 15200')
-        executeWaitTMI("{00.01.fakeAocsMode}@H == 1", 60)
+
+        # executeWaitTMI("{00.01.ARO.НЕКАЛИБР}@H == 15200", 60)
+        bprint('Ждем 35 секунд до fakeMode')
+        sleep(37)
         sendFromJson(SCPICMD, 0x0082, AsciiHex('0x0100 0000'), describe='Фейк мод')  # Фейк мод
         # executeTMI("{00.01.fakeAocsMode}@H == 1")  # Ex.wait('ТМИ', '{00.01.fakeAocsMode} == 1', 10)
         executeWaitTMI("{00.01.fakeAocsMode}@H == 1", 20)
+
         sendFromJson(SCPICMD, 0x0064, AsciiHex('0x0300 0000'), describe='Перейти 2ЗКТ')  # перейти в 2ЗКТ для ЗД
         # executeTMI("{00.01.mode}@H == 3 and {00.01.submode}@H == 31")  # Ex.wait('ТМИ', '{00.01.mode.НЕКАЛИБР} == 3 and {00.01.submode.НЕКАЛИБР} == 31', 10)
         executeWaitTMI("{00.01.mode}@H == 3 and {00.01.submode}@H == 31", 20)
@@ -150,13 +159,14 @@ class KSO(Device):
     @print_start_and_end(string='КСО: сменить ММ')
     def set_MM(cls, num, ask_TMI=True):
         if num == 1:
-            sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0201 0000'), pause=10)  # Отказ ММ1
-            sleep(10)  # пауза на переключение
-        elif num == 2:
-            sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0301 0000'), pause=1)  # отказ ММ2
-            sleep(10)
             sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0200 0000'), pause=1)  # Сброс отказ ММ1
-            sendFromJson(SCPICMD, 0x0084, AsciiHex('0x0602 0000'), pause=1)  # ММ пнуть
+            sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0301 0000'), pause=10)  # Отказ ММ2
+            #sleep(10)  # пауза на переключение
+        elif num == 2:
+            sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0300 0000'), pause=1)  # Сброс отказ ММ2
+            sendFromJson(SCPICMD, 0x0083, AsciiHex('0x0201 0000'), pause=1)  # отказ ММ1
+            #sleep(10)
+            #sendFromJson(SCPICMD, 0x0084, AsciiHex('0x0602 0000'), pause=1)  # ММ пнуть
         else:
             raise Exception('Номер ММ1 или ММ2')
         if ask_TMI:

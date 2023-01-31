@@ -57,8 +57,8 @@ def sendFromJson(fun, *args, toPrint=True, describe=None, pause=1):
             obj = dataJSON.sotc_dict[str(args[0])]
         elif fun.__name__ == 'SCPICMD':
             obj = dataJSON.uv_dict['all']['list_uv'].get('0x' + hex(args[0])[2:].upper())
-        if obj is None:
-            yprint('В json нет обьекта: %s %s' % (fun.__name__, args[0]))
+        # if obj is None:
+        #     yprint('В json нет обьекта: %s %s' % (fun.__name__, args[0]))
         # описание из json
         if obj is None:
             obj_describe = None
@@ -72,7 +72,7 @@ def sendFromJson(fun, *args, toPrint=True, describe=None, pause=1):
         # переданное описание
         describe = obj_describe if describe is None else (
             describe if obj_describe is None else obj_describe + "; \n:::" + describe)
-    send(fun, *args, toPrint=toPrint, describe=describe)
+    send(fun, *args, toPrint=False, describe=describe)
     sleep(pause)
     # inputG('УВ:  ' + describe)  # пауза после каждого УВ
 
@@ -101,6 +101,8 @@ def executeTMI(*args, pause=None, stopFalse=True, **kwargs):
         pause = DB.pause
     sleep(pause)
     result, dict_cpyphers = controlGetEQ(*args, **kwargs)
+    # if not result:
+    #     rprint('НЕ НОРМА: проверь ДИ')
     if stopFalse and not result:
         rprint('НЕ НОРМА: проверь ДИ')
         inputG('Проверь ТМИ')
@@ -116,6 +118,8 @@ def executeWaitTMI(*args, pause=None, stopFalse=True, **kwargs):
     #     pause = DB.pause
     # sleep(pause)
     result, dict_cpyphers = controlWaitEQ(*args, **kwargs)
+    # if not result:
+    #     rprint('НЕ НОРМА: проверь ДИ')
     if stopFalse and not result:
         rprint('НЕ НОРМА: проверь ДИ')
         inputG('Проверь ТМИ')
