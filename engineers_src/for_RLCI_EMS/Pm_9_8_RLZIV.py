@@ -1,14 +1,14 @@
-# DEBUG
-from time import sleep as sleep2
-import time
-time.sleep = lambda *args: sleep2(0)
-sleep = lambda *args: sleep2(0)
-# Импорт зависимостей
-import sys
-sys.path.insert(0, 'lib/')
-from engineers_src.tools.tools import *
-Ex.ivk_file_name = "script.ivkng"
-Ex.ivk_file_path = "D:/VMShared/ivk-ng-myremote/engineers_src/script.ivkng"
+# # DEBUG
+# from time import sleep as sleep2
+# import time
+# time.sleep = lambda *args: sleep2(0)
+# sleep = lambda *args: sleep2(0)
+# # Импорт зависимостей
+# import sys
+# sys.path.insert(0, 'lib/')
+# from engineers_src.tools.tools import *
+# Ex.ivk_file_name = "script.ivkng"
+# Ex.ivk_file_path = "D:/VMShared/ivk-ng-myremote/engineers_src/script.ivkng"
 
 import traceback
 import logging
@@ -634,7 +634,7 @@ def TEST_DESCRIPTION():
     print(Text.yellow + "ТЕСТ 13" + Text.default + ": РЛЦИ - ОСНОВНОЙ АВАРИЙНОЕ ОТКЛЮЧЕНИЕ;")
     print(Text.yellow + "ТЕСТ 14" + Text.default + ": РЛЦИ - РЕЗЕРВНЫЙ АВАРИЙНОЕ ОТКЛЮЧЕНИЕ;")
     print(Text.yellow + "ТЕСТ 15" + Text.default + ": РЛЦИ - ОСНОВНОЙ ВКЛЮЧЕНИЕ ПРОВЕРКА ПОТРЕБЛЕНИЯ;")
-    print(Text.yellow + "ТЕСТ 15" + Text.default + ": РЛЦИ - РЕЗЕРВНЫЙ ВКЛЮЧЕНИЕ ПРОВЕРКА ПОТРЕБЛЕНИЯ;")
+    print(Text.yellow + "ТЕСТ 16" + Text.default + ": РЛЦИ - РЕЗЕРВНЫЙ ВКЛЮЧЕНИЕ ПРОВЕРКА ПОТРЕБЛЕНИЯ;")
     # ТЕХ
     # print(Text.yellow + "ТЕСТ 11" + Text.default + ": тех - АФУ-Х ПРОВЕРКА ОТРАБОТКИ ДКП, КОЛ_ВО ИМПУЛЬСОВ - БА-О;")
     # print(Text.yellow + "ТЕСТ 12" + Text.default + ": тех - АФУ-Х ПРОВЕРКА ОТРАБОТКИ ДКП, КОЛ_ВО ИМПУЛЬСОВ - БА-Р;")

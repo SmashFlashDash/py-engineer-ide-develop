@@ -72,7 +72,7 @@ def sendFromJson(fun, *args, toPrint=True, describe=None, pause=1):
         # переданное описание
         describe = obj_describe if describe is None else (
             describe if obj_describe is None else obj_describe + "; \n:::" + describe)
-    send(fun, *args, toPrint=False, describe=describe)
+    send(fun, *args, toPrint=True, describe=describe)
     sleep(pause)
     # inputG('УВ:  ' + describe)  # пауза после каждого УВ
 
