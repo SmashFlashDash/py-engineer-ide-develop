@@ -1025,6 +1025,7 @@ def controlWaitEQ(equation, time, period=1, toPrint=True, downBCK=False):
     started_query = None
     started_query_full = datetime.now()
     main_eq_result = False
+    query_result_Any = [False] * len(equations_dict)
     while datetime.now() < started_query_full + timedelta(seconds=time):
         waiter = 0
         if started_query:
@@ -1039,11 +1040,21 @@ def controlWaitEQ(equation, time, period=1, toPrint=True, downBCK=False):
             SCPICMD(0xE060)  # сброс БЦК
             sleep(15)
         execute_db(equations_dict, equations_all)
-        # TODO: обработать строку выражений
+
+        # обработка после каждого запроса
         query_result = []
-        for simple_eq in equations_all:
+        for idx, simple_eq in enumerate(equations_all):
             bool_res = simple_eq[1].calculate_db_value()
-            query_result.append(False) if bool_res is None else query_result.append(bool_res)
+            if simple_eq[1].all_any_operator is AnyAllType.ANY:
+                if query_result_Any[idx] is True:
+                    query_result.append(True)
+                else:
+                    bool_res = False if bool_res is None else bool_res
+                    query_result.append(bool_res)
+                    query_result_Any[idx] = bool_res
+            else:
+                query_result.append(False if bool_res is None else bool_res)
+
         if eval(main_equation % tuple(query_result)):
             main_eq_result = True
             break
@@ -1056,7 +1067,7 @@ def controlWaitEQ(equation, time, period=1, toPrint=True, downBCK=False):
     main_equation_reparsed = []
     for simple_eq in equations_all:
         simple_eq = simple_eq[1]
-        simple_eq.all_any_operator = AnyAllType.ANY
+        # simple_eq.all_any_operator = AnyAllType.ANY
         bools, texts = simple_eq.calculate_db_values()
         rows_text.append(texts)
         rows_bools.append(bools)
