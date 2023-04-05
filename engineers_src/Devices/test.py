@@ -1,3 +1,9 @@
+def Test_Input():
+    from engineers_src.tools.tools import ClassInput
+    input = ClassInput.getInputFoo()
+    # print('Печатай что написал: ' + input('напиши'))
+    input('напиши')
+
 if __name__ == '__main__':
     from time import sleep as sleep2
     import time

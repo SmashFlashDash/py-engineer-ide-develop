@@ -1,14 +1,14 @@
-# DEBUG
-from time import sleep as sleep2
-import time
-time.sleep = lambda *args: sleep2(0)
-sleep = lambda *args: sleep2(0)
-# Импорт зависимостей
-import sys
-sys.path.insert(0, 'lib/')
-from engineers_src.tools.tools import *
-Ex.ivk_file_name = "script.ivkng"
-Ex.ivk_file_path = "D:/VMShared/ivk-ng-myremote/engineers_src/script.ivkng"
+# # DEBUG
+# from time import sleep as sleep2
+# import time
+# time.sleep = lambda *args: sleep2(0)
+# sleep = lambda *args: sleep2(0)
+# # Импорт зависимостей
+# import sys
+# sys.path.insert(0, 'lib/')
+# from engineers_src.tools.tools import *
+# Ex.ivk_file_name = "script.ivkng"
+# Ex.ivk_file_path = "D:/VMShared/ivk-ng-myremote/engineers_src/script.ivkng"
 
 import traceback
 import logging
@@ -634,7 +634,7 @@ def TEST_DESCRIPTION():
     print(Text.yellow + "ТЕСТ 13" + Text.default + ": РЛЦИ - ОСНОВНОЙ АВАРИЙНОЕ ОТКЛЮЧЕНИЕ;")
     print(Text.yellow + "ТЕСТ 14" + Text.default + ": РЛЦИ - РЕЗЕРВНЫЙ АВАРИЙНОЕ ОТКЛЮЧЕНИЕ;")
     print(Text.yellow + "ТЕСТ 15" + Text.default + ": РЛЦИ - ОСНОВНОЙ ВКЛЮЧЕНИЕ ПРОВЕРКА ПОТРЕБЛЕНИЯ;")
-    print(Text.yellow + "ТЕСТ 15" + Text.default + ": РЛЦИ - РЕЗЕРВНЫЙ ВКЛЮЧЕНИЕ ПРОВЕРКА ПОТРЕБЛЕНИЯ;")
+    print(Text.yellow + "ТЕСТ 16" + Text.default + ": РЛЦИ - РЕЗЕРВНЫЙ ВКЛЮЧЕНИЕ ПРОВЕРКА ПОТРЕБЛЕНИЯ;")
     # ТЕХ
     # print(Text.yellow + "ТЕСТ 11" + Text.default + ": тех - АФУ-Х ПРОВЕРКА ОТРАБОТКИ ДКП, КОЛ_ВО ИМПУЛЬСОВ - БА-О;")
     # print(Text.yellow + "ТЕСТ 12" + Text.default + ": тех - АФУ-Х ПРОВЕРКА ОТРАБОТКИ ДКП, КОЛ_ВО ИМПУЛЬСОВ - БА-Р;")
@@ -657,43 +657,43 @@ foo = {
         fooDict={
             'ВКЛ ЭА332-1': lambda: RLCI.EA332.on(1, stop_shd=True, ask_TMI=btn_ask_di),
             'ВКЛ ЭА332-2': lambda: RLCI.EA332.on(2, stop_shd=True, ask_TMI=btn_ask_di),
-            'ОТКЛ ЭА332': lambda: RLCI.EA332.off(),
-            'ВКЛ ЭА331-1': lambda: RLCI.EA331.on(1),
-            'ВКЛ ЭА331-2': lambda: RLCI.EA331.on(2),
-            'ОТКЛ ЭА331': lambda: RLCI.EA331.off()},
+            'ОТКЛ ЭА332': lambda: RLCI.EA332.off(ask_TMI=btn_ask_di),
+            'ВКЛ ЭА331-1': lambda: RLCI.EA331.on(1, ask_TMI=btn_ask_di),
+            'ВКЛ ЭА331-2': lambda: RLCI.EA331.on(2, ask_TMI=btn_ask_di),
+            'ОТКЛ ЭА331': lambda: RLCI.EA331.off(ask_TMI=btn_ask_di)},
         labels=['ЭА332', 'ЭА331'],
         ret_btn=True),
     'РЛЦИ ПЧ': lambda: windowChooser(
         btnsText=('ОСН', 'РЕЗ', 'ОТКЛ'),
         title='РЛЦИ ПЧ',
         fooDict={
-            'ОСН': lambda: RLCI.PCH.on(1),
-            'РЕЗ': lambda: RLCI.PCH.on(2),
-            'ОТКЛ': lambda: RLCI.PCH.off()},
+            'ОСН': lambda: RLCI.PCH.on(1, ask_TMI=btn_ask_di),
+            'РЕЗ': lambda: RLCI.PCH.on(2, ask_TMI=btn_ask_di),
+            'ОТКЛ': lambda: RLCI.PCH.off(ask_TMI=btn_ask_di)},
         ret_btn=True),
     'РЛЦИ ФИП': lambda: windowChooser(
         btnsText=('ОСН', 'РЕЗ', 'ОТКЛ'),
         title='РЛЦИ ФИП',
         fooDict={
-            'ОСН': lambda: RLCI.FIP.on(1),
-            'РЕЗ': lambda: RLCI.FIP.on(2),
-            'ОТКЛ': lambda: RLCI.FIP.off()},
+            'ОСН': lambda: RLCI.FIP.on(1, ask_TMI=btn_ask_di),
+            'РЕЗ': lambda: RLCI.FIP.on(2, ask_TMI=btn_ask_di),
+            'ОТКЛ': lambda: RLCI.FIP.off(ask_TMI=btn_ask_di)},
         ret_btn=True),
     'РЛЦИ МОД': lambda: windowChooser(
         btnsText=('ОСН', 'РЕЗ', 'ОТКЛ'),
         title='РЛЦИ МОД',
         fooDict={
-            'ОСН': lambda: RLCI.MOD.on(1),
-            'РЕЗ': lambda: RLCI.MOD.on(2),
-            'ОТКЛ': lambda: RLCI.MOD.off()},
+            'ОСН': lambda: RLCI.MOD.on(1, ask_TMI=btn_ask_di),
+            'РЕЗ': lambda: RLCI.MOD.on(2, ask_TMI=btn_ask_di),
+            'ОТКЛ': lambda: RLCI.MOD.off(ask_TMI=btn_ask_di)},
         ret_btn=True),
     'РЛЦИ УМ': lambda: windowChooser(
         btnsText=('ОСН', 'РЕЗ', 'ОТКЛ'),
         title='РЛЦИ УМ',
         fooDict={
-            'ОСН': lambda: RLCI.UM.on(1),
-            'РЕЗ': lambda: RLCI.UM.on(2),
-            'ОТКЛ': lambda: RLCI.UM.off()},
+            'ОСН': lambda: RLCI.UM.on(1, ask_TMI=btn_ask_di),
+            'РЕЗ': lambda: RLCI.UM.on(2, ask_TMI=btn_ask_di),
+            'ОТКЛ': lambda: RLCI.UM.off(ask_TMI=btn_ask_di)},
         ret_btn=True),
     'РЛЦИ РЕЖИМ': lambda: windowChooser(
         btnsText=(('M1', 'M2', 'M3', 'M4'), ('VS1', 'VS2'), ('RS485-1', 'RS485-2'), ('ИМ-МОД ВКЛ', 'ИМ-МОД ОТКЛ'),
@@ -758,6 +758,7 @@ btns = (('ТЕСТ 1', 'ТЕСТ 2', 'ТЕСТ 3', 'ТЕСТ 4', 'ТЕСТ 5', '
 
 print()
 yprint('РЛЦИВ ПМ1')
+sendFromJson(SCPICMD, 0x4258, AsciiHex('0x0100 0000')),  # уставка на опрос ДИ ФКП
 while True:
     print()
     try:

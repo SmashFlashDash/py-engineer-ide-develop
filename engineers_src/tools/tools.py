@@ -31,7 +31,7 @@ from time import sleep
 '''Остальные импорты'''
 from datetime import datetime, timedelta
 from enum import Enum
-import re
+import re, csv
 import threading
 from PyQt5.QtWidgets import QApplication, QMessageBox, QPushButton, QDialogButtonBox, QSizePolicy, QBoxLayout, QLabel, \
     QDialog, QVBoxLayout, QStyle, QLineEdit, QHBoxLayout, QWidget, QBoxLayout, QDialogButtonBox, QGridLayout
@@ -43,10 +43,14 @@ from collections import OrderedDict
 ################ IMITATION ###############
 # from random import randint
 # def get(*args):
-#     randint(0, 10)
+#     inp = inputGGG(['inputK', 'inputInt'])
+#     if inp['inputInt'] != '':
+#         return float(inp['inputInt'])
+#     else:
+#         return inp['inputK']
+#
 #     calibs = ('включен', 'отключен', 'Есть', 'Нет', 0, 100, None)
-#     calibs = (0, 100)
-#     uncalibs = (0, 1, 100, -100, 0.01, 1000, None)
+#     uncalibs = (0, 1, 100, -100, 0.01, 1000)
 #     if isinstance(args[1], dict):
 #         result = {}
 #         if args[2] == 'ИНТЕРВАЛ':
@@ -113,6 +117,10 @@ class Text:
         return color + cls._tab * tab + text.replace('\n', '%s\n%s' % (Text.default, color)) + cls.default
 
     @staticmethod
+    def color_boolG(flag):
+        return (Text.colors['green'] + 'НОРМА' if flag else Text.colors['red'] + 'НЕ НОРМА') + Text.default
+
+    @staticmethod
     def color_bool(text, flag):
         if flag is None:
             colored = Text.colors['default']
@@ -153,24 +161,40 @@ def comm_print(*args, **kwargs):
 
 ################ INPUT ###################
 class ClassInput:
-    '''класс для исп input ivk'''
-    input = None
+    """класс для исп input ivk"""
+    __input = None
 
     @staticmethod
     def set(foo):
-        ClassInput.input = foo
+        """from engineers_src.tools.tools import ClassInput
+            def wrapInput(text):
+            return input(text)
+            ClassInput.set(wrapInput)"""
+        ClassInput.__input = foo
+
+    @staticmethod
+    def getInputFoo():
+        if ClassInput.__input is None:
+            raise Exception('input в ClassInput: None, сделай set в начале программы')
+        return ClassInput.__input
 
     @staticmethod
     def isInputSet():
-        if ClassInput.input is None:
+        if ClassInput.__input is None:
             raise Exception('\ndef inp(quest):'
                             '\n\treturn input(quest)'
                             '\nClassInput.set(inp)')
 
     @staticmethod
+    def input(*args):
+        if ClassInput.__input is None:
+            raise Exception("ClassInput.input None сделай set")
+        return ClassInput.__input(args)
+
+    @staticmethod
     def input_break():
         while True:
-            answer = ClassInput.input('Нажать [y]/[n]: ')
+            answer = ClassInput.__input('Нажать [y]/[n]: ')
             if answer == 'y':
                 bprint(':::Продолжить')
                 return
@@ -346,12 +370,18 @@ class ScriptQDialog(QDialog):
         self.headerLayout.addLayout(btns_layout)
 
     def addInputFields(self, params):
-        for param_name in params:
+        filedsLayout = QGridLayout()
+        self.headerLayout.addLayout(filedsLayout)
+        for row_num, param_name in enumerate(params):
             lineEdit = QLineEdit()
             self.inputFields[param_name] = lineEdit
             label = QLabel(param_name)
+            label.setFocusPolicy(Qt.NoFocus)
             label.setStyleSheet("font: 10pt Consolas, DejaVu Sans Mono;")
-            self.headerLayout.addLayout(self.__makeHLayout((label, lineEdit), align=Qt.AlignLeft))
+            filedsLayout.addWidget(label, row_num, 1)
+            filedsLayout.addWidget(lineEdit, row_num, 2)
+            # self.headerLayout.addLayout(self.__makeHLayout((label, lineEdit), align=Qt.AlignLeft))
+        self.inputFields[params[0]].setFocus()
 
     def fixHeight(self):
         self.adjustSize()
@@ -513,6 +543,72 @@ def ExGet(*args):
 #     dt_diff_bytes += struct.pack("%s%s" % (_ord[order], _type[type]), dt_diff).hex()
 #     print('Секунд с 2000: %s\nВ байтах %s %s: %s' % (dt_diff, type, order, dt_diff_bytes))
 #     return dt_diff_bytes
+
+
+def get_byte(started_bit, bits_objs):
+    """Собирает байт из бит по именам переменных в bits_objs"""
+    # TODO: добавить что вместо started_bit передать список бит
+    search_num = re.findall('[0-9]+', started_bit)[-1]
+    search_pref = started_bit[:started_bit.rfind(search_num)]
+    byte = 0
+    for byte_num in range(0, 8):
+        part = '%s%s' % (search_pref, int(search_num) + byte_num)
+        bit_val = None
+        for bit_key in list(bits_objs.keys()):
+            if bit_key.startswith(part):
+                bit_val = bits_objs.pop(bit_key)
+                break
+        if bit_val is None:
+            raise Exception('нет такого бита в словаре')
+        byte = byte | (bit_val << byte_num)
+    return byte
+
+
+def writeFullToCsv(filename, vals_from_ExGet_Full):
+    # в orderedDict
+    # to_odict_keys = vals.keys()
+    # to_odict_vals = [(key, vals[key]) for key in to_odict_keys]
+    # newdict = OrderedDict(to_odict_vals)
+    filename += '_' + datetime.now().strftime("%Y.%m.%d %H.%M.%S")
+    if filename.count('/') > 0:
+        os.makedirs(os.path.dirname(filename), 0o775, exist_ok=True)
+    with open(filename, 'w', newline='') as f:
+        # все массивы равной длинны
+        maxlen = 0
+        for item in vals_from_ExGet_Full.values():
+            for x in item.values():
+                if len(x) > maxlen:
+                    maxlen = len(x)
+        for item in vals_from_ExGet_Full.values():
+            for x in item.values():
+                if len(x) < maxlen:
+                    x.extend([None] * (maxlen - len(x)))
+        # сплитануть в массивы построчно
+        fieldnames = []
+        keys = vals_from_ExGet_Full.keys()
+        for x in keys:
+            fieldnames.append('time_' + x)
+            fieldnames.append(x)
+        towrite_columns = [fieldnames]
+        for idx in range(0, maxlen):
+            towrite_columns.append([])
+            for x in keys:
+                val = vals_from_ExGet_Full[x]['values'][idx]
+                if isinstance(val, float):
+                    val = str(val).replace('.', ',')
+                elif isinstance(val, str) and val.endswith('.000'):
+                    val = val[:-4]
+                time = vals_from_ExGet_Full[x]['time'][idx]
+                try:
+                    time = datetime.fromtimestamp(int(time)).strftime("%Y:%m:%d %H:%M:%S")
+                except Exception as ex:
+                    time = str(vals_from_ExGet_Full[x]['time'][idx]).replace('.', ',')
+                towrite_columns[-1].append(time)
+                towrite_columns[-1].append(val)
+        # записать в csv
+        writer = csv.writer(f, delimiter=';')
+        for row in towrite_columns:
+            writer.writerow(row)
 
 
 # TODO: добавить тестов на поле value_ref
@@ -902,9 +998,11 @@ def controlGetEQ(equation, count=1, period=0, toPrint=True, downBCK=False):
 
 # TODO: переделать на таймер по time, если gotSameType опросить больше одного раза
 #  делать проверку последних значений при опросе выражений
-def controlWaitEQ(equation, time, period=0, toPrint=True, downBCK=False):
+def controlWaitEQ(equation, time, period=1, toPrint=True, downBCK=False):
     """Тоже что и controlGetEq только закончит выполнение если выполнится условия по всем строкам True"""
     """ПАРСИНГ"""
+    if period < 1:
+        period = 1
     bprint('ОПРОС ТМИ: %s сек' % time)
     pattern = re.compile(r"""\s?([not\s(]*)?                                        # _operator not and bacwards        
                                 \s?({.+?})                                              # the _cypher
@@ -930,6 +1028,8 @@ def controlWaitEQ(equation, time, period=0, toPrint=True, downBCK=False):
     """ЗАПРОСЫ ИЗ БД"""
     started_query = None
     started_query_full = datetime.now()
+    main_eq_result = False
+    query_result_Any = [False] * len(equations_dict)
     while datetime.now() < started_query_full + timedelta(seconds=time):
         waiter = 0
         if started_query:
@@ -944,12 +1044,23 @@ def controlWaitEQ(equation, time, period=0, toPrint=True, downBCK=False):
             SCPICMD(0xE060)  # сброс БЦК
             sleep(15)
         execute_db(equations_dict, equations_all)
-        # TODO: обработать строку выражений
+
+        # обработка после каждого запроса
         query_result = []
-        for simple_eq in equations_all:
+        for idx, simple_eq in enumerate(equations_all):
             bool_res = simple_eq[1].calculate_db_value()
-            query_result.append(False) if bool_res is None else query_result.append(bool_res)
+            if simple_eq[1].all_any_operator is AnyAllType.ANY:
+                if query_result_Any[idx] is True:
+                    query_result.append(True)
+                else:
+                    bool_res = False if bool_res is None else bool_res
+                    query_result.append(bool_res)
+                    query_result_Any[idx] = bool_res
+            else:
+                query_result.append(False if bool_res is None else bool_res)
+
         if eval(main_equation % tuple(query_result)):
+            main_eq_result = True
             break
     time_duration = datetime.now() - started_query_full
 
@@ -960,6 +1071,7 @@ def controlWaitEQ(equation, time, period=0, toPrint=True, downBCK=False):
     main_equation_reparsed = []
     for simple_eq in equations_all:
         simple_eq = simple_eq[1]
+        # simple_eq.all_any_operator = AnyAllType.ANY
         bools, texts = simple_eq.calculate_db_values()
         rows_text.append(texts)
         rows_bools.append(bools)
@@ -974,7 +1086,6 @@ def controlWaitEQ(equation, time, period=0, toPrint=True, downBCK=False):
     # составить главное выражение и результат по строке
     main_equation_reparsed = ' '.join(main_equation_reparsed)
     main_equation = ' '.join(main_equation)
-    main_eq_result = eval(main_equation)
 
     """ФОРМАТИРОВАНИЕ ЦВЕТА ТЕКСТА"""
     # вариант с tabulate модулем

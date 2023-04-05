@@ -37,40 +37,30 @@
     пример параметров вводимых в пм:
     (5 - 100 - 0 или 2 - 0 - 1 - 100)
 """
-# DEBUG
-from cpi_framework.utils.toolsForCPI import sec_diff
-from time import sleep as sleep2
-import time
-time.sleep = lambda *args: sleep2(0)
-sleep = lambda *args: sleep2(0)
-# # Импорт зависимостей на винде
-import sys
-sys.path.insert(0, 'lib/')
-from engineers_src.tools.tools import *
-Ex.ivk_file_name = "script.ivkng"
-Ex.ivk_file_path = "D:/VMShared/ivk-ng-myremote/engineers_src/script.ivkng"
+# # # DEBUG
+# from cpi_framework.utils.toolsForCPI import sec_diff
+# from time import sleep as sleep2
+# import time
+# time.sleep = lambda *args: sleep2(0)
+# sleep = lambda *args: sleep2(0)
+# # # # Импорт зависимостей на винде
+# import sys
+# sys.path.insert(0, 'lib/')
+# from engineers_src.tools.tools import *
+# Ex.ivk_file_name = "script.ivkng"
+# Ex.ivk_file_path = "D:/VMShared/ivk-ng-myremote/engineers_src/script.ivkng"
 
 
 import traceback
 import logging
-# Импорт с другой папки
-# sys.path.insert(0, 'F:/VMShared/ivk-scripts/')  # путь к программе испытаний абсолютный
-# DIstorage = None
-# windowChooser = None
-# sendFromJson = None
-# doEquation = None
-# executeTMI = None
-# exec('from Dictionaries_UVDI import *')
-# exec('from EMSRLCI_foos import windowChooser, sendFromJson, doEquation, executeTMI, getAndSleep, executeDI')
 
 from engineers_src.tools.tools import ClassInput
 def wrapInput(text):
    return input(text)
 ClassInput.set(wrapInput)
-from engineers_src.Devices.functions import windowChooser, sendFromJson, doEquation, executeTMI, print_start_and_end
+from engineers_src.Devices.functions import windowChooser
 from engineers_src.Devices.dictionariesUVDI import DIstorage
-from engineers_src.Devices import BCK, M778, KIS, RLCI, ASN, Imitators, BSK_BSPA, BSK_P, BSK_KU, KSO
-from engineers_src.Devices.DUK import DUK
+from engineers_src.Devices import BCK, M778, KIS, RLCI, ASN, Imitators, KSO
 from engineers_src.Devices.Device import LOGGER
 from engineers_src.Devices.functions import DB
 from engineers_src.Devices.mpz import launch as MPZlaunch
@@ -113,9 +103,6 @@ RLCI.PCH.cur = None
 RLCI.FIP.cur = None
 RLCI.MOD.cur = None
 RLCI.UM.cur = None
-BSK_BSPA.cur = None
-BSK_P.cur = None
-BSK_KU.cur = None
 
 
 #####################    TESTS ###############################
