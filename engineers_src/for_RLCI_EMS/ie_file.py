@@ -1,13 +1,3 @@
-# import traceback
-# import logging
-# from datetime import datetime, timedelta
-# from lib.tabulate.tabulate import tabulate
-# from engineers_src.Devices.functions import windowChooser, sendFromJson, doEquation, executeTMI
-# from engineers_src.Devices.dictionariesUVDI import DIstorage
-# from engineers_src.Devices import BCK, M778, RLCI
-# from engineers_src.Devices.Device import LOGGER
-# from engineers_src.Devices.functions import DB
-
 from ui.commandsSearcherCMD import DataListUV
 from time import sleep
 from abc import abstractmethod, ABC
@@ -22,7 +12,6 @@ from lib.tabulate.tabulate import tabulate
 # import time
 # time.sleep = lambda *args: sleep2(0)
 # sleep = lambda *args: sleep2(0)
-
 
 
 def DI_CYPHER(syst_num, pa, di_name):

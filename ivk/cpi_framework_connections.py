@@ -82,7 +82,7 @@ def generate_pdb_script(text, filename, filepath=None):
     prepend += 'from engineers_src.tools.ivk_script_tools import *\n'  # импорт файл
     prepend += 'print("{#d6ff59}Начало выполнения скрипта \\"%s\\"")\n' % filename
     prepend += 'DbLog.log(Ex.ivk_file_name, "Начало выполнения скрипта", False, Ex.ivk_file_path, inspect.getsource(sys.modules[__name__]))\n'
-
+    prepend += 'from cpi_framework.spacecrafts.omka.cpi import newRIKS\n'
     append = 'endscript_log()\n'
 
     line_correction = len(prepend.splitlines())
@@ -301,6 +301,19 @@ crc = crc16_ccitt(data, 5)''',
                 'translation': 'IntToHex',
                 'ex_send': False,  # True by default
                 'cat': 'Общие'
+            },
+            {
+                'name': 'readBinFile',
+                'import_string': 'from cpi_framework.utils.toolsForCPI import readBinFile',
+                'description': 'Преобразует файл с расширением .bin(.hex) в последовательность байтов\n' + \
+                               '  - path(str): путь до файла',
+                'example': "readBinFile(r'C:\Work\Test\for_ivk\res.bin')",
+                'params': ['path'],
+                'values': ["r'C:\CPI.bin'"],
+                'keyword': ['path'],
+                'translation': 'readBinFile',
+                'ex_send': False,
+                'cat': 'Общие'
             }
         ]
     })
@@ -343,7 +356,7 @@ def get_imports(commands, module):
                     data = {}
                     data['name'] = candidate.__name__
                     data['import_string'] = 'from %s import %s' % (
-                    inspect.getmodule(candidate).__name__, candidate.__name__)
+                        inspect.getmodule(candidate).__name__, candidate.__name__)
                     data['description'] = candidate.getDescription()['description']
                     data['translation'] = candidate.getDescription()['translation']
                     if 'example' in candidate.getDescription():

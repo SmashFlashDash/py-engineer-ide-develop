@@ -1,18 +1,21 @@
-import threading, ntpath, os, re
-import subprocess
+import ntpath
+import os
+import threading
 
-from PyQt5.QtWidgets import QWidget, QCheckBox, QPushButton, QSplitter, QBoxLayout, QListWidget, QListWidgetItem
-from PyQt5.QtGui import QIcon
+import PyQt5
+from PyQt5 import Qt as qt
 from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QWidget, QCheckBox, QPushButton, QSplitter, QBoxLayout
 
-from ui.components.qBoxLayoutBuilder import QBoxLayoutBuilder 
-from ui.components.labels import GifLabelSaveSpace
-from ui.textEditor import TextEditor
-from ui.consoleWidget import IvkConsole
 from ivk import cpi_framework_connections as cfc
 from ivk.global_log import GlobalLog
 from ivk.log_db import DbLog
 from ivk.pydevd_runner import PyDevDRunner
+from ui.components.labels import GifLabelSaveSpace
+from ui.components.qBoxLayoutBuilder import QBoxLayoutBuilder
+from ui.consoleWidget import IvkConsole
+from ui.textEditor import TextEditor
 
 
 class TabWidget(QWidget):
@@ -30,7 +33,7 @@ class TabWidget(QWidget):
         self.execStarting.connect(self.__executionStarted)
         self.execEnded.connect(self.text_edit.afterScriptEnd)
         self.execEnded.connect(self.__executionEnded)
-        
+
         self.console.inputRequestedSignal.connect(lambda from_pdb, label: self.__inputRequested(from_pdb))
         self.console.inputEndedSignal.connect(lambda command: self.__inputEnded())
         self.console.inputEndedSignal.connect(lambda command: self.runner.sendInput(command))
@@ -38,32 +41,41 @@ class TabWidget(QWidget):
         self.console.subThreadSelectedSignal.connect(self.__subThreadChanged)
 
         self.show_pdb_checkbox.stateChanged.connect(lambda state: self.console.onPdbModeChanged(state == Qt.Checked))
-        self.show_sub_threads_checkbox.stateChanged.connect(lambda state: self.console.onSubThreadsCheckboxStateChanged(state == Qt.Checked))
+        self.show_sub_threads_checkbox.stateChanged.connect(
+            lambda state: self.console.onSubThreadsCheckboxStateChanged(state == Qt.Checked))
 
-        self.text_edit.lintingEnded.connect(lambda lints, line_correction, run_func, fail_func: self.loading_widget.setVisible(False))
-        self.text_edit.selectionChanged.connect(lambda: self.run_button.setText("Запуск выделенного" if self.text_edit.hasSelectedText() else "Запуск"))
-        
+        self.text_edit.lintingEnded.connect(
+            lambda lints, line_correction, run_func, fail_func: self.loading_widget.setVisible(False))
+        self.text_edit.selectionChanged.connect(
+            lambda: self.run_button.setText("Запуск выделенного" if self.text_edit.hasSelectedText() else "Запуск"))
+
     def initUI(self, file, text, breakpoints, search_options, need_to_update_func, execute_update_func):
-        self.text_edit = TextEditor(self, 
-            file, 
-            text, 
-            breakpoints, 
-            search_options, 
-            {'need_to_update' : need_to_update_func,
-            'execute_update' : execute_update_func},
-            lambda: self.modifiedStateChanged.emit(self.index),
-            self.updateExecutorBreakpoint
-        )
+        self.text_edit = TextEditor(self,
+                                    file,
+                                    text,
+                                    breakpoints,
+                                    search_options,
+                                    {'need_to_update': need_to_update_func,
+                                     'execute_update': execute_update_func},
+                                    lambda: self.modifiedStateChanged.emit(self.index),
+                                    self.updateExecutorBreakpoint
+                                    )
+
+        self.ac = qt.QAction('', self)
+        self.ac.setShortcut(qt.QKeySequence('Ctrl+.'))
+        self.addAction(self.ac)
+        self.ac.triggered.connect(self.setComment)
 
         self.loading_widget = GifLabelSaveSpace('res/loading_orange_16.gif', visible=False, fix_w=16, fix_h=16)
 
-        self.console = IvkConsole(self, lambda: self.show_pdb_checkbox.checkState() == Qt.Checked, lambda: self.print_time_checkbox.checkState() == Qt.Checked)
+        self.console = IvkConsole(self, lambda: self.show_pdb_checkbox.checkState() == Qt.Checked,
+                                  lambda: self.print_time_checkbox.checkState() == Qt.Checked)
 
         self.show_pdb_checkbox = QCheckBox('Показать окно отладки', self)
         self.show_sub_threads_checkbox = QCheckBox('Показать потоки', self)
         self.print_time_checkbox = QCheckBox('Печать времени', self)
         self.print_time_checkbox.setChecked(True)
-        
+
         self.run_button = QPushButton(QIcon('res/start.png'), "Запуск выделенного")
         self.run_button.clicked.connect(self.runScript)
 
@@ -76,12 +88,12 @@ class TabWidget(QWidget):
         self.pause_button.setToolTip('Пауза')
         self.pause_button.setEnabled(False)
         self.pause_button.clicked.connect(self.console.sendPause)
-        
+
         self.stop_button = QPushButton(QIcon('res/btn_stop.png'), '')
         self.stop_button.setToolTip('Стоп')
         self.stop_button.setEnabled(False)
         self.stop_button.clicked.connect(lambda: self.runner.terminate())
-        
+
         self.next_button = QPushButton(QIcon('res/btn_next.png'), '')
         self.next_button.setToolTip('Далее')
         self.next_button.setEnabled(False)
@@ -99,7 +111,7 @@ class TabWidget(QWidget):
             .add(self.stop_button).fix() \
             .add(self.next_button).fix() \
             .up() \
-        .add(self.console)
+            .add(self.console)
         self.run_button.setText("Запуск")
 
         self.splitter = QSplitter(Qt.Vertical, self)
@@ -110,29 +122,37 @@ class TabWidget(QWidget):
         lb = QBoxLayoutBuilder(self, QBoxLayout.TopToBottom, spacing=5)
         lb.add(self.splitter)
 
-    
+
     def modified(self):
         return self.text_edit.modified
+
     def text(self, line=None):
         return self.text_edit.text() if line is None else self.text_edit.text(line)
+
     def executing(self):
         return self.text_edit.executing
+
     def breakpoints(self):
         return self.text_edit.breakpoints
+
     def selectedText(self):
         return self.text_edit.selectedText()
+
     def undo(self):
         self.text_edit.undo()
+
     def redo(self):
         self.text_edit.redo()
+
     def filepath(self, file_path=None):
         if file_path:
             self.text_edit.file = file_path
         else:
             return self.text_edit.file
+
     def checkModified(self):
         self.text_edit.checkModified()
-    
+
     def lintText(self, run_func=None, fail_func=None):
         if run_func is None and fail_func is None:
             fail_func = lambda: self.execEnded.emit(-1, '')
@@ -142,19 +162,25 @@ class TabWidget(QWidget):
 
     def searchNext(self):
         self.text_edit.searchNext()
+
     def searchPrev(self):
         self.text_edit.searchPrev()
+
     def replaceNext(self):
         self.text_edit.replaceNext()
+
     def replaceAll(self):
         self.text_edit.replaceAll()
+
     def getSearchOptions(self):
         return self.text_edit.search_options
+
     def insertText(self, text):
         self.text_edit.insertText(text)
 
     def needToUpdateSearchIndicators(self, text_edit):
-        return self.text_edit == text_edit    
+        return self.text_edit == text_edit
+
     def updateSearchIndicators(self):
         return self.text_edit.updateSearchIndicators()
 
@@ -167,13 +193,13 @@ class TabWidget(QWidget):
         cfc
         if not cfc.is_breakpoint_line(self.text(line)) and self.runner:
             self.runner.updateBreakpoint(line + self.line_correction + 1, add)
-    
+
     def runScript(self):
         if self.executing():
             return
         self.execStarting.emit()
         self.lintText(run_func=self.__runScript, fail_func=lambda: self.execEnded.emit(-1, ''))
-    
+
     def __runScript(self):
         t = threading.Thread(target=self.____runScript, daemon=True)
         t.start()
@@ -181,10 +207,11 @@ class TabWidget(QWidget):
     def ____runScript(self):
         error_line = -1
         error_text = ''
-        global_source = 'скрипт без имени' if not os.path.isfile(self.filepath()) else 'скрипт ' + ntpath.basename(self.filepath())
-        
+        global_source = 'скрипт без имени' if not os.path.isfile(self.filepath()) else 'скрипт ' + ntpath.basename(
+            self.filepath())
+
         db_log_source = 'скрипт_без_имени' if not os.path.isfile(self.filepath()) else ntpath.basename(self.filepath())
-        db_log_path = self.filepath() if os.path.isfile(self.filepath()) else None 
+        db_log_path = self.filepath() if os.path.isfile(self.filepath()) else None
 
         lineFrom, _, lineTo, lengthLineTo = self.text_edit.getSelection()
 
@@ -192,7 +219,7 @@ class TabWidget(QWidget):
         if lengthLineTo == 0:
             lineTo -= 1
 
-        txt = self.text() if lineFrom == -1 else '\n'.join(self.text().splitlines()[lineFrom:lineTo+1])
+        txt = self.text() if lineFrom == -1 else '\n'.join(self.text().splitlines()[lineFrom:lineTo + 1])
 
         self.script, self.line_correction = cfc.generate_pdb_script(
             txt,
@@ -209,14 +236,15 @@ class TabWidget(QWidget):
 
         self.console.onExecutionStart()
         self.runner = PyDevDRunner(
-            outNormalFunc = lambda char: self.console.writeNormal(char),
-            outErrorFunc = lambda char: self.console.writeError(char),
-            outInputFunc = lambda char: self.console.writeInput(char), 
-            outPdbFunc = lambda char: self.console.writePdb(char), 
-            requsetInputFunc = self.requestConsoleInput,
-            onThreadCreateFunc = self.console.addSubThreadSignal.emit,
-            onThreadKillFunc = self.console.removeSubThreadSignal.emit,
-            getScriptDataFunc = lambda line: [global_source, line - self.line_correction, self.text(line - self.line_correction - 1).strip()]
+            outNormalFunc=lambda char: self.console.writeNormal(char),
+            outErrorFunc=lambda char: self.console.writeError(char),
+            outInputFunc=lambda char: self.console.writeInput(char),
+            outPdbFunc=lambda char: self.console.writePdb(char),
+            requsetInputFunc=self.requestConsoleInput,
+            onThreadCreateFunc=self.console.addSubThreadSignal.emit,
+            onThreadKillFunc=self.console.removeSubThreadSignal.emit,
+            getScriptDataFunc=lambda line: [global_source, line - self.line_correction,
+                                            self.text(line - self.line_correction - 1).strip()]
         )
 
         # кнлопки управляющие процессом PyDevDRunner
@@ -232,15 +260,17 @@ class TabWidget(QWidget):
             if 'input(' in txt_lines[line].strip():
                 input_breakpoints.append(line + self.selection_correction + self.line_correction + 1)
 
-        traceback = self.runner.runScript(file_name, breakpoints, input_breakpoints) 
+        traceback = self.runner.runScript(file_name, breakpoints, input_breakpoints)
         self.runner = None
 
         if traceback != '':
             print(traceback)
             error_line, error_text = PyDevDRunner.ParseTraceback(traceback, self.line_correction)
-            GlobalLog.log(threading.get_ident(), global_source, '%s (line %s)\n' % (error_text, str(error_line + 1) if error_line is not None else 'unknown'), True)
+            GlobalLog.log(threading.get_ident(), global_source,
+                          '%s (line %s)\n' % (error_text, str(error_line + 1) if error_line is not None else 'unknown'),
+                          True)
             DbLog.log(db_log_source, error_text, True, db_log_path, traceback)
-        
+
         os.remove(file_name)
         self.execEnded.emit(error_line, error_text)
 
@@ -251,7 +281,8 @@ class TabWidget(QWidget):
             self.continue_button.setEnabled(thread['waiting_pdb_input'])
             self.next_button.setEnabled(thread['waiting_pdb_input'])
             if thread['waiting_input'] or thread['waiting_pdb_input']:
-                self.text_edit.onPdbBreakpoint(thread['suspend_line'] - self.line_correction - 1, thread['waiting_pdb_input'])
+                self.text_edit.onPdbBreakpoint(thread['suspend_line'] - self.line_correction - 1,
+                                               thread['waiting_pdb_input'])
             else:
                 self.text_edit.onPdbContinue()
 
@@ -260,7 +291,7 @@ class TabWidget(QWidget):
         self.pause_button.setEnabled(False)
         self.continue_button.setEnabled(from_pdb)
         self.next_button.setEnabled(from_pdb)
-        
+
     def __inputEnded(self):
         self.stop_button.setEnabled(True)
         self.pause_button.setEnabled(True)
@@ -283,6 +314,35 @@ class TabWidget(QWidget):
         self.continue_button.setEnabled(False)
         self.next_button.setEnabled(False)
 
+    def setComment(self):
+        lineFrom, _, lineTo, lengthLineTo = self.text_edit.getSelection()
+        if lengthLineTo == 0:
+            lineTo -= 1
+        if lineFrom > -1:
+            res = ""
+            l = 0
+            for line in range(lineFrom, lineTo + 1):
+                text, l = self.comment(line)
+                res += text
+            self.text_edit.setSelection(lineFrom, 0, lineTo, l)
+            self.text_edit.replaceSelectedText(res)
+        else:
+            # номер строки на которой находится курсор
+            line, _ = self.text_edit.getCursorPosition()
+            res, l = self.comment(line)
+            self.text_edit.setSelection(line, 0, line, l)
+            self.text_edit.replaceSelectedText(res)
+            self.text_edit.setCursorPosition(line, 0)
+
+    def comment(self, line):
+        textLine = self.text_edit.text(line)
+        if textLine[:2] != '# ':
+            textLine = '# ' + textLine
+            return textLine, len(textLine) - 2
+        else:
+            textLine = textLine[2:]
+            return textLine, len(textLine) + 2
+
     def showEvent(self, event):
         self.splitter.real_sizes = None
         super().showEvent(event)
@@ -297,7 +357,7 @@ class TabWidget(QWidget):
         settings['sub_threads_check_state'] = self.show_sub_threads_checkbox.checkState()
         settings['print_time_check_state'] = self.print_time_checkbox.checkState()
         return settings
-    
+
     def restoreSettings(self, settings):
         self.console.restoreSettings(settings)
         self.show_pdb_checkbox.setCheckState(settings['pbd_check_state'])

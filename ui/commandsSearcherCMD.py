@@ -13,6 +13,7 @@ class ClickableLineEdit(QLineEdit):
     db_clicked = pyqtSignal()
     enter_key = pyqtSignal()
     min_text = ''
+    def_text = None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -40,6 +41,15 @@ class ClickableLineEdit(QLineEdit):
         elif self.click_count > 1:
             self.db_clicked.emit()
         self.click_count = 0
+
+    def setDefText(self, def_text):
+        self.def_text = def_text
+
+    def clear(self):
+        if self.def_text is not None:
+            self.setText(self.def_text)
+        else:
+            super(ClickableLineEdit, self).clear()
 
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.LeftButton:
@@ -283,6 +293,9 @@ class SelectUVwidget(QWidget):
     current_device = None
     parse_err = None
 
+    def_line_obts = 'OBTS(\'2000:1:1:0:0:0\')'
+    def_line_arg = 'AsciiHex(\'0x 0000 0000\')'
+
     SCPICMD = 0
     SOTC = 1
     NUMBER = 0
@@ -291,18 +304,10 @@ class SelectUVwidget(QWidget):
     cur_type = SCPICMD
     cur_type_search = NUMBER
 
-    def eventFilter(self, obj, event) -> bool:
-        # TODO: чтобы не зажимать лкм на комплеттере для select а при навоедени на Item Model
-        print("%s: %s" % (obj.objectName, event.type()))
-        return obj.eventFilter(obj, event)
-
-    # TODO: нужно сделать поля с аргументами с комлеттерами и кликами
-    #  первое поле управляется типом поиска по кнопке
-    #  второе и третье поле показывает список аргументов и дополняет дескрипшн
-    #  s
-    #  или первое поле управляет поискои по сумме дескрипшионов девайса и всех аргументов
-    #  s
-    #  если делать модель перестануть работать скрипты делать второй реализацией
+    # def eventFilter(self, obj, event) -> bool:
+    #     # TODO: чтобы не зажимать лкм на комплеттере для select а при навоедени на Item Model
+    #     print("%s: %s" % (obj.objectName, event.type()))
+    #     return obj.eventFilter(obj, event)
 
     def __init__(self, infowidg=None, parent=None):
         super(QWidget, self).__init__(parent=parent)
@@ -316,7 +321,7 @@ class SelectUVwidget(QWidget):
         # completer.setCompletionMode(QCompleter.PopupCompletion)
         # completer.model().stringList()   # StringListModel
         completer.setMaxVisibleItems(10)
-        #completer.popup().setMaximumWidth(200)
+        # completer.popup().setMaximumWidth(200)
         self.cmd_line.setCompleter(completer)
         completer = QCompleter([])
         completer.setCaseSensitivity(Qt.CaseInsensitive)
@@ -324,13 +329,13 @@ class SelectUVwidget(QWidget):
         completer = QCompleter([])
         completer.setCaseSensitivity(Qt.CaseInsensitive)
         self.line_args.setCompleter(completer)
-
         # clicks
         self.cmd_line.clicked.connect(self.__clicked_cmd)
         self.cmd_line.db_clicked.connect(self.__db_clicked_cmd)
+        self.line_obts.clicked.connect(lambda: self.__clicked_param(self.line_obts))
+        self.line_args.clicked.connect(lambda: self.__clicked_param(self.line_args))
         self.line_obts.db_clicked.connect(lambda: self.__db_clicked_param(self.line_obts))
         self.line_args.db_clicked.connect(lambda: self.__db_clicked_param(self.line_args))
-
         # functional
         self.cmd_line.textEdited.connect(self.__cmd_edit)
         self.btn_search.toggled.connect(self.btnSearchToogled)
@@ -339,7 +344,6 @@ class SelectUVwidget(QWidget):
         self.cmd_line.completer().activated.connect(self.__cmd_comp_activate, Qt.QueuedConnection)
         self.line_obts.completer().highlighted.connect(self.lineOBTS_comp_select)
         self.line_args.completer().highlighted.connect(self.lineArgs_comp_select)
-
         # override
         self.cmd_line.getText = self.cmd_line.text  # можно декоратором
         self.cmd_line.text = self.__cmd_custom_text
@@ -455,23 +459,38 @@ class SelectUVwidget(QWidget):
         self.cmd_line.completer().setCompletionPrefix(self.cmd_line.getText())
         self.cmd_line.completer().complete()
 
+    def __clicked_param(self, line):
+        line.completer().setCompletionPrefix(line.text())
+        line.completer().complete()
+        # line.completer().popup()
+
     def __db_clicked_cmd(self):
         self.clear_param_lines()
         self.cmd_line.completer().setCompletionPrefix(self.cmd_line.getText())
         self.cmd_line.completer().complete()
+
+    def __db_clicked_param(self, line):
+        # line.clear()
+        # line.completer().setCompletionPrefix(line.text())
+        # line.completer().complete()
+        line.completer().setCompletionPrefix('')
+        line.completer().complete()
 
     def __cmd_edit(self, text):
         """ввод в поле cmd, парсинг в режиме поиска текста"""
         if self.btn_search.isChecked():
             mathces = []
             for description in self.data_descrip_keys.keys():
-                if all((re.search(r'.*\b%s.*' % x.lower(), description.lower()) for x in text.split())):
+                if all(x.lower() in description.lower() for x in text.split()):
                     mathces.append(description)
                     if len(mathces) > 20:
                         break
             self.cmd_line.completer().model().setStringList(mathces)
         elif text in self.cur_data:
             self.__cmd_comp_activate(text)
+        else:
+            self.line_obts.clear()
+            self.line_args.clear()
 
     def __cmd_comp_select(self, text):
         if self.btn_search.isChecked():
@@ -503,11 +522,6 @@ class SelectUVwidget(QWidget):
                 take_arg(self.line_obts, key.obts),
                 take_arg(self.line_args, key.args)])
 
-    def __db_clicked_param(self, line):
-        line.clear()
-        line.completer().setCompletionPrefix(line.text())
-        line.completer().complete()
-
     def lineArgs_comp_select(self, text):
         self.line_args.setText(text)
         self.change_info_widget_text(2, self.current_data_item.args.get(text))
@@ -529,7 +543,7 @@ class SelectUVwidget(QWidget):
 
     def change_data_type(self, arg):
         """Изменить поиск виджета по данным"""
-        self.clear_param_lines()
+        # self.clear_param_lines()
         if arg == 'SCPICMD' or arg == SelectUVwidget.SCPICMD:
             self.cur_type = SelectUVwidget.SCPICMD
             self.device_label.show()
@@ -537,6 +551,8 @@ class SelectUVwidget(QWidget):
             self.device_box.setEnabled(True)
             self.cmd_line.set_min_text('0x')
             self.change_completer_model(self.data.uv_dict[self.current_device]['list_uv'])
+            self.line_obts.setDefText(self.def_line_obts)
+            self.line_args.setDefText(self.def_line_arg)
             self.line_obts.show()
             self.line_obts_label.show()
             # self.line_obts.setDisabled(False)
@@ -547,9 +563,11 @@ class SelectUVwidget(QWidget):
             self.device_box.setEnabled(False)
             self.cmd_line.set_min_text('')
             self.change_completer_model(self.data.sotc_dict)
+            self.line_obts.setDefText(None)
             self.line_obts.hide()
             self.line_obts_label.hide()
             # self.line_obts.setDisabled(True)
+        self.clear_param_lines()
         self.btn_search.setChecked(False)
 
     def change_completer_model(self, data):

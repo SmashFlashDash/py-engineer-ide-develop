@@ -220,8 +220,10 @@ class MainWindow(QMainWindow):
                     break
             frame.save_tabs_on_close = False
             frame.close()
-            self.tabs_frames.remove(frame)
-            self.frames_stack.remove(frame)
+            if frame in self.tabs_frames:
+                self.tabs_frames.remove(frame)
+            if frame in self.frames_stack:
+                self.frames_stack.remove(frame)
 
         frame = None
         for f in self.frames_stack:

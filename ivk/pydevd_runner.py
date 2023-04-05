@@ -2,10 +2,12 @@ import socket, threading, os, platform, subprocess, sys
 from urllib.parse import unquote
 import xmltodict
 
+
 class PyDevDRunner:
     PAUSE_STDOUT_CODE = 'E39AB7CEBAC67D27CC7A6763C714CC93_PAUSE_STDOUT_A86F0E4FDB33991063CD08E63F8CBFFA'
 
-    def __init__(self, outNormalFunc, outErrorFunc, outInputFunc, outPdbFunc, requsetInputFunc, onThreadCreateFunc, onThreadKillFunc, getScriptDataFunc):
+    def __init__(self, outNormalFunc, outErrorFunc, outInputFunc, outPdbFunc, requsetInputFunc, onThreadCreateFunc,
+                 onThreadKillFunc, getScriptDataFunc):
         self.outNormalFunc = outNormalFunc
         self.outErrorFunc = outErrorFunc
         self.outInputFunc = outInputFunc
@@ -14,27 +16,27 @@ class PyDevDRunner:
         self.getScriptDataFunc = getScriptDataFunc
         self.onThreadCreateFunc = onThreadCreateFunc
         self.onThreadKillFunc = onThreadKillFunc
-        
+
         self.stop_server = False
         self.subprocess = None
         self.connection = None
-        
+
         self.std_code_page = None
 
         self.sequence = 1
         self.pydevd_main_thread = None
         self.pydevd_threads = []
         self.selected_pydevd_thread = None
-        self.pydevd_input_lock = {'lock': threading.Lock(), 'thread' : None}
+        self.pydevd_input_lock = {'lock': threading.Lock(), 'thread': None}
 
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.bind(('', 0))
         self.sock.listen()
-        
+
         self.server_thread = threading.Thread(target=self.__server, daemon=True)
         self.server_thread.start()
-    
-    def __del__(self): 
+
+    def __del__(self):
         self.stop_server = True
         if self.connection:
             self.connection.close()
@@ -45,7 +47,8 @@ class PyDevDRunner:
     def __server(self):
         self.connection, self.connection_address = self.sock.accept()
         self.sendTCP(PyDevDRequest.SetProtocol('quoted-line'))
-        self.sendTCP(PyDevDRequest.SetVersion(1, 'WINDOWS' if platform.system().lower() == 'windows' else 'UNIX', 'LINE'))
+        self.sendTCP(
+            PyDevDRequest.SetVersion(1, 'WINDOWS' if platform.system().lower() == 'windows' else 'UNIX', 'LINE'))
         self.sendTCP(PyDevDRequest.SetPyException(False, False, False, True, True))
         if self.breakpoints:
             for line in self.breakpoints:
@@ -77,10 +80,10 @@ class PyDevDRunner:
             self.sendTCP(PyDevDRequest.RemoveBreakLine(self.filename, line))
             if line in self.breakpoints:
                 self.breakpoints.remove(line)
-    
+
     def sendTCP(self, command):
         if self.connection:
-            self.connection.send(command.toTCP(self.sequence))  
+            self.connection.send(command.toTCP(self.sequence))
             self.sequence += 2
 
     def onThreadChanged(self, thread):
@@ -90,25 +93,24 @@ class PyDevDRunner:
                     self.selected_pydevd_thread = t
                     return
         self.selected_pydevd_thread = None
-                    
 
     def __getPydevdThread(self, thread_id):
         for t in self.pydevd_threads:
             if t['thread_id'] == thread_id:
                 return t
         return None
-    
+
     def __pydevdResponceAction(self, resp):
-        #print(repr(resp))
-        if resp.ident == 103: #CMD_THREAD_CREATE
+        # print(repr(resp))
+        if resp.ident == 103:  # CMD_THREAD_CREATE
             payload = resp.payloadToDict()
             thread = {
-                'thread_id' : payload['xml']['thread']['@id'], 
-                'thread_name' : unquote(payload['xml']['thread']['@name']), 
-                'suspend_frame' : None,
-                'suspend_line' : None,
-                'waiting_input' : False, 
-                'waiting_pdb_input' : False
+                'thread_id': payload['xml']['thread']['@id'],
+                'thread_name': unquote(payload['xml']['thread']['@name']),
+                'suspend_frame': None,
+                'suspend_line': None,
+                'waiting_input': False,
+                'waiting_pdb_input': False
             }
             if self.__getPydevdThread(thread['thread_id']) is None:
                 self.pydevd_threads.append(thread)
@@ -116,58 +118,62 @@ class PyDevDRunner:
                 self.onThreadCreateFunc(thread)
             if self.pydevd_main_thread is None:
                 self.pydevd_main_thread = thread
-        
-        elif resp.ident == 104: #CMD_THREAD_KILL
+
+        elif resp.ident == 104:  # CMD_THREAD_KILL
             thread = self.__getPydevdThread(resp.payload)
             if self.onThreadKillFunc:
                 self.onThreadKillFunc(thread, thread is self.pydevd_main_thread)
             self.pydevd_threads.remove(thread)
             if thread is self.pydevd_main_thread:
                 self.stop_server = True
-        
-        elif resp.ident == 147: #CMD_INPUT_REQUESTED
+
+        elif resp.ident == 147:  # CMD_INPUT_REQUESTED
             if resp.payload == 'True':
                 thread = self.pydevd_input_lock['thread']
                 thread['waiting_input'] = True
-                self.requsetInputFunc(thread['thread_id'], thread['suspend_line'], False, 'Ввод (%s)' % thread['thread_name'])
+                self.requsetInputFunc(thread['thread_id'], thread['suspend_line'], False,
+                                      'Ввод (%s)' % thread['thread_name'])
 
-        elif resp.ident == 105: #CMD_THREAD_SUSPEND
+        elif resp.ident == 105:  # CMD_THREAD_SUSPEND
             payload = resp.payloadToDict()
             thread = self.__getPydevdThread(payload['xml']['thread']['@id'])
-            
+
             if isinstance(payload['xml']['thread']['frame'], list):
                 thread['suspend_frame'] = payload['xml']['thread']['frame'][0]['@id']
                 thread['suspend_line'] = int(payload['xml']['thread']['frame'][0]['@line'])
             else:
                 thread['suspend_frame'] = payload['xml']['thread']['frame']['@id']
                 thread['suspend_line'] = int(payload['xml']['thread']['frame']['@line'])
-            
+
             if thread['suspend_line'] in self.input_breakpoints and thread['suspend_line'] not in self.breakpoints:
                 self.pydevd_input_lock['lock'].acquire()
                 self.pydevd_input_lock['thread'] = thread
                 self.sendTCP(PyDevDRequest.Resume(thread['thread_id']))
                 return
-            
+
             if self.getScriptDataFunc:
                 script_data = self.getScriptDataFunc(thread['suspend_line'])
-                self.outPdbFunc('[ПАУЗА ПОТОКА %s "%s"] > %s (строка %d) -> %s\n' % (thread['thread_id'], thread['thread_name'], script_data[0], script_data[1], script_data[2]))
-            
+                self.outPdbFunc('[ПАУЗА ПОТОКА %s "%s"] > %s (строка %d) -> %s\n' % (
+                thread['thread_id'], thread['thread_name'], script_data[0], script_data[1], script_data[2]))
+
             thread['waiting_pdb_input'] = True
             self.requsetInputFunc(thread['thread_id'], thread['suspend_line'], True, 'DBG (%s)' % thread['thread_name'])
-        
-        elif resp.ident == 113: #CMD_EVALUATE_EXPRESSION
+
+        elif resp.ident == 113:  # CMD_EVALUATE_EXPRESSION
             payload = resp.payloadToDict()
             thread = self.selected_pydevd_thread
-            self.outPdbFunc('[ОТВЕТ ПОТОКА %s "%s"] > %s\n' % (thread['thread_id'], thread['thread_name'], unquote(payload['xml']['var']['@value'])) )  
+            self.outPdbFunc('[ОТВЕТ ПОТОКА %s "%s"] > %s\n' % (
+            thread['thread_id'], thread['thread_name'], unquote(payload['xml']['var']['@value'])))
             thread['waiting_pdb_input'] = True
             self.requsetInputFunc(thread['thread_id'], thread['suspend_line'], True, 'DBG (%s)' % thread['thread_name'])
-    
+
     def sendInput(self, text):
         if self.subprocess and self.selected_pydevd_thread:
             thread = self.selected_pydevd_thread
             if thread['waiting_pdb_input']:
                 text = text.strip()
-                if thread['suspend_line'] in self.input_breakpoints and text.lower() in ('!c', '!continue', '!n', '!next'):
+                if thread['suspend_line'] in self.input_breakpoints and text.lower() in (
+                '!c', '!continue', '!n', '!next'):
                     self.pydevd_input_lock['lock'].acquire()
                     self.pydevd_input_lock['thread'] = thread
                 if text.lower() in ('!c', '!continue'):
@@ -175,9 +181,11 @@ class PyDevDRunner:
                 elif text.lower() in ('!n', '!next'):
                     self.sendTCP(PyDevDRequest.StepOver(thread['thread_id']))
                 else:
-                    self.sendTCP(PyDevDRequest(113, [('thread_id', thread['thread_id']), ('frame_id', thread['suspend_frame']), ('scope', 'LOCAL'), ('expression', text), ('trim', 0)]))
+                    self.sendTCP(PyDevDRequest(113, [('thread_id', thread['thread_id']),
+                                                     ('frame_id', thread['suspend_frame']), ('scope', 'LOCAL'),
+                                                     ('expression', text), ('trim', 0)]))
                 thread['waiting_pdb_input'] = False
-            
+
             elif thread['waiting_input']:
                 self.subprocess.stdin.write((text + '\n').encode(self.std_code_page))
                 self.subprocess.stdin.flush()
@@ -187,7 +195,6 @@ class PyDevDRunner:
             elif text.strip().lower() in ('!p', '!pause'):
                 self.sendTCP(PyDevDRequest.Pause(thread['thread_id']))
 
-            
     def runScript(self, filename, breakpoints, input_breakpoints):
         self.filename = filename
         self.breakpoints = breakpoints
@@ -195,11 +202,13 @@ class PyDevDRunner:
 
         executable = sys.executable if "python" in sys.executable else "python"
         pydevd_path = os.getcwd() + '/lib/pydevd/pydevd.py'
-        cmd = '%s %s --vm_type python --client 127.0.0.1 --port %d --file %s' % (executable, pydevd_path, self.sock.getsockname()[1], filename)
-        self.subprocess = subprocess.Popen(cmd.split(' '), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False) 
-        #cwd=os.getcwd()
-        #platform.system().lower() != 'windows'
-        
+        cmd = '%s %s --vm_type python --client 127.0.0.1 --port %d --file %s' % (
+        executable, pydevd_path, self.sock.getsockname()[1], filename)
+        self.subprocess = subprocess.Popen(cmd.split(' '), stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                                           stderr=subprocess.PIPE, shell=False)
+        # cwd=os.getcwd()
+        # platform.system().lower() != 'windows'
+
         while True:
             line = self.subprocess.stdout.readline()
             if self.std_code_page is None:
@@ -220,14 +229,15 @@ class PyDevDRunner:
                     self.outNormalFunc('Кодировка потока успешно определена: %s\n' % self.std_code_page)
                     continue
                 else:
-                    self.outErrorFunc('Не удалось определить кодировку потока при первом чтении, остановка выполнения скрипта\n')
+                    self.outErrorFunc(
+                        'Не удалось определить кодировку потока при первом чтении, остановка выполнения скрипта\n')
                     self.terminate()
                     break
             else:
                 line = line.decode(self.std_code_page)
             if line == '' and self.subprocess.poll() is not None:
                 break
-            #Пауза потока по спец ключу на следующей инструкции (сработает только для главной треды)
+            # Пауза потока по спец ключу на следующей инструкции (сработает только для главной треды)
             # if PyDevDRunner.PAUSE_STDOUT_CODE in line:
             #     if self.pydevd_main_thread:
             #         self.sendTCP(PyDevDRequest.Pause(self.pydevd_main_thread['thread_id']))
@@ -237,10 +247,10 @@ class PyDevDRunner:
             # else:
             #     self.outNormalFunc(line)
             self.outNormalFunc(line)
-        
+
         traceback = ''
         output = self.subprocess.communicate()
-        if output[1] and self.std_code_page is not None: #self.subprocess.returncode != 0
+        if output[1] and self.std_code_page is not None:  # self.subprocess.returncode != 0
             traceback = output[1].decode(self.std_code_page)
 
         return traceback.replace('\r\n', '\n')
@@ -252,7 +262,7 @@ class PyDevDRunner:
                 self.onThreadKillFunc(None, True)
             else:
                 print("onThreadKillFunc is None")
-    
+
     @staticmethod
     def ParseTraceback(traceback, line_correction):
         first_line_captured = False
@@ -271,18 +281,20 @@ class PyDevDRunner:
                 break
         return error_line, exc
 
+
 class PyDevDResponse:
     def __init__(self, ident, seq, payload):
         self.ident = ident
         self.meaning = PyDevDRequest.ID_TO_MEANING[str(ident)]
         self.seq = seq
         self.payload = payload
-    
+
     @staticmethod
     def parse(data):
         splitted = data.strip().split('\t')
-        return PyDevDResponse(int(splitted[0]), int(splitted[1]), splitted[2] if len(splitted) == 3 else (splitted[2:] if len(splitted) > 3 else None))
-    
+        return PyDevDResponse(int(splitted[0]), int(splitted[1]),
+                              splitted[2] if len(splitted) == 3 else (splitted[2:] if len(splitted) > 3 else None))
+
     def __repr__(self):
         return 'command: %d (%s)\nsequence: %d\npayload: %s\n' % (self.ident, self.meaning, self.seq, str(self.payload))
 
@@ -291,7 +303,7 @@ class PyDevDResponse:
 
 
 class PyDevDRequest:
-    
+
     def __init__(self, ident, args=[]):
         self.ident = ident
         self.meaning = PyDevDRequest.ID_TO_MEANING[str(ident)]
@@ -312,7 +324,7 @@ class PyDevDRequest:
             info += '\n'.join(['    %s = %s' % (arg[0], arg[1]) for arg in self.args])
             info += '\n'
         return info
-    
+
     @staticmethod
     def Run():
         return PyDevDRequest(101, [('empty_param', '')])
@@ -320,15 +332,15 @@ class PyDevDRequest:
     @staticmethod
     def Pause(thread_id):
         return PyDevDRequest(105, [('thread_id', thread_id)])
-    
+
     @staticmethod
     def Resume(thread_id):
         return PyDevDRequest(106, [('thread_id', thread_id)])
-    
+
     @staticmethod
     def StepOver(thread_id):
         return PyDevDRequest(108, [('thread_id', thread_id)])
-    
+
     @staticmethod
     def SetBreakLine(filename, line, func_name='None', suspend_policy='NONE', condition='None', expression='None'):
         return PyDevDRequest(111, [
@@ -340,7 +352,7 @@ class PyDevDRequest:
             ('condition', condition),
             ('expression', expression),
         ])
-    
+
     @staticmethod
     def RemoveBreakLine(filename, line):
         return PyDevDRequest(112, [
@@ -363,22 +375,28 @@ class PyDevDRequest:
         os_type: 'WINDOWS' or 'UNIX'
         breakpoints_by: 'ID' or 'LINE'
         '''
-        return PyDevDRequest(501, [('local_version', local_version), ('os_type', os_type), ('breakpoints_by', breakpoints_by)])
+        return PyDevDRequest(501, [('local_version', local_version), ('os_type', os_type),
+                                   ('breakpoints_by', breakpoints_by)])
 
     @staticmethod
-    def SetPyException(break_on_uncaught, 
-                       break_on_caught, 
-                       skip_on_exceptions_thrown_in_same_context, 
+    def SetPyException(break_on_uncaught,
+                       break_on_caught,
+                       skip_on_exceptions_thrown_in_same_context,
                        ignore_exceptions_thrown_in_lines_with_ignore_exception,
                        ignore_libraries):
-        return PyDevDRequest(131, [('exceptions', ';'.join([str(break_on_uncaught).lower(), str(break_on_caught).lower(), str(skip_on_exceptions_thrown_in_same_context).lower(), str(ignore_exceptions_thrown_in_lines_with_ignore_exception).lower(), str(ignore_libraries).lower()]) + ';')])
+        return PyDevDRequest(131, [('exceptions', ';'.join(
+            [str(break_on_uncaught).lower(), str(break_on_caught).lower(),
+             str(skip_on_exceptions_thrown_in_same_context).lower(),
+             str(ignore_exceptions_thrown_in_lines_with_ignore_exception).lower(),
+             str(ignore_libraries).lower()]) + ';')])
 
     @staticmethod
     def SetShowReturnValues(show_retrun_values):
         '''
         show_retrun_values: True/False
         '''
-        return PyDevDRequest(146, [('name', 'CMD_SHOW_RETURN_VALUES'), ('show_retrun_values', 1 if show_retrun_values else 0)])
+        return PyDevDRequest(146, [('name', 'CMD_SHOW_RETURN_VALUES'),
+                                   ('show_retrun_values', 1 if show_retrun_values else 0)])
 
     ID_TO_MEANING = {
         '101': 'CMD_RUN',
@@ -458,7 +476,6 @@ class PyDevDRequest:
         '503': 'CMD_SET_PROTOCOL',
         '901': 'CMD_ERROR',
     }
-
 
 
 '''

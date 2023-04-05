@@ -250,7 +250,7 @@ def TEST_3():
     inputG('КПА запиши файл режим M4-VS1')
 
     RLCI.mode('RS485-2')  # RS485-Р
-    RLCI.mode('VS2')  # Уст Симв Скор VS2
+    RLCI.mode('VS2')  # Уст Симв Скор VS1
     RLCI.mode('M1')  # Уст реж М-1
     inputG('КПА запиши файл режим M1-VS2 включен ИМ-ФИП')
     RLCI.mode('M2')  # Уст реж М-2
