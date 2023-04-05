@@ -43,10 +43,14 @@ from collections import OrderedDict
 ################ IMITATION ###############
 # from random import randint
 # def get(*args):
-#     randint(0, 10)
+#     inp = inputGGG(['inputK', 'inputInt'])
+#     if inp['inputInt'] != '':
+#         return float(inp['inputInt'])
+#     else:
+#         return inp['inputK']
+#
 #     calibs = ('включен', 'отключен', 'Есть', 'Нет', 0, 100, None)
-#     calibs = (0, 100)
-#     uncalibs = (0, 1, 100, -100, 0.01, 1000, None)
+#     uncalibs = (0, 1, 100, -100, 0.01, 1000)
 #     if isinstance(args[1], dict):
 #         result = {}
 #         if args[2] == 'ИНТЕРВАЛ':
