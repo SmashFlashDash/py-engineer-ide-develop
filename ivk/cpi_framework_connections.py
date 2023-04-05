@@ -82,7 +82,7 @@ def generate_pdb_script(text, filename, filepath=None):
     prepend += 'from engineers_src.tools.ivk_script_tools import *\n'  # импорт файл
     prepend += 'print("{#d6ff59}Начало выполнения скрипта \\"%s\\"")\n' % filename
     prepend += 'DbLog.log(Ex.ivk_file_name, "Начало выполнения скрипта", False, Ex.ivk_file_path, inspect.getsource(sys.modules[__name__]))\n'
-
+    prepend += 'from cpi_framework.spacecrafts.omka.cpi import newRIKS\n'
     append = 'endscript_log()\n'
 
     line_correction = len(prepend.splitlines())

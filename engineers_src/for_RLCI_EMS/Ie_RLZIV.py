@@ -1,14 +1,14 @@
 # # DEBUG
-from time import sleep as sleep2
-import time
-time.sleep = lambda *args: sleep2(0)
-sleep = lambda *args: sleep2(0)
-# # Импорт зависимостей
-import sys
-sys.path.insert(0, 'lib/')
-from engineers_src.tools.tools import *
-Ex.ivk_file_name = "script.ivkng"
-Ex.ivk_file_path = "D:/VMShared/ivk-ng-myremote/engineers_src/script.ivkng"
+# from time import sleep as sleep2
+# import time
+# time.sleep = lambda *args: sleep2(0)
+# sleep = lambda *args: sleep2(0)
+# Импорт зависимостей
+# import sys
+# sys.path.insert(0, 'lib/')
+# from engineers_src.tools.tools import *
+# Ex.ivk_file_name = "script.ivkng"
+# Ex.ivk_file_path = "D:/VMShared/ivk-ng-myremote/engineers_src/script.ivkng"
 
 import traceback
 import logging
@@ -191,11 +191,13 @@ def TEST_3():
     num = 1
 
     RLCI.EA332.on(num)
+    BCK.clcBCK()
     BCK.downBCK()
     di = ["{04.02.VBAEA%s}@K==[25,35]" % RLCI.EA332.cur,
           "{04.02.CBAEA%s}@K==[0.05, 0.5]" % RLCI.EA332.cur]
     executeTMI(" and ".join(di))
     RLCI.EA331.on(num)
+    BCK.clcBCK()
     BCK.downBCK()
     di = ["{04.02.VBAEA%s}@K==[25,35]" % RLCI.EA332.cur,
           "{04.02.CBAEA%s}@K==[0.05, 0.5]" % RLCI.EA332.cur,
@@ -204,6 +206,7 @@ def TEST_3():
     executeTMI(" and ".join(di))
     RLCI.mode('RS485-1')  # RS485-0
     RLCI.PCH.on(num)  # Вкл ПЧ-О
+    BCK.clcBCK()
     BCK.downBCK()
     di = ["{04.02.VBAEA%s}@K==[25,35]" % RLCI.EA332.cur,
           "{04.02.CBAEA%s}@K==[0.1, 0.9]" % RLCI.EA332.cur,
@@ -211,6 +214,7 @@ def TEST_3():
           "{04.02.CKKEA%s}@K==[0.01, 1.5]" % RLCI.EA331.cur]
     executeTMI(" and ".join(di))
     RLCI.FIP.on(num)  # Вкл ФИП-О
+    BCK.clcBCK()
     BCK.downBCK()
     di = ["{04.02.VBAEA%s}@K==[25,35]" % RLCI.EA332.cur,
           "{04.02.CBAEA%s}@K==[0.1, 1.7]" % RLCI.EA332.cur,
@@ -218,6 +222,7 @@ def TEST_3():
           "{04.02.CKKEA%s}@K==[0.01, 1.5]" % RLCI.EA331.cur]
     executeTMI(" and ".join(di))
     RLCI.MOD.on(num)  # Вкл МОД-О
+    BCK.clcBCK()
     BCK.downBCK()
     di = ["{04.02.VBAEA%s}@K==[25,35]" % RLCI.EA332.cur,
           "{04.02.CBAEA%s}@K==[0.1, 2.0]" % RLCI.EA332.cur,
@@ -225,6 +230,7 @@ def TEST_3():
           "{04.02.CKKEA%s}@K==[0.01, 2.0]" % RLCI.EA331.cur]
     executeTMI(" and ".join(di))
     RLCI.UM.on(num)  # Вкл УМ-О
+    BCK.clcBCK()
     BCK.downBCK()
     di = ["{04.02.VBAEA%s}@K==[25,35]" % RLCI.EA332.cur,
           "{04.02.CBAEA%s}@K==[0.1, 2.0]" % RLCI.EA332.cur,
@@ -245,7 +251,6 @@ def TEST_3():
 
     RLCI.mode('RS485-2')  # RS485-Р
     RLCI.mode('VS2')  # Уст Симв Скор VS1
-    RLCI.mode('on imFIP')  # Вкл ИМ-ФИП
     RLCI.mode('M1')  # Уст реж М-1
     inputG('КПА запиши файл режим M1-VS2 включен ИМ-ФИП')
     RLCI.mode('M2')  # Уст реж М-2
@@ -254,6 +259,9 @@ def TEST_3():
     inputG('КПА запиши файл режим M3-VS2 включен ИМ-ФИП')
     RLCI.mode('M4')  # Уст реж М-4
     inputG('КПА запиши файл режим M4-VS2 включен ИМ-ФИП')
+    
+    RLCI.mode('on imFIP')  # Вкл ИМ-ФИП
+    RLCI.mode('off imFIP')  # Откл ИМ-ФИП
 
     RLCI.mode('on imMOD')  # Вкл ИМ-Мод
     RLCI.mode('off imMOD')  # Откл ИМ-Мод
@@ -293,11 +301,13 @@ def TEST_4():
     num = 2
 
     RLCI.EA332.on(num)
+    BCK.clcBCK()
     BCK.downBCK()
     di = ["{04.02.VBAEA%s}@K==[25,35]" % RLCI.EA332.cur,
           "{04.02.CBAEA%s}@K==[0.05, 0.5]" % RLCI.EA332.cur]
     executeTMI(" and ".join(di))
     RLCI.EA331.on(num)
+    BCK.clcBCK()
     BCK.downBCK()
     di = ["{04.02.VBAEA%s}@K==[25,35]" % RLCI.EA332.cur,
           "{04.02.CBAEA%s}@K==[0.05, 0.5]" % RLCI.EA332.cur,
@@ -306,6 +316,7 @@ def TEST_4():
     executeTMI(" and ".join(di))
     RLCI.mode('RS485-1')  # RS485-0
     RLCI.PCH.on(num)  # Вкл ПЧ-О
+    BCK.clcBCK()
     BCK.downBCK()
     di = ["{04.02.VBAEA%s}@K==[25,35]" % RLCI.EA332.cur,
           "{04.02.CBAEA%s}@K==[0.1, 0.9]" % RLCI.EA332.cur,
@@ -313,6 +324,7 @@ def TEST_4():
           "{04.02.CKKEA%s}@K==[0.01, 1.5]" % RLCI.EA331.cur]
     executeTMI(" and ".join(di))
     RLCI.FIP.on(num)  # Вкл ФИП-О
+    BCK.clcBCK()
     BCK.downBCK()
     di = ["{04.02.VBAEA%s}@K==[25,35]" % RLCI.EA332.cur,
           "{04.02.CBAEA%s}@K==[0.1, 1.7]" % RLCI.EA332.cur,
@@ -320,6 +332,7 @@ def TEST_4():
           "{04.02.CKKEA%s}@K==[0.01, 1.5]" % RLCI.EA331.cur]
     executeTMI(" and ".join(di))
     RLCI.MOD.on(num)  # Вкл МОД-О
+    BCK.clcBCK()
     BCK.downBCK()
     di = ["{04.02.VBAEA%s}@K==[25,35]" % RLCI.EA332.cur,
           "{04.02.CBAEA%s}@K==[0.1, 2.0]" % RLCI.EA332.cur,
@@ -327,6 +340,7 @@ def TEST_4():
           "{04.02.CKKEA%s}@K==[0.01, 2.0]" % RLCI.EA331.cur]
     executeTMI(" and ".join(di))
     RLCI.UM.on(num)  # Вкл УМ-О
+    BCK.clcBCK()
     BCK.downBCK()
     di = ["{04.02.VBAEA%s}@K==[25,35]" % RLCI.EA332.cur,
           "{04.02.CBAEA%s}@K==[0.1, 2.0]" % RLCI.EA332.cur,
@@ -346,8 +360,7 @@ def TEST_4():
     inputG('КПА запиши файл режим M4-VS1')
 
     RLCI.mode('RS485-2')  # RS485-Р
-    RLCI.mode('VS2')  # Уст Симв Скор VS1
-    RLCI.mode('on imFIP')  # Вкл ИМ-ФИП
+    RLCI.mode('VS2')  # Уст Симв Скор VS2
     RLCI.mode('M1')  # Уст реж М-1
     inputG('КПА запиши файл режим M1-VS2 включен ИМ-ФИП')
     RLCI.mode('M2')  # Уст реж М-2
@@ -356,6 +369,9 @@ def TEST_4():
     inputG('КПА запиши файл режим M3-VS2 включен ИМ-ФИП')
     RLCI.mode('M4')  # Уст реж М-4
     inputG('КПА запиши файл режим M4-VS2 включен ИМ-ФИП')
+    
+    RLCI.mode('on imFIP')  # Вкл ИМ-ФИП
+    RLCI.mode('off imFIP')  # Откл ИМ-ФИП
 
     RLCI.mode('on imMOD')  # Вкл ИМ-Мод
     RLCI.mode('off imMOD')  # Откл ИМ-Мод

@@ -2,6 +2,8 @@ import threading, time, traceback, time
 import pika
 import psycopg2, psycopg2.extras
 from datetime import datetime
+from pathlib import Path
+import os
 
 from PyQt5.QtWidgets import QWidget, QBoxLayout, QDockWidget, QLabel, QPushButton, QComboBox, QLineEdit, QMenu, QAction, \
     QFileDialog
@@ -70,7 +72,7 @@ class RokotTmi:
                 GlobalLog.log(threading.get_ident(), 'ROKOT', 'Подключено к локальной БД\n', False)
             else:
                 GlobalLog.log(threading.get_ident(), 'ROKOT', 'Подключено к PostgreSQL серверу (%s:%d)\n' % (
-                config.getConf("rokot_db_ip"), config.getConf("rokot_db_port")), False)
+                    config.getConf("rokot_db_ip"), config.getConf("rokot_db_port")), False)
         except Exception as exc:
             if config.getConf('rokot_use_log_database'):
                 GlobalLog.log(threading.get_ident(), 'ROKOT',
@@ -78,7 +80,7 @@ class RokotTmi:
             else:
                 GlobalLog.log(threading.get_ident(), 'ROKOT',
                               'Не удалось подключиться к PostgreSQL серверу: %s - %s\n' % (
-                              config.getConf("rokot_db_ip"), repr(exc)), True)
+                                  config.getConf("rokot_db_ip"), repr(exc)), True)
 
     @staticmethod
     def sendTmi(data):
@@ -411,7 +413,7 @@ RokotTmi.putTmi('tlmWorkMode', 0x6f55)''',
                     datatype = c['data_type'] if table_name != "tmparams" or c[
                         'column_name'] != "startbyte" else "_int4"
                     create_columns.append("\"%s\" %s %s" % (
-                    c['column_name'], datatype, "NOT NULL" if c['is_nullable'] == "NO" else "NULL"))
+                        c['column_name'], datatype, "NOT NULL" if c['is_nullable'] == "NO" else "NULL"))
                     insert_columns.append("\"%s\"" % c["column_name"])
                 cur.close()
 
@@ -420,7 +422,7 @@ RokotTmi.putTmi('tlmWorkMode', 0x6f55)''',
                     'clear': "DELETE FROM %s" % table_name,
                     'select': "SELECT %s FROM %s" % (", ".join(insert_columns), table_name),
                     'insert': "INSERT INTO %s (%s) VALUES (%s)" % (
-                    table_name, ", ".join(insert_columns), ", ".join(["%s" for i in range(len(insert_columns))]))
+                        table_name, ", ".join(insert_columns), ", ".join(["%s" for i in range(len(insert_columns))]))
                 }
             GlobalLog.log(threading.get_ident(), 'ROKOT',
                           "Успешно получена архитекутра таблиц %s\n" % ", ".join(tables), False)

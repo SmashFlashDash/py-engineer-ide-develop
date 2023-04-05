@@ -758,6 +758,7 @@ btns = (('ТЕСТ 1', 'ТЕСТ 2', 'ТЕСТ 3', 'ТЕСТ 4', 'ТЕСТ 5', '
 
 print()
 yprint('РЛЦИВ ПМ1')
+sendFromJson(SCPICMD, 0x4258, AsciiHex('0x0100 0000')),  # уставка на опрос ДИ ФКП
 while True:
     print()
     try:

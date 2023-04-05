@@ -3,7 +3,9 @@ import re
 import sys
 import threading
 import traceback
+from datetime import datetime
 import os
+from pathlib import Path
 
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QFontMetrics, QIcon
@@ -93,15 +95,26 @@ class CommandsWidget(QDockWidget):
         self.openFile_button.clicked.connect(self.selectFile)
         self.openFile_button.setEnabled(False)
         self.openFile_button.setFixedWidth(80)
+        self.openFile_button.setVisible(True)
 
         self.delay_checkbox = QCheckBox('Задержка выдачи КПИ', self)
         self.delay_checkbox.setChecked(False)
         self.delay_checkbox.setVisible(True)
 
+        self.insertFile_button = QPushButton(QIcon('res/insert.png'), "В бинарный файл")
+        self.insertFile_button.clicked.connect(self.runBinFile)
+        self.insertFile_button.setVisible(True)
+        self.insertFile_button.setEnabled(False)
+
+        self.binfile_checkbox = QCheckBox('bin КПИ', self)
+        self.binfile_checkbox.setChecked(False)
+        self.binfile_checkbox.setEnabled(False)
+
         buttons_widget = QWidget(self)
         lb = QBoxLayoutBuilder(buttons_widget, QBoxLayout.TopToBottom, spacing=6)
         lb.hbox(spacing=6).add(self.exchange_checkbox).add(self.exchange_combo).stretch().add(
             self.openFile_button).add(self.insert_button).add(self.run_button).fixW(100).up()
+        lb.hbox(spacing=6).add(self.binfile_checkbox).add(self.insertFile_button).stretch().up()
         lb.hbox(spacing=6).add(self.hex_checkbox).add(self.log_checkbox).add(self.simple_checkbox).stretch().up()
         lb.hbox(spacing=6).add(self.delay_checkbox).add(self.delay_combo).stretch().up()
 
@@ -139,8 +152,19 @@ class CommandsWidget(QDockWidget):
             updData('DelayCheck', self.delay_checkbox.isChecked()),
             updData('DelayTime', self.delay_combo.currentText())))
         self.delay_combo.activated.connect(lambda: updData('DelayTime', self.delay_combo.currentText()))
+        self.binfile_checkbox.stateChanged.connect(self.slotBinFileState)
 
-    def getCommand(self):
+    def slotBinFileState(self):
+        self.insertFile_button.setEnabled(self.binfile_checkbox.isChecked())
+        # self.exchange_checkbox.setEnabled(not self.binfile_checkbox.isChecked())
+        # self.insert_button.setEnabled(not self.binfile_checkbox.isChecked())
+        # self.run_button.setEnabled(not self.binfile_checkbox.isChecked())
+        # self.openFile_button.setEnabled(not self.binfile_checkbox.isChecked())
+        if self.binfile_checkbox.isChecked():
+            updData('nameBinFile', datetime.now().strftime('%Y.%m.%d_%H_%M_%S'))
+            print(config.getData('nameBinFile'))
+
+    def getCommand(self, binfile=False):
         if not self.tree_widget.currentItem() or 'name' not in self.tree_widget.currentItem().command:
             return None
 
@@ -165,8 +189,6 @@ class CommandsWidget(QDockWidget):
                 'name'] if 'simple_name' not in command_params or not self.simple_checkbox.isChecked() else \
                 command_params['simple_name']
             command += '(' if 'is_function' not in command_params or command_params['is_function'] else ''
-            if command_params['name'] == 'CPIRIK':
-                command += 'riks=[('
             for i, arg in enumerate(self.args_widget.arg_editors):
                 if self.args_widget.skip_arg_checkboxes[i] is not None and not self.args_widget.skip_arg_checkboxes[
                     i].isChecked():
@@ -184,10 +206,12 @@ class CommandsWidget(QDockWidget):
             if command.endswith(', '):
                 command = command[:-2]
 
-            if command_params['name'] == 'KPIRIK':
-                command += ')]'
+            if self.binfile_checkbox.isChecked() and self.binfile_checkbox.isEnabled() and binfile:
+                command = 'Ex.writeBinFile( %s)' % (command + (
+                    ')' if 'is_function' not in command_params or command_params['is_function'] else ''))
+                # writeBinFile
 
-            if self.exchange_checkbox.isChecked() and self.exchange_checkbox.isEnabled() and (
+            elif not binfile and self.exchange_checkbox.isChecked() and self.exchange_checkbox.isEnabled() and (
                     'ex_send' not in command_params or command_params['ex_send']) and (
                     'simple_name' not in command_params or not self.simple_checkbox.isChecked()):
 
@@ -195,7 +219,6 @@ class CommandsWidget(QDockWidget):
                     ')' if 'is_function' not in command_params or command_params['is_function'] else ''))
             elif 'is_function' not in command_params or command_params['is_function']:
                 command += ')'
-
         return command
 
     def insertCommand(self):
@@ -224,6 +247,12 @@ class CommandsWidget(QDockWidget):
             self.args_widget.arg_editors[1].setText(cpiMDdata)
 
         DbLog.log('одиночная команда', 'выбран бинарный файл ' + filename, False, None, None)
+
+    def runBinFile(self):
+        command = self.getCommand(binfile=True)
+        print(command)
+        t = threading.Thread(target=lambda: self.__runCommand(command), daemon=True)
+        t.start()
 
     def runCommand(self, command=None):
         command = command if command else self.getCommand()  # передать комманду
@@ -432,12 +461,17 @@ class CommandsWidget(QDockWidget):
         self.simple_checkbox.setChecked('simple_name' in current.command)
 
         # Врубание/вырубание кнопок в зависимоит от команды
+        self.binfile_checkbox.setEnabled(
+            current and 'name' in current.command and current.command['name'] in ['CPIBASE', 'CPICMD', 'CPIKC', 'CPIMD',
+                                                                                  'CPIPZ', 'CPIRIK', 'OTC'])
         self.run_button.setEnabled(current and 'name' in current.command and current.command['name'] != 'OBTS' and (
-                'is_function' not in current.command or current.command['is_function']))
+                'is_function' not in current.command or current.command[
+            'is_function']))
         self.insert_button.setEnabled(current and 'name' in current.command)
         self.exchange_checkbox.setEnabled(
             current and 'name' in current.command and current.command['name'] != 'OBTS' and (
-                    'ex_send' not in current.command or current.command['ex_send']))
+                    'ex_send' not in current.command or current.command[
+                'ex_send']) )
         self.exchange_combo.setEnabled(current and 'name' in current.command and (
                 'ex_send' not in current.command or current.command[
             'ex_send']) and 'queues' in current.command and len(current.command['queues']) > 1)
@@ -447,7 +481,8 @@ class CommandsWidget(QDockWidget):
                                         'params' in current.command and 'name' in current.command and current.command[
                                             'name'] in ('CPIMD', 'CPIBASE', 'CPIPZ'))
 
-        # очищаем Данные КПИМД при выборе любой ддругой команды
+        self.insertFile_button.setEnabled(self.binfile_checkbox.isEnabled() and self.binfile_checkbox.isChecked())
+        # очищаем Данные КПИМД при выборе любой другой команды
         self.__dataIsNone()
 
     def addMsgFieldArgControls(self):

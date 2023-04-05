@@ -1,6 +1,8 @@
 import sys, threading, socket, ctypes, struct, time, re, functools, traceback
 from datetime import datetime
 from collections import OrderedDict
+import os
+from pathlib import Path
 
 from cpi_framework.utils.basecpi_abc import BaseCpi
 from cpi_framework.spacecrafts.omka.otc import OTC
@@ -19,6 +21,10 @@ from ivk.scOMKA.widget_scpi import ScpiWidget
 from ivk.scOMKA.simplifications import getSimpleCommandsCPI, getSimpleCommandsOTC
 
 from ivk.rokot_tmi import RokotTmi, RokotWidget
+
+
+# создание директории для хранения отправляемых КПИ
+# def DirKPAbin():
 
 
 class Exchange(AbstractExchange):
@@ -597,8 +603,7 @@ res = Ex.wait('', '{ММ_X1.ЗапрТок} < 6.3 and {ММ_Z2.ЗапрНапр�
         try:
             local_sock.connect(('localhost', conf.getConf('localhost_send_dispathcer_port')))
         except Exception as exc:
-            raise Exception(
-                'Не удалось установить соединение с локальным сервером передачи сообщений: "%s"' % repr(exc))
+            raise Exception('Не удалось установить соединение с локальным сервером передачи сообщений: "%s"' % repr(exc))
 
         dest = struct.pack('>B', Exchange.queues[queue_label]['destination_id'])
 
@@ -623,6 +628,15 @@ res = Ex.wait('', '{ММ_X1.ЗапрТок} < 6.3 and {ММ_Z2.ЗапрНапр�
                               Exchange.ivk_file_path, str(stream))
                     local_sock.sendall(dest + stream)
                     local_sock_udp.sendto(stream, kpa_adress)
+                    #         запись КПИ в бинарный файл
+                    session = conf.getData('rokot_current_tmsid')
+                    if session:
+                        pathDir = Path(os.getcwd()).parent.joinpath('out_KPI')
+                        if not pathDir.exists():
+                            Path.mkdir(pathDir)
+                        pathFile = Path(os.getcwd()).parent.joinpath('out_KPI', str(session) + '.bin')
+                        with open(str(pathFile), 'ab') as fb:
+                            fb.write(out)
 
             elif isinstance(data, OTC):
                 # для отсчёта времени начала или продления сеанса
@@ -1036,3 +1050,18 @@ res = Ex.wait('', '{ММ_X1.ЗапрТок} < 6.3 and {ММ_Z2.ЗапрНапр�
                     # print('DELETE %d' % msg['msg_id'])
 
             time.sleep(0.25)
+
+    @staticmethod
+    def writeBinFile(data):
+        if isinstance(data, BaseCpi):
+            nameBin = conf.getData('nameBinFile')
+            if nameBin:
+                pathDir = Path(os.getcwd()).parent.joinpath('KPI_BIN')
+                if not pathDir.exists():
+                    Path.mkdir(pathDir)
+                outdata = data.asByteStream()
+                pathFile = Path(os.getcwd()).parent.joinpath('KPI_BIN', nameBin + '.bin')
+                with open(str(pathFile), 'wb') as f:
+                    f.write(outdata[0])
+                    print('КПИ записана в бинарный файл')
+
