@@ -40,44 +40,6 @@ from PyQt5.QtCore import Qt
 from collections import OrderedDict
 
 
-################ IMITATION ###############
-# from random import randint
-# def get(*args):
-#     inp = inputGGG(['inputK', 'inputInt'])
-#     if inp['inputInt'] != '':
-#         return float(inp['inputInt'])
-#     else:
-#         return inp['inputK']
-#
-#     calibs = ('включен', 'отключен', 'Есть', 'Нет', 0, 100, None)
-#     uncalibs = (0, 1, 100, -100, 0.01, 1000)
-#     if isinstance(args[1], dict):
-#         result = {}
-#         if args[2] == 'ИНТЕРВАЛ':
-#             for k, v in args[1].items():
-#                 result[k] = []
-#                 result[k].append(calibs[randint(0, len(calibs) - 1)] if v in 'КАЛИБР' else uncalibs[randint(0, len(uncalibs) - 1)])
-#                 result[k].append(calibs[randint(0, len(calibs) - 1)] if v in 'КАЛИБР' else uncalibs[randint(0, len(uncalibs) - 1)])
-#         else:
-#             for k, v in args[1].items():
-#                 result[k] = calibs[randint(0, len(calibs)-1)] if v in 'КАЛИБР' else uncalibs[randint(0, len(uncalibs)-1)]
-#         return result
-#     if args[2] == 'КАЛИБР ТЕКУЩ':
-#         return calibs[randint(0, len(calibs)-1)]    # 'Включено'   #   calibs[randint(0, len(calibs)-1)]
-#     elif args[2] == 'НЕКАЛИБР ТЕКУЩ':
-#         return uncalibs[randint(0, len(uncalibs)-1)]    # 0.1          #   uncalibs[randint(0, len(uncalibs)-1)]
-#     elif args[2] == 'КАЛИБР ИНТЕРВАЛ':
-#         return ['Включено', 'Включено']
-#     elif args[2] == 'НЕКАЛИБР ИНТЕРВАЛ':
-#         return [1, 1]
-# Ex.get = get
-# KPA = lambda *args: ' '.join([str(x) for x in args])
-# Ex.send = lambda *args: print('Отправка ' + ' '.join([str(x) for x in args]))
-# Ex.wait = lambda *args: False if randint(0, 1) == 0 else True
-# Ex.ivk_file_name = "script.ivkng"
-# Ex.ivk_file_path = "D:/VMShared/ivk-ng-myremote/engineers_src/script.ivkng"
-
-
 ################ TEXT ###################
 class Text:
     """класс с методами покраски текста"""
