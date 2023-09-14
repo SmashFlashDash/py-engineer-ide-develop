@@ -20,7 +20,7 @@ psql -c "CREATE TABLE IF NOT EXISTS log (dt timestamp NOT NULL,
         additional text);" -v ON_ERROR_STOP=1 -U postgres -d ivk_log
 
 # psql -v ON_ERROR_STOP=1 -f /docker-entrypoint-initdb.d/shit-noMAC.sql -h 127.0.0.1 -p 5432 rokot_ng -U postgres
-psql -v ON_ERROR_STOP=1 -f /initDump/shit-noMAC.sql --dbname rokot_ng -U postgres
+psql -v ON_ERROR_STOP=1 -f /docker-entrypoint-initdb.d/rokot_ng.backup --dbname rokot_ng -U postgres
 
 psql -c "ALTER DATABASE rokot_ng set search_path = dbo;" -U postgres -d postgres
 psql -c "ALTER DATABASE ivk_log set search_path = public;" -U postgres -d postgres
