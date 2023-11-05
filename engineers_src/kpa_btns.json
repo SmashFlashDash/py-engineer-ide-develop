@@ -1,10 +1,10 @@
 {
-    "Ск-1": "",
-    "Ск-2": "",
-    "Ск-3": "",
-    "Ск-4": "",
-    "Прод": "",
-    "Завершить": "",
-    "БАРЛ СР": "",
-    "БАРЛ ДР": ""
+    "Ск-10": "SOTC(0); sleep(5); SKPA(0)",
+    "Ск-22": "SOTC(0); sleep(5); SKPA(0)",
+    "Ск-100": "SOTC(0); sleep(5); SKPA(0)",
+    "Ск-110": "SOTC(0); sleep(5); SKPA(0)",
+    "Прод": "SOTC(0)",
+    "Завершить": "SOTC(0)",
+    "БА 1": "SOTC(0); sleep(5); SKPA('0'); sleep(5); SOTC(0); sleep(5); SOTC(0); sleep(5); SOTC(0); sleep(5); SOTC(0); sleep(1)",
+    "БА 2": "SOTC(0); sleep(5); SKPA('0'); sleep(5); SOTC(0); sleep(5); SOTC(0); sleep(5); SOTC(0); sleep(5); SOTC(0); sleep(1)"
 }

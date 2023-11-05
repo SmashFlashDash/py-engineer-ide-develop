@@ -1,10 +1,27 @@
+## Description
+IDE для python, в которой можно разрабатывать и запускать скрипты как один файл или состоящие из модулей.  
+IDE взаимодействует с аппаратурой тестировочного шкафа, куда подключается оборудование, которым управляет скрипт.    
+В ./cpi фреймворке конфигурируется взаимодействие ide с тестировочным шкафом и сторонним оборудованием.   
+
+В ide можно запускать скрипты написанные на python для тестирования аппаратуры в реальном временим, получать информацию.
+от аппаратуры и отображать эту информацию.
+
+В модуле engineers_src написаны функции которые по умолчанию импортированы в запускаемые скрипты.  
+Вызовов этих функций упрощает взаимодействие инженера с python для отправки сообщений, обработки информации, служит интерфейсом для написания скриптов тестирования.
+
+IDE написана на pyqt5. Использует redis и postgre **(можно развернуть с помощью docker compose в ./dockercomposedb/)**  
+Интерфейс:
+![img1.jpg](.documentation%2Fimg1.jpg)
+
+---
+## BUILD
 Windows:
 1) Установить python 3.8+, установить redis из redis-win, установить локально Postgresql для логгировнаия
 2) Из папки redis_win, разархивировать архив в любую папку и запустить 64bit/redis-server.exe
 3) Зайти в консоли в каталог с программой и выполнить "pip install -r requirements.txt" (нужен интернет)
 4) Зайти в консоли в каталог с программой и выполнить "pyhton launcher.py"
 
-
+---
 astra-linux 1.6:
 sudo apt install python3-pyqt5 python3-pyqt5.qsci postgresql #Установятся верссии python3-pyqt5 5.10.1, python3-pyqt5.qsci 2.9.3
 sudo apt install python3-psycopg2 python3-psutil redis-server python3-redis (с диска разработчика)
@@ -31,30 +48,3 @@ sudo -u postgres psql
 CREATE DATABASE ivk_log WITH OWNER postgres ENCODING 'UTF8';
 grant all privileges on database ivk_log to postgres;
 Для коннектра к базе \c ivk_log
-
-
-Подключение strech репозиториев и добавление общей папки с виндой для VirtualBox:
-! https://wiki.astralinux.ru/pages/viewpage.action?pageId=3276859
-sudo apt install dirmngr
-sudo nano /etc/apt/souces.list
-   deb http://ftp.ru.debian.org/debian/ stretch main contrib non-free
-sudo apt update
-    берем последний открытый ключ из ошибки
-sudo apt-key adv --recv-keys --keyserver keys.gnupg.net EF0F382A1A7B6500
-sudo apt update
-! https://gist.github.com/estorgio/1d679f962e8209f8a9232f7593683265
-Размонтируем все из дисковода и монтируем диск дополнений гостевой ОС через меню VirtualBox
-Копируем все файлы с диска в какую-нибудь папку в ~
-sudo apt-get install build-essential linux-headers-`uname -r`
-./VBoxLinuxAdditions.run
-выключаем вируталку
-создаем в VirtualBox общую папку, галки не ставим
-включаем вируталку
-mkdir ~/SVN
-sudo mount -t vboxsf SVN ~/SVN
-еще можно в bashrc добавить "sudo mount -t vboxsf SVN ~/SVN", чтоб при старте системы само mount делало 
-
-Настройка GIT
-https://docs.gitlab.com/ee/gitlab-basics/start-using-git.html
-
-
